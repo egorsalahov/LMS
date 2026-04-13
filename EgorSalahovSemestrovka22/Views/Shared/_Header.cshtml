@@ -1,0 +1,348 @@
+﻿@{
+
+}
+
+<!-- Header Topbar-->
+<div class="header-topbar text-center">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6">
+				<div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+					<p class="d-flex align-items-center fw-medium fs-14 mb-2 me-3"><i class="isax isax-location5 me-2"></i>1442 Crosswind Drive Madisonville</p>
+					<p class="d-flex align-items-center fw-medium fs-14 mb-2"><i class="isax isax-call-calling5 me-2"></i>+1 45887 77874</p>
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<div class="d-flex align-items-center justify-content-center justify-content-lg-end">
+					<div class="dropdown flag-dropdown mb-2 me-3">
+						<a href="javascript:void(0);" class="dropdown-toggle d-inline-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
+							<img src="~/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
+						</a>
+						<ul class="dropdown-menu p-2 mt-2">
+							<li>
+								<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
+									<img src="~/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
+									<img src="~/img/flags/arab-flag.svg" class="me-2" alt="flag">ARA
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
+									<img src="~/img/flags/france-flag.svg" class="me-2" alt="flag">FRE
+								</a>
+							</li>
+						</ul>
+					</div>
+					<div class="dropdown mb-2 me-3">
+						<a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+							USD
+						</a>
+						<ul class="dropdown-menu p-2 mt-2">
+							<li><a class="dropdown-item rounded" href="javascript:void(0);">USD</a></li>
+							<li><a class="dropdown-item rounded" href="javascript:void(0);">YEN</a></li>
+							<li><a class="dropdown-item rounded" href="javascript:void(0);">EURO</a></li>
+						</ul>
+					</div>
+					<ul class="social-icon d-flex align-items-center mb-2">
+						<li class="me-2">
+							<a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a>
+						</li>
+						<li class="me-2">
+							<a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a>
+						</li>
+						<li class="me-2">
+							<a href="javascript:void(0);"><i class="fa-brands fa-x-twitter"></i></a>
+						</li>
+						<li class="me-2">
+							<a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a>
+						</li>
+						<li>
+							<a href="javascript:void(0);"><i class="fa-brands fa-linkedin"></i></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /Header Topbar-->
+
+<!-- Header -->
+<header class="header-three">
+	<div class="container">
+		<div class="header-nav">
+			<div class="navbar-header">
+				<a id="mobile_btn" href="javascript:void(0);">
+					<span class="bar-icon">
+						<span></span>
+						<span></span>
+						<span></span>
+					</span>
+				</a>
+				<div class="navbar-logo">
+					<a class="logo-white header-logo" href="index.html">
+						<img src="~/img/logo.svg" class="logo" alt="Logo">
+					</a>
+					<a class="logo-dark header-logo" href="index.html">
+						<img src="~/img/logo-white.svg" class="logo" alt="Logo">
+					</a>
+				</div>
+			</div>
+			<div class="main-menu-wrapper">
+				<div class="menu-header">
+					<a href="index.html" class="menu-logo">
+						<img src="~/img/logo.svg" class="img-fluid" alt="Logo">
+					</a>
+					<a id="menu_close" class="menu-close" href="javascript:void(0);">
+						<i class="fas fa-times"></i>
+					</a>
+				</div>
+				<ul class="main-nav">
+					<li class="has-submenu megamenu active click-only">
+						<a href="/">Home <i class="fas fa-chevron-down"></i></a>
+						<ul class="submenu mega-submenu">
+							<li>
+								<div class="megamenu-wrapper">
+									<div class="row">
+										<div class="col-lg-2">
+											<div class="single-demo active">
+												<div class="demo-img">
+													<a href="/" class="inner-demo-img">
+														<img src="~/img/home/home-06.jpg" class="img-fluid" alt="img">
+													</a>
+												</div>
+												<div class="demo-info">
+													<a href="/" class="inner-demo-img">Home 6</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</li>
+					<li class="has-submenu">
+						<a href="#">Courses <i class="fas fa-chevron-down"></i></a>
+						<ul class="submenu">
+							<li class="has-submenu">
+								<a href="javascript:void(0);">Courses</a>
+								<ul class="submenu">
+									<a asp-controller="Course" asp-action="List">Course List</a>
+								</li>
+								</ul>
+							</li>
+							<li class="has-submenu">
+								<a href="javascript:void(0);">Course Category</a>
+								<ul class="submenu">
+								<a asp-controller="Course" asp-action="Category">Course Category</a>
+								</ul>
+							</li>
+							<li class="has-submenu">
+								<a href="javascript:void(0);">Course Details</a>
+								<ul class="submenu">
+								<a asp-controller="Course" asp-action="Detail">Course Details</a>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li class="has-submenu">
+						<a href="javascript:void(0);">Dashboard <i class="fas fa-chevron-down"></i></a>
+						<ul class="submenu">
+							<li class="has-submenu">
+								<a href="javascript:void(0);">Instructor Dashboard</a>
+								<ul class="submenu">
+									<li><a asp-controller="Instructor" asp-action="Dashboard">Dashboard</a></li>
+									<li><a asp-controller="Instructor" asp-action="MyProfile">My Profile</a></li>
+									<li><a asp-controller="Instructor" asp-action="Courses">Courses</a></li>
+									<li class="has-submenu">
+										<a href="javascript:void(0);">Student</a>
+										<ul class="submenu">
+										<li><a asp-controller="Instructor" asp-action="Students">Students</a></li>
+										</ul>
+									</li>
+								<li><a asp-controller="Instructor" asp-action="Settings">Settings</a></li>
+								</ul>
+							</li>
+							<li class="has-submenu">
+								<a href="javascript:void(0);">Student Dashboard</a>
+								<ul class="submenu">
+									<li><a asp-controller="Student" asp-action="MyProfile">My Profile</a></li>
+									<li><a asp-controller="Student" asp-action="Courses">Enrolled Courses</a></li>
+									<li><a asp-controller="Student" asp-action="Wishlist">Wishlist</a></li>
+									<li><a asp-controller="Student" asp-action="OrderHistory">Order History</a></li>
+								<li><a asp-controller="Student" asp-action="Settings">Settings</a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+								
+				<div class="menu-dropdown">
+					<div class="cart-item">
+						<h6>Cart & Wishlist</h6>
+						<div class="icon-btn">
+							<a href="cart.html" class="position-relative">
+								<i class="isax isax-shopping-cart5"></i>
+								<span class="count-icon bg-success p-1 rounded-pill text-white fs-10 fw-bold">1</span>
+							</a>
+						</div>
+					</div>
+					<div class="dropdown flag-dropdown mb-2">
+						<a href="javascript:void(0);" class="dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
+							<img src="~/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
+						</a>
+						<ul class="dropdown-menu p-2 mt-2">
+							<li>
+								<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
+									<img src="~/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
+									<img src="~/img/flags/arab-flag.svg" class="me-2" alt="flag">ARA
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item rounded d-flex align-items-center" href="javascript:void(0);">
+									<img src="~/img/flags/france-flag.svg" class="me-2" alt="flag">FRE
+								</a>
+							</li>
+						</ul>
+					</div>
+					<div class="dropdown mb-2">
+						<a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+							USD
+						</a>
+						<ul class="dropdown-menu p-2 mt-2">
+							<li><a class="dropdown-item rounded" href="javascript:void(0);">USD</a></li>
+							<li><a class="dropdown-item rounded" href="javascript:void(0);">YEN</a></li>
+							<li><a class="dropdown-item rounded" href="javascript:void(0);">EURO</a></li>
+						</ul>
+					</div>
+					<div class="dropdown mb-2">
+						<a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+							Light
+						</a>
+						<ul class="dropdown-menu p-2 mt-2">
+							<li><a class="dropdown-item rounded" href="javascript:void(0);">Light</a></li>
+							<li><a class="dropdown-item rounded" href="javascript:void(0);">Dark</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="menu-login">
+					<a href="login.html" class="btn btn-primary w-100 mb-2"><i class="isax isax-user me-2"></i>Sign In</a>
+					<a href="register.html" class="btn btn-secondary w-100"><i class="isax isax-user-edit me-2"></i>Register</a>
+				</div>
+			</div>
+			<div class="header-btn d-flex align-items-center">
+				<div class="icon-btn me-2">
+					<a href="#" class="bg-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><img class="rounded-pill" src="~/img/flags/us-flag.svg" alt="flag"></a>
+					<ul class="dropdown-menu p-2 mt-2" style="">
+						<li class="mb-2">
+							<a class="dropdown-item w-100 rounded d-flex align-items-center" href="javascript:void(0);">
+								<img src="~/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
+							</a>
+						</li>
+						<li class="mb-2">
+							<a class="dropdown-item w-100 rounded d-flex align-items-center" href="javascript:void(0);">
+								<img src="~/img/flags/arab-flag.svg" class="me-2" alt="flag">ARA
+							</a>
+						</li>
+						<li>
+							<a class="dropdown-item w-100 rounded d-flex align-items-center" href="javascript:void(0);">
+								<img src="~/img/flags/france-flag.svg" class="me-2" alt="flag">FRE
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="icon-btn me-2">
+					<a href="#" class="bg-white text-primary"><i class="isax isax-dollar-circle4"></i></a>
+				</div>
+				<div class="icon-btn me-2">
+					<a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate bg-white">
+						<i class="isax isax-sun-15"></i>
+					</a>
+					<a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle bg-white">
+						<i class="isax isax-moon"></i>
+					</a>
+				</div>
+				<div class="icon-btn me-3">
+					<a href="#" class="bg-white text-primary position-relative">
+						<i class="isax isax-shopping-cart5"></i>
+						<span class="count-icon bg-success p-2 rounded-pill text-white fs-10 fw-bold">1</span>
+					</a>
+				</div>
+				<div>
+					<a href="login.html" class="btn btn-primary d-inline-flex align-items-center me-2 px-3">
+						Sign In
+					</a>
+				</div>
+				<a href="register.html" class="btn btn-secondary me-0 px-3">
+					Register
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<style>
+			/* CSS только для этого Home - отключаем hover */
+			.main-nav .click-only:hover .submenu,
+			.main-nav .click-only .submenu {
+				display: none !important;
+			}
+
+			/* Показываем при открытом состоянии */
+			.main-nav .click-only.open .submenu {
+				display: block !important;
+				z-index: 9999;
+			}
+
+			/* Иконка поворота при открытии */
+			.main-nav .click-only.open a i.fa-chevron-down {
+				transform: rotate(180deg);
+				transition: transform 0.3s ease;
+			}
+	</style>
+
+	<script>
+			$(document).ready(function() {
+				// Клик только для Home (.click-only)
+				$('.main-nav .click-only > a').off('click.mega').on('click.mega', function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+        
+					var $li = $(this).parent('.click-only');
+					var $submenu = $li.find('.submenu');
+        
+					// Закрываем все остальные
+					$('.main-nav .click-only').not($li).removeClass('open').find('.submenu').slideUp(200);
+        
+					// Toggle для этого
+					if ($li.hasClass('open')) {
+						$li.removeClass('open');
+						$submenu.slideUp(200);
+					} else {
+						$li.addClass('open');
+						$submenu.slideDown(200);
+					}
+				});
+    
+				// Закрытие при клике вне
+				$(document).on('click', function(e) {
+					if (!$(e.target).closest('.main-nav .click-only').length) {
+						$('.main-nav .click-only').removeClass('open').find('.submenu').slideUp(200);
+					}
+				});
+    
+				// ESC закрывает
+				$(document).keyup(function(e) {
+					if (e.keyCode === 27) {
+						$('.main-nav .click-only').removeClass('open').find('.submenu').slideUp(200);
+					}
+				});
+			});
+	</script>
+</header>
