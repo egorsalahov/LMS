@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\fonts\" />
+    <Folder Include="wwwroot\css\admin\" />
+    <Folder Include="wwwroot\fonts\admin\" />
+    <Folder Include="wwwroot\img\admin\" />
+    <Folder Include="wwwroot\js\admin\" />
+    <Folder Include="wwwroot\plugins\admin\" />
   </ItemGroup>
 
 </Project>

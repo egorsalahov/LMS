@@ -1,0 +1,78 @@
+﻿<!doctype html>
+<html lang="en" data-bs-theme="blue-theme">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Maxton | Bootstrap 5 Admin Dashboard Template</title>
+  <!--favicon-->
+  <link rel="icon" href="~/images/favicon-32x32.png" type="image/png">
+  <!-- loader-->
+	<link href="~/css/admin/pace.min.css" rel="stylesheet">
+	<script src="~/js/admin/pace.min.js"></script>
+
+  
+  <!--plugins-->
+  <link href="~/plugins/admin/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="~/plugins/admin/metismenu/metisMenu.min.css">
+  <link rel="stylesheet" type="text/css" href="~/plugins/admin/metismenu/mm-vertical.css">
+  <link rel="stylesheet" type="text/css" href="~/plugins/admin/simplebar/css/simplebar.css">
+  <!--bootstrap css-->
+  <link href="~/css/admin/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Material+Icons+Outlined" rel="stylesheet">
+  <!--main css-->
+  <link href="~/css/admin/bootstrap-extended.css" rel="stylesheet">
+  <link href="~/css/admin/main.css" rel="stylesheet">
+  <link href="~/css/admin/dark-theme.css" rel="stylesheet">
+  <link href="~/css/admin/blue-theme.css" rel="stylesheet">
+  <link href="~/css/admin/semi-dark.css" rel="stylesheet">
+  <link href="~/css/admin/bordered-theme.css" rel="stylesheet">
+  <link href="~/css/admin/responsive.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+@await Html.PartialAsync("_HeaderAdmin")
+
+
+@await Html.PartialAsync("_SidebarAdmin")
+
+<!--start main wrapper-->
+<main class="main-wrapper">
+<div class="main-content">
+@RenderBody()
+</div>
+</main>
+<!--start overlay-->
+<div class="overlay btn-toggle"></div>
+<!--end overlay-->
+<!--start footer-->
+<footer class="page-footer">
+    <p class="mb-0">Copyright © 2024. All right reserved.</p>
+</footer>
+<!--end footer-->
+<!--bootstrap js-->
+<script src="~/js/admin/bootstrap.bundle.min.js"></script>
+
+<!--plugins-->
+<script src="~/js/admin/jquery.min.js"></script>
+<!--plugins-->
+<script src="~/plugins/admin/perfect-scrollbar/js/perfect-scrollbar.js"></script>
+<script src="~/plugins/admin/metismenu/metisMenu.min.js"></script>
+<script src="~/plugins/admin/apexchart/apexcharts.min.js"></script>
+<script src="~/plugins/admin/simplebar/js/simplebar.min.js"></script>
+<script src="~/plugins/admin/peity/jquery.peity.min.js"></script>
+<script>
+    $(".data-attributes span").peity("donut")
+</script>
+<script src="~/js/admin/main.js"></script>
+<script src="~/js/admin/dashboard1.js"></script>
+<script>            
+    new PerfectScrollbar(".user-list")
+</script>
+
+ </body>
+
+</html>
