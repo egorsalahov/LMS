@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
 
-        public int StudentId { get; set; }
+        public string StudentId { get; set; }
         public Student Student { get; set; } // Ссылка на объект студента
 
         public int CourseId { get; set; }

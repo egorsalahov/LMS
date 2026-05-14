@@ -9,6 +9,6 @@
         public int CourseId { get; set; }
         public Course Course { get; set; }
 
-        public int StudentId { get; set; } // Кто оставил отзыв
+        public string StudentId { get; set; } // Кто оставил отзыв
     }
 }

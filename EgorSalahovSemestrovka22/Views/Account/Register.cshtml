@@ -1,4 +1,5 @@
-﻿@{
+﻿@model RegisterViewModel
+@{
     Layout = "_LayoutAuth";
 }
 
@@ -56,50 +57,54 @@
                                 <a href="index.html" class="link-1">Back to Home</a>
                             </div>
                             <h1 class="fs-32 fw-bold topic">Sign up</h1>
-                            <form asp-controller="Account" asp-action="SignIn" class="mb-3 pb-3">
+                            <form asp-controller="Account" asp-action="Register" method="post" class="mb-3 pb-3">
+                                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
                                 <div class="mb-3 position-relative">
-                                    <label class="form-label">Full Name<span class="text-danger ms-1">*</span></label>
+                                    <label asp-for="FullName" class="form-label">Full Name<span class="text-danger ms-1">*</span></label>
                                     <div class="position-relative">
-                                        <input type="text" class="form-control form-control-lg">
+                                        <input asp-for="FullName" class="form-control form-control-lg">
                                         <span><i class="isax isax-user input-icon text-gray-7 fs-14"></i></span>
                                     </div>
+                                    <span asp-validation-for="FullName" class="text-danger fs-12"></span>
                                 </div>
+
                                 <div class="mb-3 position-relative">
-                                    <label class="form-label">Email<span class="text-danger ms-1">*</span></label>
+                                    <label asp-for="Email" class="form-label">Email<span class="text-danger ms-1">*</span></label>
                                     <div class="position-relative">
-                                        <input type="email" class="form-control form-control-lg">
+                                        <input asp-for="Email" class="form-control form-control-lg">
                                         <span><i class="isax isax-sms input-icon text-gray-7 fs-14"></i></span>
                                     </div>
+                                    <span asp-validation-for="Email" class="text-danger fs-12"></span>
                                 </div>
+
                                 <div class="mb-3 position-relative">
-                                    <label class="form-label">New Password <span class="text-danger"> *</span></label>
+                                    <label asp-for="Password" class="form-label">New Password<span class="text-danger"> *</span></label>
                                     <div class="position-relative" id="passwordInput">
-                                        <input type="password" class="pass-inputs form-control form-control-lg">
+                                        <input asp-for="Password" class="pass-inputs form-control form-control-lg">
                                         <span class="isax toggle-passwords isax-eye-slash text-gray-7 fs-14"></span>
                                     </div>
-                                    <div class="password-strength" id="passwordStrength">
-                                        <span id="poor"></span>
-                                        <span id="weak"></span>
-                                        <span id="strong"></span>
-                                        <span id="heavy"></span>
-                                    </div>
-                                    <div class="mt-2" id="passwordInfo"></div>
+                                    <span asp-validation-for="Password" class="text-danger fs-12"></span>
                                 </div>
+
                                 <div class="mb-3 position-relative">
-                                    <label class="form-label">Confirm Password <span class="text-danger"> *</span></label>
+                                    <label asp-for="ConfirmPassword" class="form-label">Confirm Password<span class="text-danger"> *</span></label>
                                     <div class="position-relative">
-                                        <input type="password" class="pass-inputa form-control form-control-lg">
+                                        <input asp-for="ConfirmPassword" class="pass-inputa form-control form-control-lg">
                                         <span class="isax toggle-passworda isax-eye-slash text-gray-7 fs-14"></span>
                                     </div>
+                                    <span asp-validation-for="ConfirmPassword" class="text-danger fs-12"></span>
                                 </div>
+
                                 <div class="d-flex align-items-center justify-content-between mb-4">
                                     <div class="remember-me d-flex align-items-center">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label mb-0 d-inline-flex remember-me fs-14" for="flexCheckDefault">
-                                            I agree with <a href="javascript:void(0);" class="link-2 mx-2">Terms of Service</a> and <a href="javascript:void(0);" class="link-2 mx-2">Privacy Policy</a>
+                                        <input asp-for="IsAgreed" class="form-check-input" type="checkbox">
+                                        <label class="form-check-label mb-0 d-inline-flex remember-me fs-14" for="IsAgreed">
+                                            I agree with Terms of Service and Privacy Policy
                                         </label>
                                     </div>
                                 </div>
+
                                 <div class="d-grid">
                                     <button class="btn btn-secondary btn-lg" type="submit">Sign Up <i class="isax isax-arrow-right-3 ms-1"></i></button>
                                 </div>

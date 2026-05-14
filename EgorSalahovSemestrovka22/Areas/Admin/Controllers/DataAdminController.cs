@@ -27,7 +27,7 @@ namespace EgorSalahovSemestrovka22.Areas.Admin.Controllers
 
         public async Task<IActionResult> StudentsData()
         {
-            var students = await _context.Students
+            var students = await _context.Users
                 .Include(s => s.Enrollments)
                 .Include(s => s.Orders)
                 .OrderBy(s => s.Id)

@@ -2,11 +2,12 @@
 using EgorSalahovSemestrovka22.Models.Entities.Instructors;
 using EgorSalahovSemestrovka22.Models.Entities.Orders;
 using EgorSalahovSemestrovka22.Models.Enums;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace EgorSalahovSemestrovka22.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<Student>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
         public DbSet<Course> Courses { get; set; }
@@ -14,7 +15,6 @@ namespace EgorSalahovSemestrovka22.Data
         public DbSet<Instructor> Instructors { get; set; }
         public DbSet<Education> Educations { get; set; }
         public DbSet<Experience> Experiences { get; set; }
-        public DbSet<Student> Students { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Wishlist> Wishlists { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
@@ -102,26 +102,7 @@ namespace EgorSalahovSemestrovka22.Data
                 });
             }
 
-            //Сиды Студента
-            modelBuilder.Entity<Student>().HasData(
-            new Student { Id = 1, FirstName = "Ivan", LastName = "Tester", UserName = "ivan_test", Email = "ivan@test.com", PhoneNumber = "+1234567890", Gender = "Male", DateOfBirth = new DateTime(2000, 1, 1), RegistrationDate = new DateTime(2026, 1, 1), Bio = "Learning C#", AvatarPath = "student-1.png" },
-            new Student { Id = 2, FirstName = "Maria", LastName = "Sokolova", UserName = "maria_dev", Email = "maria@example.com", PhoneNumber = "+1234567891", Gender = "Female", DateOfBirth = new DateTime(1999, 3, 15), RegistrationDate = new DateTime(2026, 1, 5), Bio = "Frontend enthusiast", AvatarPath = "student-2.png" },
-            new Student { Id = 3, FirstName = "Alexey", LastName = "Petrov", UserName = "alex_p", Email = "alex@example.com", PhoneNumber = "+1234567892", Gender = "Male", DateOfBirth = new DateTime(2001, 7, 22), RegistrationDate = new DateTime(2026, 1, 8), Bio = "Backend developer", AvatarPath = "student-3.png" },
-            new Student { Id = 4, FirstName = "Olga", LastName = "Ivanova", UserName = "olga_i", Email = "olga@example.com", PhoneNumber = "+1234567893", Gender = "Female", DateOfBirth = new DateTime(1998, 11, 3), RegistrationDate = new DateTime(2026, 1, 10), Bio = "Fullstack learner", AvatarPath = "student-4.png" },
-            new Student { Id = 5, FirstName = "Dmitry", LastName = "Kozlov", UserName = "dmitry_k", Email = "dmitry@example.com", PhoneNumber = "+1234567894", Gender = "Male", DateOfBirth = new DateTime(2002, 5, 18), RegistrationDate = new DateTime(2026, 1, 12), Bio = "JavaScript fan", AvatarPath = "student-5.png" },
-            new Student { Id = 6, FirstName = "Elena", LastName = "Smirnova", UserName = "elena_s", Email = "elena@example.com", PhoneNumber = "+1234567895", Gender = "Female", DateOfBirth = new DateTime(1997, 9, 30), RegistrationDate = new DateTime(2026, 1, 15), Bio = "React developer", AvatarPath = "student-6.png" },
-            new Student { Id = 7, FirstName = "Sergey", LastName = "Volkov", UserName = "sergey_v", Email = "sergey@example.com", PhoneNumber = "+1234567896", Gender = "Male", DateOfBirth = new DateTime(2000, 12, 7), RegistrationDate = new DateTime(2026, 2, 1), Bio = "Python & C#", AvatarPath = "student-7.png" },
-            new Student { Id = 8, FirstName = "Anna", LastName = "Kuznetsova", UserName = "anna_k", Email = "anna2@example.com", PhoneNumber = "+1234567897", Gender = "Female", DateOfBirth = new DateTime(2001, 4, 25), RegistrationDate = new DateTime(2026, 2, 5), Bio = "UI/UX designer", AvatarPath = "student-8.png" },
-            new Student { Id = 9, FirstName = "Pavel", LastName = "Morozov", UserName = "pavel_m", Email = "pavel@example.com", PhoneNumber = "+1234567898", Gender = "Male", DateOfBirth = new DateTime(1999, 8, 14), RegistrationDate = new DateTime(2026, 2, 10), Bio = "Game dev interested", AvatarPath = "student-9.png" },
-            new Student { Id = 10, FirstName = "Tatiana", LastName = "Orlova", UserName = "tatiana_o", Email = "tatiana@example.com", PhoneNumber = "+1234567899", Gender = "Female", DateOfBirth = new DateTime(2002, 2, 28), RegistrationDate = new DateTime(2026, 2, 15), Bio = "Data Science student", AvatarPath = "student-10.png" },
-            new Student { Id = 11, FirstName = "Nikolay", LastName = "Fedorov", UserName = "nikolay_f", Email = "nikolay@example.com", PhoneNumber = "+1234567810", Gender = "Male", DateOfBirth = new DateTime(1998, 6, 9), RegistrationDate = new DateTime(2026, 2, 20), Bio = "ASP.NET Core fan", AvatarPath = "student-11.png" },
-            new Student { Id = 12, FirstName = "Ekaterina", LastName = "Popova", UserName = "ekaterina_p", Email = "ekaterina@example.com", PhoneNumber = "+1234567811", Gender = "Female", DateOfBirth = new DateTime(2000, 10, 16), RegistrationDate = new DateTime(2026, 3, 1), Bio = "Mobile developer", AvatarPath = "student-12.png" },
-            new Student { Id = 13, FirstName = "Andrey", LastName = "Sidorov", UserName = "andrey_s", Email = "andrey@example.com", PhoneNumber = "+1234567812", Gender = "Male", DateOfBirth = new DateTime(2001, 1, 5), RegistrationDate = new DateTime(2026, 3, 5), Bio = "DevOps learner", AvatarPath = "student-13.png" },
-            new Student { Id = 14, FirstName = "Yulia", LastName = "Vasilieva", UserName = "yulia_v", Email = "yulia@example.com", PhoneNumber = "+1234567813", Gender = "Female", DateOfBirth = new DateTime(1999, 7, 11), RegistrationDate = new DateTime(2026, 3, 10), Bio = "QA Automation", AvatarPath = "student-14.png" },
-            new Student { Id = 15, FirstName = "Maxim", LastName = "Belov", UserName = "maxim_b", Email = "maxim@example.com", PhoneNumber = "+1234567814", Gender = "Male", DateOfBirth = new DateTime(2002, 4, 3), RegistrationDate = new DateTime(2026, 3, 15), Bio = "Cloud computing", AvatarPath = "student-15.png" }
-        );
-
-
+           
             // Сид Заказа
             modelBuilder.Entity<Order>().HasData(new Order
             {
