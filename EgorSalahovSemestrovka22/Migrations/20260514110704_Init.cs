@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace EgorSalahovSemestrovka22.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -358,6 +360,51 @@ namespace EgorSalahovSemestrovka22.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "CourseCount", "ImagePath", "Name" },
+                values: new object[,]
+                {
+                    { 1, 5, "cat-1.png", "Frontend Development" },
+                    { 2, 5, "cat-2.png", "Backend Development" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Instructors",
+                columns: new[] { "Id", "AvatarPath", "Bio", "DateOfBirth", "Email", "FirstName", "Gender", "LastName", "PhoneNumber", "RegistrationDate", "TotalEarnings", "UserName" },
+                values: new object[,]
+                {
+                    { 1, "instructor-1.png", "Senior Fullstack Developer", new DateTime(1995, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "egor@example.com", "Egor", "Male", "Salahov", "+1234567890", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1500.00m, "egor_dev" },
+                    { 2, "instructor-2.png", "UI/UX Expert", new DateTime(1998, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "anna@example.com", "Anna", "Female", "Pro", "+9876543210", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2300.50m, "anna_web" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Students",
+                columns: new[] { "Id", "AvatarPath", "Bio", "DateOfBirth", "Email", "FirstName", "Gender", "LastName", "PhoneNumber", "RegistrationDate", "UserName" },
+                values: new object[] { 1, "student-1.png", "Learning C#", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "ivan@test.com", "Ivan", "Male", "Tester", "+1234567890", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "ivan_test" });
+
+            migrationBuilder.InsertData(
+                table: "Courses",
+                columns: new[] { "Id", "CategoryId", "Duration", "FullDescription", "HasAssignments", "HasCommunityAccess", "HasDownloadableResources", "HasLifetimeAccess", "HasMobileAccess", "HasSubtitles", "ImagePath", "InstructorId", "LessonsCount", "LevelForStudent", "OldPrice", "Price", "ShortDescription", "Title" },
+                values: new object[,]
+                {
+                    { 1, 1, new TimeSpan(0, 11, 0, 0, 0), "Detailed description of the course with modules and deep dives.", true, true, true, true, true, true, "course-1.png", 2, 13, 0, 99.99m, 50.99m, "Learn the best practices in this comprehensive course.", "Modern React Guide Vol. 1" },
+                    { 2, 1, new TimeSpan(0, 12, 0, 0, 0), "Detailed description of the course with modules and deep dives.", true, true, true, true, true, true, "course-2.png", 1, 14, 0, 99.99m, 51.99m, "Learn the best practices in this comprehensive course.", "Advanced C# Patterns Vol. 2" },
+                    { 3, 1, new TimeSpan(0, 13, 0, 0, 0), "Detailed description of the course with modules and deep dives.", true, true, true, true, true, true, "course-3.png", 2, 15, 0, 99.99m, 52.99m, "Learn the best practices in this comprehensive course.", "Modern React Guide Vol. 3" },
+                    { 4, 1, new TimeSpan(0, 14, 0, 0, 0), "Detailed description of the course with modules and deep dives.", true, true, true, true, true, true, "course-4.png", 1, 16, 0, 99.99m, 53.99m, "Learn the best practices in this comprehensive course.", "Advanced C# Patterns Vol. 4" },
+                    { 5, 1, new TimeSpan(0, 15, 0, 0, 0), "Detailed description of the course with modules and deep dives.", true, true, true, true, true, true, "course-5.png", 2, 17, 1, 99.99m, 54.99m, "Learn the best practices in this comprehensive course.", "Modern React Guide Vol. 5" },
+                    { 6, 2, new TimeSpan(0, 16, 0, 0, 0), "Detailed description of the course with modules and deep dives.", true, true, true, true, true, true, "course-6.png", 1, 18, 1, 99.99m, 55.99m, "Learn the best practices in this comprehensive course.", "Advanced C# Patterns Vol. 6" },
+                    { 7, 2, new TimeSpan(0, 17, 0, 0, 0), "Detailed description of the course with modules and deep dives.", true, true, true, true, true, true, "course-7.png", 2, 19, 1, 99.99m, 56.99m, "Learn the best practices in this comprehensive course.", "Modern React Guide Vol. 7" },
+                    { 8, 2, new TimeSpan(0, 18, 0, 0, 0), "Detailed description of the course with modules and deep dives.", true, true, true, true, true, true, "course-8.png", 1, 20, 1, 99.99m, 57.99m, "Learn the best practices in this comprehensive course.", "Advanced C# Patterns Vol. 8" },
+                    { 9, 2, new TimeSpan(0, 19, 0, 0, 0), "Detailed description of the course with modules and deep dives.", true, true, true, true, true, true, "course-9.png", 2, 21, 1, 99.99m, 58.99m, "Learn the best practices in this comprehensive course.", "Modern React Guide Vol. 9" },
+                    { 10, 2, new TimeSpan(0, 20, 0, 0, 0), "Detailed description of the course with modules and deep dives.", true, true, true, true, true, true, "course-10.png", 1, 22, 1, 99.99m, 59.99m, "Learn the best practices in this comprehensive course.", "Advanced C# Patterns Vol. 10" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Orders",
+                columns: new[] { "Id", "AddressLine1", "AddressLine2", "City", "Country", "FirstName", "LastName", "OrderDate", "OrderStatus", "PaymentMethod", "State", "StudentId", "Tax", "TotalAmount" },
+                values: new object[] { 1, "Lenina st. 1", null, "Moscow", "Russia", "Ivan", "Tester", new DateTime(2026, 6, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", "Card", "MSK", 1, 10.00m, 150.00m });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CartItems_CourseId",

@@ -2,8 +2,8 @@
 {
     public enum Level
     {
-        Begginer,
+        Beginner,
         Intermediate,
-        Master
+        Advanced
     }
 }

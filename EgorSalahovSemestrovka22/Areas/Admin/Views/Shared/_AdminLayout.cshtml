@@ -63,15 +63,9 @@
 <script src="~/plugins/admin/metismenu/metisMenu.min.js"></script>
 <script src="~/plugins/admin/apexchart/apexcharts.min.js"></script>
 <script src="~/plugins/admin/simplebar/js/simplebar.min.js"></script>
-<script src="~/plugins/admin/peity/jquery.peity.min.js"></script>
-<script>
-    $(".data-attributes span").peity("donut")
-</script>
-<script src="~/js/admin/main.js"></script>
-<script src="~/js/admin/dashboard1.js"></script>
-<script>            
-    new PerfectScrollbar(".user-list")
-</script>
+
+    <script src="~/js/admin/main.js"></script>
+    @RenderSection("Scripts", required: false)
 
  </body>
 

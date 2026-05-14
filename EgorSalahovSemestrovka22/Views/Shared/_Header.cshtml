@@ -233,8 +233,8 @@
 					</div>
 				</div>
 				<div class="menu-login">
-					<a href="login.html" class="btn btn-primary w-100 mb-2"><i class="isax isax-user me-2"></i>Sign In</a>
-					<a href="register.html" class="btn btn-secondary w-100"><i class="isax isax-user-edit me-2"></i>Register</a>
+					<a asp-controller="Account" asp-action="SignIn" class="btn btn-primary w-100 mb-2"><i class="isax isax-user me-2"></i>Sign In</a>
+					<a asp-controller="Account" asp-action="Register" class="btn btn-secondary w-100"><i class="isax isax-user-edit me-2"></i>Register</a>
 				</div>
 			</div>
 			<div class="header-btn d-flex align-items-center">
@@ -276,11 +276,11 @@
 					</a>
 				</div>
 				<div>
-					<a href="login.html" class="btn btn-primary d-inline-flex align-items-center me-2 px-3">
+				<a asp-controller="Account" asp-action="SignIn" class="btn btn-primary d-inline-flex align-items-center me-2 px-3">
 						Sign In
 					</a>
 				</div>
-				<a href="register.html" class="btn btn-secondary me-0 px-3">
+				<a asp-controller="Account" asp-action="Register" class="btn btn-secondary me-0 px-3">
 					Register
 				</a>
 			</div>

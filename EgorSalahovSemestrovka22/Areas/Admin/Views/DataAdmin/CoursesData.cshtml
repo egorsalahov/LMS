@@ -1,0 +1,91 @@
+﻿@model List<EgorSalahovSemestrovka22.Models.Entities.Course>
+
+@{
+    ViewData["Title"] = "Courses Data";
+}
+
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+    <div class="breadcrumb-title pe-3">Data Tables</div>
+    <div class="ps-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 p-0">
+                <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
+                <li class="breadcrumb-item active">Courses</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Courses Table</h5>
+        <span class="badge bg-primary">@Model.Count records</span>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Instructor</th>
+                        <th>Level</th>
+                        <th>Price</th>
+                        <th>Old Price</th>
+                        <th>Duration</th>
+                        <th>Lessons</th>
+                        <th>Features</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var course in Model)
+                    {
+                        <tr>
+                            <td>@course.Id</td>
+                            <td>
+                                <strong>@course.Title</strong>
+                                <br />
+                                <small class="text-muted">@course.ShortDescription</small>
+                            </td>
+                            <td>@course.Category?.Name</td>
+                            <td>@course.Instructor?.FirstName @course.Instructor?.LastName</td>
+                            <td>
+                                <span class="badge @(course.LevelForStudent == Level.Beginner ? "bg-success" : "bg-warning")">
+                                    @course.LevelForStudent
+                                </span>
+                            </td>
+                            <td>$@course.Price</td>
+                            <td>
+                                @if (course.OldPrice.HasValue)
+                                {
+                                    <s class="text-danger">$@course.OldPrice</s>
+                                }
+                            </td>
+                            <td>@course.Duration.ToString(@"hh\h\ mm\m\i\n")</td>
+                            <td>@course.LessonsCount</td>
+                            <td>
+                                @if (course.HasLifetimeAccess)
+                                {
+                                    <span class="badge bg-info me-1">Lifetime</span>
+                                }
+                                @if (course.HasMobileAccess)
+                                {
+                                    <span class="badge bg-info me-1">Mobile</span>
+                                }
+                                @if (course.HasAssignments)
+                                {
+                                    <span class="badge bg-info me-1">Tasks</span>
+                                }
+                                @if (course.HasSubtitles)
+                                {
+                                    <span class="badge bg-info me-1">Subtitles</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EgorSalahovSemestrovka22.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260508135252_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260514110704_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,6 +46,22 @@ namespace EgorSalahovSemestrovka22.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CourseCount = 5,
+                            ImagePath = "cat-1.png",
+                            Name = "Frontend Development"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CourseCount = 5,
+                            ImagePath = "cat-2.png",
+                            Name = "Backend Development"
+                        });
                 });
 
             modelBuilder.Entity("EgorSalahovSemestrovka22.Models.Entities.Course", b =>
@@ -118,6 +134,218 @@ namespace EgorSalahovSemestrovka22.Migrations
                     b.HasIndex("InstructorId");
 
                     b.ToTable("Courses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            Duration = new TimeSpan(0, 11, 0, 0, 0),
+                            FullDescription = "Detailed description of the course with modules and deep dives.",
+                            HasAssignments = true,
+                            HasCommunityAccess = true,
+                            HasDownloadableResources = true,
+                            HasLifetimeAccess = true,
+                            HasMobileAccess = true,
+                            HasSubtitles = true,
+                            ImagePath = "course-1.png",
+                            InstructorId = 2,
+                            LessonsCount = 13,
+                            LevelForStudent = 0,
+                            OldPrice = 99.99m,
+                            Price = 50.99m,
+                            ShortDescription = "Learn the best practices in this comprehensive course.",
+                            Title = "Modern React Guide Vol. 1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 1,
+                            Duration = new TimeSpan(0, 12, 0, 0, 0),
+                            FullDescription = "Detailed description of the course with modules and deep dives.",
+                            HasAssignments = true,
+                            HasCommunityAccess = true,
+                            HasDownloadableResources = true,
+                            HasLifetimeAccess = true,
+                            HasMobileAccess = true,
+                            HasSubtitles = true,
+                            ImagePath = "course-2.png",
+                            InstructorId = 1,
+                            LessonsCount = 14,
+                            LevelForStudent = 0,
+                            OldPrice = 99.99m,
+                            Price = 51.99m,
+                            ShortDescription = "Learn the best practices in this comprehensive course.",
+                            Title = "Advanced C# Patterns Vol. 2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 1,
+                            Duration = new TimeSpan(0, 13, 0, 0, 0),
+                            FullDescription = "Detailed description of the course with modules and deep dives.",
+                            HasAssignments = true,
+                            HasCommunityAccess = true,
+                            HasDownloadableResources = true,
+                            HasLifetimeAccess = true,
+                            HasMobileAccess = true,
+                            HasSubtitles = true,
+                            ImagePath = "course-3.png",
+                            InstructorId = 2,
+                            LessonsCount = 15,
+                            LevelForStudent = 0,
+                            OldPrice = 99.99m,
+                            Price = 52.99m,
+                            ShortDescription = "Learn the best practices in this comprehensive course.",
+                            Title = "Modern React Guide Vol. 3"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 1,
+                            Duration = new TimeSpan(0, 14, 0, 0, 0),
+                            FullDescription = "Detailed description of the course with modules and deep dives.",
+                            HasAssignments = true,
+                            HasCommunityAccess = true,
+                            HasDownloadableResources = true,
+                            HasLifetimeAccess = true,
+                            HasMobileAccess = true,
+                            HasSubtitles = true,
+                            ImagePath = "course-4.png",
+                            InstructorId = 1,
+                            LessonsCount = 16,
+                            LevelForStudent = 0,
+                            OldPrice = 99.99m,
+                            Price = 53.99m,
+                            ShortDescription = "Learn the best practices in this comprehensive course.",
+                            Title = "Advanced C# Patterns Vol. 4"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryId = 1,
+                            Duration = new TimeSpan(0, 15, 0, 0, 0),
+                            FullDescription = "Detailed description of the course with modules and deep dives.",
+                            HasAssignments = true,
+                            HasCommunityAccess = true,
+                            HasDownloadableResources = true,
+                            HasLifetimeAccess = true,
+                            HasMobileAccess = true,
+                            HasSubtitles = true,
+                            ImagePath = "course-5.png",
+                            InstructorId = 2,
+                            LessonsCount = 17,
+                            LevelForStudent = 1,
+                            OldPrice = 99.99m,
+                            Price = 54.99m,
+                            ShortDescription = "Learn the best practices in this comprehensive course.",
+                            Title = "Modern React Guide Vol. 5"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryId = 2,
+                            Duration = new TimeSpan(0, 16, 0, 0, 0),
+                            FullDescription = "Detailed description of the course with modules and deep dives.",
+                            HasAssignments = true,
+                            HasCommunityAccess = true,
+                            HasDownloadableResources = true,
+                            HasLifetimeAccess = true,
+                            HasMobileAccess = true,
+                            HasSubtitles = true,
+                            ImagePath = "course-6.png",
+                            InstructorId = 1,
+                            LessonsCount = 18,
+                            LevelForStudent = 1,
+                            OldPrice = 99.99m,
+                            Price = 55.99m,
+                            ShortDescription = "Learn the best practices in this comprehensive course.",
+                            Title = "Advanced C# Patterns Vol. 6"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CategoryId = 2,
+                            Duration = new TimeSpan(0, 17, 0, 0, 0),
+                            FullDescription = "Detailed description of the course with modules and deep dives.",
+                            HasAssignments = true,
+                            HasCommunityAccess = true,
+                            HasDownloadableResources = true,
+                            HasLifetimeAccess = true,
+                            HasMobileAccess = true,
+                            HasSubtitles = true,
+                            ImagePath = "course-7.png",
+                            InstructorId = 2,
+                            LessonsCount = 19,
+                            LevelForStudent = 1,
+                            OldPrice = 99.99m,
+                            Price = 56.99m,
+                            ShortDescription = "Learn the best practices in this comprehensive course.",
+                            Title = "Modern React Guide Vol. 7"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CategoryId = 2,
+                            Duration = new TimeSpan(0, 18, 0, 0, 0),
+                            FullDescription = "Detailed description of the course with modules and deep dives.",
+                            HasAssignments = true,
+                            HasCommunityAccess = true,
+                            HasDownloadableResources = true,
+                            HasLifetimeAccess = true,
+                            HasMobileAccess = true,
+                            HasSubtitles = true,
+                            ImagePath = "course-8.png",
+                            InstructorId = 1,
+                            LessonsCount = 20,
+                            LevelForStudent = 1,
+                            OldPrice = 99.99m,
+                            Price = 57.99m,
+                            ShortDescription = "Learn the best practices in this comprehensive course.",
+                            Title = "Advanced C# Patterns Vol. 8"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CategoryId = 2,
+                            Duration = new TimeSpan(0, 19, 0, 0, 0),
+                            FullDescription = "Detailed description of the course with modules and deep dives.",
+                            HasAssignments = true,
+                            HasCommunityAccess = true,
+                            HasDownloadableResources = true,
+                            HasLifetimeAccess = true,
+                            HasMobileAccess = true,
+                            HasSubtitles = true,
+                            ImagePath = "course-9.png",
+                            InstructorId = 2,
+                            LessonsCount = 21,
+                            LevelForStudent = 1,
+                            OldPrice = 99.99m,
+                            Price = 58.99m,
+                            ShortDescription = "Learn the best practices in this comprehensive course.",
+                            Title = "Modern React Guide Vol. 9"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CategoryId = 2,
+                            Duration = new TimeSpan(0, 20, 0, 0, 0),
+                            FullDescription = "Detailed description of the course with modules and deep dives.",
+                            HasAssignments = true,
+                            HasCommunityAccess = true,
+                            HasDownloadableResources = true,
+                            HasLifetimeAccess = true,
+                            HasMobileAccess = true,
+                            HasSubtitles = true,
+                            ImagePath = "course-10.png",
+                            InstructorId = 1,
+                            LessonsCount = 22,
+                            LevelForStudent = 1,
+                            OldPrice = 99.99m,
+                            Price = 59.99m,
+                            ShortDescription = "Learn the best practices in this comprehensive course.",
+                            Title = "Advanced C# Patterns Vol. 10"
+                        });
                 });
 
             modelBuilder.Entity("EgorSalahovSemestrovka22.Models.Entities.Enrollment", b =>
@@ -261,6 +489,38 @@ namespace EgorSalahovSemestrovka22.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Instructors");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AvatarPath = "instructor-1.png",
+                            Bio = "Senior Fullstack Developer",
+                            DateOfBirth = new DateTime(1995, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "egor@example.com",
+                            FirstName = "Egor",
+                            Gender = "Male",
+                            LastName = "Salahov",
+                            PhoneNumber = "+1234567890",
+                            RegistrationDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TotalEarnings = 1500.00m,
+                            UserName = "egor_dev"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AvatarPath = "instructor-2.png",
+                            Bio = "UI/UX Expert",
+                            DateOfBirth = new DateTime(1998, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "anna@example.com",
+                            FirstName = "Anna",
+                            Gender = "Female",
+                            LastName = "Pro",
+                            PhoneNumber = "+9876543210",
+                            RegistrationDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TotalEarnings = 2300.50m,
+                            UserName = "anna_web"
+                        });
                 });
 
             modelBuilder.Entity("EgorSalahovSemestrovka22.Models.Entities.Lesson", b =>
@@ -378,6 +638,24 @@ namespace EgorSalahovSemestrovka22.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("Orders");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AddressLine1 = "Lenina st. 1",
+                            City = "Moscow",
+                            Country = "Russia",
+                            FirstName = "Ivan",
+                            LastName = "Tester",
+                            OrderDate = new DateTime(2026, 6, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OrderStatus = "Completed",
+                            PaymentMethod = "Card",
+                            State = "MSK",
+                            StudentId = 1,
+                            Tax = 10.00m,
+                            TotalAmount = 150.00m
+                        });
                 });
 
             modelBuilder.Entity("EgorSalahovSemestrovka22.Models.Entities.Orders.OrderItem", b =>
@@ -504,6 +782,22 @@ namespace EgorSalahovSemestrovka22.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Students");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AvatarPath = "student-1.png",
+                            Bio = "Learning C#",
+                            DateOfBirth = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "ivan@test.com",
+                            FirstName = "Ivan",
+                            Gender = "Male",
+                            LastName = "Tester",
+                            PhoneNumber = "+1234567890",
+                            RegistrationDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "ivan_test"
+                        });
                 });
 
             modelBuilder.Entity("EgorSalahovSemestrovka22.Models.Entities.Wishlist", b =>

@@ -218,3 +218,16 @@
     </div>
 </div>
 
+@section Scripts {
+    <script src="~/plugins/admin/peity/jquery.peity.min.js"></script>
+    <script>
+        $(".data-attributes span").peity("donut")
+    </script>
+    <script src="~/js/admin/dashboard1.js"></script>
+    <script>
+        if ($('.user-list').length) {
+        new PerfectScrollbar(".user-list");
+        }
+    </script>
+}
+
