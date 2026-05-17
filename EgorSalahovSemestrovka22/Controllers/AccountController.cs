@@ -1,6 +1,7 @@
 ﻿using EgorSalahovSemestrovka22.Models.Entities;
 using EgorSalahovSemestrovka22.Models.ViewModels;
 using EgorSalahovSemestrovka22.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -53,6 +54,9 @@ namespace EgorSalahovSemestrovka22.Controllers
 
             if (result.Succeeded)
             {
+                // Выдаём роль Student
+                await _userManager.AddToRoleAsync(student, "Student");
+
                 // Генерируем токен подтверждения Email
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(student);
 
@@ -149,7 +153,14 @@ namespace EgorSalahovSemestrovka22.Controllers
                 lockoutOnFailure: false);
 
             if (result.Succeeded)
-                return RedirectToAction("Index", "Home");
+            {
+                if (await _userManager.IsInRoleAsync(user, "Instructor"))
+                    return RedirectToAction("Dashboard", "Instructor");
+
+                return RedirectToAction("MyProfile", "Student");
+            }
+
+
 
             if (result.IsLockedOut)
             {
@@ -181,6 +192,31 @@ namespace EgorSalahovSemestrovka22.Controllers
         public IActionResult SetPassword()
         {
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult BecomeInstructor()
+        {
+            return View();
+        }
+
+        // POST: Нажатие кнопки "Start Teaching Today"
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> BecomeInstructorConfirmed()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction("SignIn");
+
+            // Меняем роль
+            await _userManager.RemoveFromRoleAsync(user, "Student");
+            await _userManager.AddToRoleAsync(user, "Instructor");
+
+            // Обновляем cookie
+            await _signInManager.RefreshSignInAsync(user);
+
+            return RedirectToAction("Dashboard", "Instructor");
         }
     }
 }

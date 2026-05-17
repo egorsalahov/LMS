@@ -14,15 +14,16 @@ namespace EgorSalahovSemestrovka22.Areas.Admin.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> CoursesData()
+        public async Task<IActionResult> InstructorsData()
         {
-            var courses = await _context.Courses
-                .Include(c => c.Category)
-                .Include(c => c.Instructor)
-                .OrderBy(c => c.Id)
+            var instructors = await _context.Instructors
+                .Include(i => i.Courses)
+                .Include(i => i.Educations)
+                .Include(i => i.Experiences)
+                .OrderBy(i => i.Id)
                 .ToListAsync();
 
-            return View(courses);
+            return View(instructors);
         }
 
         public async Task<IActionResult> StudentsData()

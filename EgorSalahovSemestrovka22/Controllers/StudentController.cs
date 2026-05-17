@@ -25,6 +25,9 @@ namespace EgorSalahovSemestrovka22.Controllers
         {
             return View();
         }
-
+        public IActionResult BecomeInstructor()
+        {
+            return View();
+        }
     }
 }

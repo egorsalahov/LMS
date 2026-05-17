@@ -229,5 +229,30 @@
         new PerfectScrollbar(".user-list");
         }
     </script>
+
+    <script>
+        $(function () {
+        // Инициализация при открытии модального окна
+        $('#add-lesson').on('shown.bs.modal', function () {
+        $('.summernote').summernote({
+        placeholder: 'Введите описание курса...',
+        height: 200,  // Поменьше для модалки
+        toolbar: [
+        ['style', ['bold', 'italic', 'underline', 'clear']],
+        ['fontsize', ['fontsize']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['insert', ['link']],
+        ['view', ['codeview']]
+        ]
+        });
+        });
+
+        // Уничтожаем при закрытии (чтобы не дублировался)
+        $('#add-lesson').on('hidden.bs.modal', function () {
+        $('.summernote').summernote('destroy');
+        });
+        });
+    </script>
 }
 

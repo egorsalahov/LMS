@@ -1,13 +1,28 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EgorSalahovSemestrovka22.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EgorSalahovSemestrovka22.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class ECommerceController : Controller
     {
-        public IActionResult Products()
+
+        private readonly AppDbContext _context;
+
+        public ECommerceController(AppDbContext context)
         {
-            return View();
+            _context = context;
+        }
+        public async Task<IActionResult> Products()
+        {
+            var courses = await _context.Courses
+                .Include(c => c.Category)
+                .Include(c => c.Instructor)
+                .OrderBy(c => c.Id)
+                .ToListAsync();
+
+            return View(courses);
         }
         public IActionResult Customers()
         {
