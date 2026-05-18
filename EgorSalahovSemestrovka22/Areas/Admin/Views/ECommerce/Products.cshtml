@@ -21,7 +21,6 @@
                         <th>Level</th>
                         <th>Price</th>
                         <th>Old Price</th>
-                        <th>Duration</th>
                         <th>Lessons</th>
                         <th>Features</th>
                     </tr>
@@ -50,7 +49,6 @@
                                     <s class="text-danger">$@course.OldPrice</s>
                                 }
                             </td>
-                            <td>@course.Duration.ToString(@"hh\h\ mm\m\i\n")</td>
                             <td>@course.LessonsCount</td>
                             <td>
                                 @if (course.HasLifetimeAccess)
@@ -68,6 +66,14 @@
                                 @if (course.HasSubtitles)
                                 {
                                     <span class="badge bg-info me-1">Subtitles</span>
+                                }
+                                @if (course.HasCommunityAccess)
+                                {
+                                    <span class="badge bg-info me-1">Community</span>
+                                }
+                                @if (course.HasDownloadableResources)
+                                {
+                                    <span class="badge bg-info me-1">Resources</span>
                                 }
                             </td>
                         </tr>

@@ -1,6 +1,7 @@
 ﻿using EgorSalahovSemestrovka22.Data;
 using EgorSalahovSemestrovka22.Models.Entities;
 using EgorSalahovSemestrovka22.Models.Entities.Instructors;
+using EgorSalahovSemestrovka22.Models.Enums;
 using EgorSalahovSemestrovka22.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -100,10 +101,22 @@ namespace EgorSalahovSemestrovka22.Controllers
         [HttpPost]
         public async Task<IActionResult> AddNewCourse(CreateCourseViewModel model)
         {
+            // Временная отладка
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+            System.Diagnostics.Debug.WriteLine("ModelState errors: " + string.Join(" | ", errors));
+
             if (!ModelState.IsValid)
             {
                 var categories = await _context.Categories.ToListAsync();
                 ViewBag.Categories = new SelectList(categories, "Id", "Name");
+
+                // Собираем ошибки для клиентской модалки
+                var errorMessages = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+                ViewBag.ValidationErrors = errorMessages;
+
                 return View(model);
             }
 
@@ -111,7 +124,6 @@ namespace EgorSalahovSemestrovka22.Controllers
             if (user == null)
                 return RedirectToAction("SignIn", "Account");
 
-            // Находим или создаем запись Instructor
             var instructor = await _context.Instructors.FirstOrDefaultAsync(i => i.Email == user.Email);
             if (instructor == null)
             {
@@ -139,29 +151,35 @@ namespace EgorSalahovSemestrovka22.Controllers
                 ShortDescription = model.ShortDescription,
                 FullDescription = model.FullDescription,
                 CategoryId = model.CategoryId,
-                LevelForStudent = model.LevelForStudent,
+                LevelForStudent = model.LevelForStudent ?? Level.Beginner,
                 InstructorId = instructor.Id,
                 Price = model.IsFree ? 0 : (model.Price ?? 0),
                 OldPrice = model.IsFree ? null : model.OldPrice,
                 Duration = TimeSpan.Zero,
-                LessonsCount = 0,
+                LessonsCount = model.Sections?.Sum(s => s.Lessons?.Count ?? 0) ?? 0,
                 ImagePath = "/img/course/default.jpg",
-                HasLifetimeAccess = true,
-                HasMobileAccess = true,
-                HasAssignments = false,
-                HasCommunityAccess = false,
-                HasDownloadableResources = false,
-                HasSubtitles = false
+                HasLifetimeAccess = model.HasLifetimeAccess,
+                HasMobileAccess = model.HasMobileAccess,
+                HasAssignments = model.HasAssignments,
+                HasCommunityAccess = model.HasCommunityAccess,
+                HasDownloadableResources = model.HasDownloadableResources,
+                HasSubtitles = model.HasSubtitles
             };
 
-            // Загрузка изображения
             if (model.ImageFile != null && model.ImageFile.Length > 0)
             {
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/courses");
                 if (!Directory.Exists(uploadsFolder))
                     Directory.CreateDirectory(uploadsFolder);
 
-                var uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ImageFile.FileName;
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileNameWithoutExtension(model.ImageFile.FileName)
+                    .Replace("(", "")
+                    .Replace(")", "")
+                    .Replace(";", "")
+                    .Replace(",", "")
+                    .Replace(" ", "_")
+                    + Path.GetExtension(model.ImageFile.FileName);
+
                 var filePath = Path.Combine(uploadsFolder, uniqueFileName);
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
@@ -172,6 +190,31 @@ namespace EgorSalahovSemestrovka22.Controllers
 
             _context.Courses.Add(course);
             await _context.SaveChangesAsync();
+
+            if (model.Sections != null)
+            {
+                foreach (var sectionVm in model.Sections)
+                {
+                    if (string.IsNullOrWhiteSpace(sectionVm.Title)) continue;
+
+                    var section = new Section
+                    {
+                        Title = sectionVm.Title,
+                        CourseId = course.Id,
+                        Lessons = sectionVm.Lessons?
+                            .Where(l => !string.IsNullOrWhiteSpace(l.Title))
+                            .Select(l => new Lesson
+                            {
+                                Title = l.Title,
+                                Duration = "0:00",
+                                IsPreview = false
+                            }).ToList() ?? new List<Lesson>()
+                    };
+                    _context.Sections.Add(section);
+                }
+
+                await _context.SaveChangesAsync();
+            }
 
             TempData["SuccessMessage"] = "Курс успешно создан!";
             return RedirectToAction("Dashboard");

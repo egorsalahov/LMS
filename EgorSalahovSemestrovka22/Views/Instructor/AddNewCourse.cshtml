@@ -23,7 +23,6 @@
 <!-- /Breadcrumb -->
 
 <form asp-action="AddNewCourse" method="post" enctype="multipart/form-data" id="courseWizardForm">
-    <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
     <!-- Course add -->
     <div class="content">
@@ -102,30 +101,10 @@
                                             <span asp-validation-for="LevelForStudent" class="text-danger"></span>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="input-block">
-                                            <label class="form-label">Language</label>
-                                            <select class="select form-control">
-                                                <option>Select</option>
-                                                <option>English</option>
-                                                <option>Russian</option>
-                                            </select>
-                                        </div>
-                                    </div>
                                     <div class="col-md-6">
                                         <div class="input-block">
                                             <label class="form-label">Max Number of Students</label>
-                                            <input type="text" class="form-control student-count" />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-block">
-                                            <label class="form-label">Public / Private Course</label>
-                                            <select class="select form-control">
-                                                <option>Select</option>
-                                                <option>Public</option>
-                                                <option>Private</option>
-                                            </select>
+                                            <input type="number" class="form-control student-count" min="1" step="1" />
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -143,6 +122,49 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="input-block">
+                                        <label class="form-label">Course Features</label>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-check">
+                                                    <input asp-for="HasLifetimeAccess" class="form-check-input" type="checkbox" />
+                                                    <label asp-for="HasLifetimeAccess" class="form-check-label">Lifetime Access</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-check">
+                                                    <input asp-for="HasMobileAccess" class="form-check-input" type="checkbox" />
+                                                    <label asp-for="HasMobileAccess" class="form-check-label">Mobile Access</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-check">
+                                                    <input asp-for="HasAssignments" class="form-check-input" type="checkbox" />
+                                                    <label asp-for="HasAssignments" class="form-check-label">Assignments</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-check">
+                                                    <input asp-for="HasCommunityAccess" class="form-check-input" type="checkbox" />
+                                                    <label asp-for="HasCommunityAccess" class="form-check-label">Community Access</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-check">
+                                                    <input asp-for="HasDownloadableResources" class="form-check-input" type="checkbox" />
+                                                    <label asp-for="HasDownloadableResources" class="form-check-label">Downloadable Resources</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-check">
+                                                    <input asp-for="HasSubtitles" class="form-check-input" type="checkbox" />
+                                                    <label asp-for="HasSubtitles" class="form-check-label">Subtitles</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="add-form-btn widget-next-btn submit-btn d-flex justify-content-end mb-0">
                                     <div class="btn-left">
                                         <a href="javascript:void(0);" class="btn main-btn next_btns">Next <i class="isax isax-arrow-right-3 ms-1"></i></a>
@@ -154,7 +176,6 @@
                             <fieldset class="form-inner wizard-form-card">
                                 <div class="title">
                                     <h5>Course Media</h5>
-                                    <p>Intro Course overview provider type. (.mp4, YouTube, Vimeo etc.)</p>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
@@ -205,124 +226,15 @@
                                             <h5 class="mb-0">Curriculum</h5>
                                         </div>
                                         <div class="col-md-6 text-md-end">
-                                            <a href="javascript:void(0);" class="btn add-edit-btn d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#add-topic"><i class="isax isax-add-circle5 me-1"></i> Add New Topic</a>
+                                            <button type="button" class="btn add-edit-btn d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#add-topic">
+                                                <i class="isax isax-add-circle5 me-1"></i> Add New Topic
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div>
-                                    <div class="accordions-items-seperate" id="accordionSpacingExample">
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header" id="headingSpacingOne">
-                                                <a href="javascript:void(0);" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#SpacingOne" aria-expanded="false" aria-controls="SpacingOne">
-                                                    <span class="d-flex align-items-center mb-0"><i class="isax isax-menu-15 me-2"></i>Introduction of Digital Marketing</span>
-                                                </a>
-                                            </h2>
-                                            <div id="SpacingOne" class="accordion-collapse collapse show" aria-labelledby="headingSpacingOne" data-bs-parent="#accordionSpacingExample">
-                                                <div class="accordion-body">
-                                                    <div class="d-flex align-items-center justify-content-between bg-white p-2 border rounded-3 mb-3">
-                                                        <div class="d-flex align-items-center">
-                                                            <span><i class="isax isax-play-circle5 text-success fs-24 me-1"></i></span>
-                                                            <p class="fw-medium text-gray-5 mb-0">Describe SEO Engine</p>
-                                                        </div>
-                                                        <div class="d-flex align-items-center">
-                                                            <a href="javascript:void(0);" class="edit-btn1"><i class="isax isax-edit-25 fs-16"></i></a>
-                                                            <a href="javascript:void(0);" class="delete-btn1"><i class="isax isax-trash fs-16"></i></a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="d-flex align-items-center justify-content-between bg-white p-2 border rounded-3 mb-3">
-                                                        <div class="d-flex align-items-center">
-                                                            <span><i class="isax isax-play-circle5 text-success fs-24 me-1"></i></span>
-                                                            <p class="fw-medium text-gray-5 mb-0">Know about all marketing</p>
-                                                        </div>
-                                                        <div class="d-flex align-items-center">
-                                                            <a href="javascript:void(0);" class="edit-btn1"><i class="isax isax-edit-25 fs-16"></i></a>
-                                                            <a href="javascript:void(0);" class="delete-btn1"><i class="isax isax-trash fs-16"></i></a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="d-flex align-items-center justify-content-between">
-                                                        <div class="d-flex align-items-center">
-                                                            <a href="javascript:void(0);" class="btn add-edit-btn d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#add-lesson"><i class="isax isax-add-circle5 me-2"></i>Add Lesson</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header" id="headingSpacingTwo">
-                                                <a href="javascript:void(0);" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#SpacingTwo" aria-expanded="false" aria-controls="SpacingTwo">
-                                                    <span class="d-flex align-items-center mb-0">
-                                                        <i class="isax isax-menu-15 me-2"></i>Installing Development Software
-                                                    </span>
-                                                </a>
-                                            </h2>
-                                            <div id="SpacingTwo" class="accordion-collapse collapse" aria-labelledby="headingSpacingTwo" data-bs-parent="#accordionSpacingExample">
-                                                <div class="accordion-body">
-                                                    <div class="d-flex align-items-center justify-content-between bg-white p-2 border rounded-3 mb-3">
-                                                        <div class="d-flex align-items-center">
-                                                            <span><i class="isax isax-play-circle5 text-success fs-24 me-1"></i></span>
-                                                            <p class="fw-medium text-gray-5 mb-0">Describe SEO Engine</p>
-                                                        </div>
-                                                        <div class="d-flex align-items-center">
-                                                            <a href="javascript:void(0);" class="edit-btn1"><i class="isax isax-edit-25 fs-16"></i></a>
-                                                            <a href="javascript:void(0);" class="delete-btn1"><i class="isax isax-trash fs-16"></i></a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="d-flex align-items-center justify-content-between bg-white p-2 border rounded-3 mb-3">
-                                                        <div class="d-flex align-items-center">
-                                                            <span><i class="isax isax-play-circle5 text-success fs-24 me-1"></i></span>
-                                                            <p class="fw-medium text-gray-5 mb-0">Know about all marketing</p>
-                                                        </div>
-                                                        <div class="d-flex align-items-center">
-                                                            <a href="javascript:void(0);" class="edit-btn1"><i class="isax isax-edit-25 fs-16"></i></a>
-                                                            <a href="javascript:void(0);" class="delete-btn1"><i class="isax isax-trash fs-16"></i></a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="d-flex align-items-center justify-content-between">
-                                                        <div class="d-flex align-items-center">
-                                                            <a href="javascript:void(0);" class="btn btn-primary d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#add-lesson"><i class="isax isax-add-circle5 me-2"></i>Add Lesson</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header" id="headingSpacingThree">
-                                                <a href="javascript:void(0);" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#SpacingThree" aria-expanded="false" aria-controls="SpacingThree">
-                                                    <span class="d-flex align-items-center mb-0">
-                                                        <i class="isax isax-menu-15 me-2"></i>Hello World Project from GitHub
-                                                    </span>
-                                                </a>
-                                            </h2>
-                                            <div id="SpacingThree" class="accordion-collapse collapse" aria-labelledby="headingSpacingThree" data-bs-parent="#accordionSpacingExample">
-                                                <div class="accordion-body">
-                                                    <div class="d-flex align-items-center justify-content-between bg-white p-2 border rounded-3 mb-3">
-                                                        <div class="d-flex align-items-center">
-                                                            <span><i class="isax isax-play-circle5 text-success fs-24 me-1"></i></span>
-                                                            <p class="fw-medium text-gray-5 mb-0">Describe SEO Engine</p>
-                                                        </div>
-                                                        <div class="d-flex align-items-center">
-                                                            <a href="javascript:void(0);" class="edit-btn1"><i class="isax isax-edit-25 fs-16"></i></a>
-                                                            <a href="javascript:void(0);" class="delete-btn1"><i class="isax isax-trash fs-16"></i></a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="d-flex align-items-center justify-content-between bg-white p-2 border rounded-3 mb-3">
-                                                        <div class="d-flex align-items-center">
-                                                            <span><i class="isax isax-play-circle5 text-success fs-24 me-1"></i></span>
-                                                            <p class="fw-medium text-gray-5 mb-0">Know about all marketing</p>
-                                                        </div>
-                                                        <div class="d-flex align-items-center">
-                                                            <a href="javascript:void(0);" class="edit-btn1"><i class="isax isax-edit-25 fs-16"></i></a>
-                                                            <a href="javascript:void(0);" class="delete-btn1"><i class="isax isax-trash fs-16"></i></a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="d-flex align-items-center justify-content-between">
-                                                        <div class="d-flex align-items-center">
-                                                            <a href="javascript:void(0);" class="btn btn-primary d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#add-lesson"><i class="isax isax-add-circle5 me-2"></i>Add Lesson</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="accordions-items-seperate" id="curriculum-accordion">
+                                        <!-- Здесь будут динамически добавляться секции -->
                                     </div>
                                 </div>
                                 <div class="add-form-btn widget-next-btn submit-btn">
@@ -373,6 +285,7 @@
         </div>
     </div>
     <!-- /Course watch -->
+    <div id="hidden-sections-container"></div>
 </form>
 
 <!-- Модальные окна остаются без изменений (add-topic, add-lesson, add-faq, success) -->
@@ -386,18 +299,16 @@
                     <i class="isax isax-close-circle5"></i>
                 </button>
             </div>
-            <form action="add-course.html">
-                <div class="modal-body">
-                    <div class="input-block">
-                        <label class="form-label">Add Name<span class="text-danger ms-1">*</span></label>
-                        <input type="text" class="form-control">
-                    </div>
+            <div class="modal-body">
+                <div class="input-block">
+                    <label class="form-label">Add Name<span class="text-danger ms-1">*</span></label>
+                    <input type="text" class="form-control" id="topic-name-input">
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn me-2 btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-secondary">Add New</button>
-                </div>
-            </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn me-2 btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" id="btn-add-topic">Add New</button>
+            </div>
         </div>
     </div>
 </div>
@@ -412,26 +323,25 @@
                     <i class="isax isax-close-circle5"></i>
                 </button>
             </div>
-            <form action="add-course.html">
-                <div class="modal-body">
-                    <div class="input-block mb-4">
-                        <label class="form-label">Add Lesson<span class="text-danger ms-1">*</span></label>
-                        <input type="text" class="form-control">
-                    </div>
-                    <div class="input-block mb-4">
-                        <label class="form-label">Video link<span class="text-danger ms-1">*</span></label>
-                        <input type="text" class="form-control">
-                    </div>
+            <div class="modal-body">
+                <div class="input-block mb-4">
+                    <label class="form-label">Add Lesson<span class="text-danger ms-1">*</span></label>
+                    <input type="text" class="form-control" id="lesson-name-input">
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn me-2 btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-secondary">Add New</button>
+                <div class="input-block mb-4">
+                    <label class="form-label">Video link<span class="text-danger ms-1">*</span></label>
+                    <input type="text" class="form-control" id="lesson-video-input">
                 </div>
-            </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn me-2 btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" id="btn-add-lesson">Add New</button>
+            </div>
         </div>
     </div>
 </div>
 <!-- /Add lesson -->
+
 <!-- success -->
 <div class="modal fade modal-default" id="success">
     <div class="modal-dialog modal-dialog-centered">
@@ -452,6 +362,39 @@
     </div>
 </div>
 <!-- /success -->
+
+<!-- Validation Errors Modal -->
+<div class="modal fade" id="validationErrorsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Validation Errors</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Please fix the following errors:</p>
+                <ul id="validationErrorsList" class="text-danger mb-0"></ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK, I'll fix</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Validation Errors Modal -->
+@if (ViewBag.ValidationErrors != null)
+{
+    <script>
+        $(function () {
+            var errors = @Html.Raw(Json.Serialize(ViewBag.ValidationErrors));
+            errors.forEach(function (err) {
+                $('#validationErrorsList').append('<li>' + err + '</li>');
+            });
+            $('#validationErrorsModal').modal('show');
+        });
+    </script>
+}
+
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
     <script>
@@ -467,5 +410,189 @@
         ]
         });
         });
+
+        // Валидация и показ имени файла
+        $('#file-upload').on('change', function () {
+        var file = this.files[0];
+        var $span = $(this).closest('.input-block').find('span[asp-validation-for="ImageFile"]');
+        $span.text('');
+
+        if (!file) {
+        $('#file-name-display').val('No File Selected');
+        return;
+        }
+
+        var allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if ($.inArray(file.type, allowedTypes) === -1) {
+        $span.text('Only JPEG, PNG, GIF, WebP are allowed.');
+        $(this).val('');
+        $('#file-name-display').val('No File Selected');
+        return;
+        }
+
+        var maxSize = 2 * 1024 * 1024;
+        if (file.size > maxSize) {
+        $span.text('File size must be up to 2 MB.');
+        $(this).val('');
+        $('#file-name-display').val('No File Selected');
+        return;
+        }
+
+        $('#file-name-display').val(file.name);
+        });
+
+        // Логика Curriculum
+        let sectionIndex = 0;
+        let currentSectionIndex = -1;
+
+        $(document).on('click', '.add-lesson-btn', function () {
+        currentSectionIndex = $(this).data('section-index');
+        $('#add-lesson').modal('show');
+        });
+
+        $('#btn-add-topic').click(function () {
+        const title = $('#topic-name-input').val().trim();
+        if (!title) {
+        alert('Enter topic name');
+        return;
+        }
+
+        const sectionHtml = `
+        <div class="accordion-item" data-section-index="${sectionIndex}">
+        <h2 class="accordion-header">
+        <a href="javascript:void(0);" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#section-${sectionIndex}">
+        <span class="d-flex align-items-center mb-0"><i class="isax isax-menu-15 me-2"></i>${title}</span>
+        </a>
+        </h2>
+        <div id="section-${sectionIndex}" class="accordion-collapse collapse show">
+        <div class="accordion-body">
+        <div class="lessons-container"></div>
+        <button type="button" class="btn btn-sm btn-primary add-lesson-btn mt-2" data-section-index="${sectionIndex}">
+        <i class="isax isax-add-circle5 me-1"></i> Add Lesson
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-danger remove-section-btn mt-2 ms-1">
+        <i class="isax isax-trash"></i> Delete Topic
+        </button>
+        </div>
+        </div>
+        </div>`;
+
+        $('#curriculum-accordion').append(sectionHtml);
+        $('#hidden-sections-container').append(`<input type="hidden" name="Sections[${sectionIndex}].Title" value="${title}" />`);
+
+        $('#topic-name-input').val('');
+        $('#add-topic').modal('hide');
+        sectionIndex++;
+        });
+
+        $('#btn-add-lesson').click(function () {
+        const title = $('#lesson-name-input').val().trim();
+        const videoLink = $('#lesson-video-input').val().trim();
+        if (!title) {
+        alert('Enter lesson name');
+        return;
+        }
+        if (currentSectionIndex < 0) {
+        alert('Select a topic first');
+        return;
+        }
+
+        const sectionEl = $(`#curriculum-accordion [data-section-index="${currentSectionIndex}"]`);
+        const lessonsContainer = sectionEl.find('.lessons-container');
+        const lessonIndex = lessonsContainer.children('.lesson-item').length;
+
+        const lessonHtml = `
+        <div class="lesson-item d-flex align-items-center justify-content-between bg-white p-2 border rounded-3 mb-2">
+        <div class="d-flex align-items-center">
+        <span><i class="isax isax-play-circle5 text-success fs-24 me-1"></i></span>
+        <div>
+        <p class="fw-medium text-gray-5 mb-0">${title}</p>
+        ${videoLink ? `<small class="text-muted">${videoLink}</small>` : ''}
+        </div>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-danger remove-lesson-btn"><i class="isax isax-trash"></i></button>
+        </div>`;
+
+        lessonsContainer.append(lessonHtml);
+
+        $('#hidden-sections-container').append(`<input type="hidden" name="Sections[${currentSectionIndex}].Lessons[${lessonIndex}].Title" value="${title}" />`);
+        $('#hidden-sections-container').append(`<input type="hidden" name="Sections[${currentSectionIndex}].Lessons[${lessonIndex}].VideoLink" value="${videoLink}" />`);
+
+        $('#lesson-name-input').val('');
+        $('#lesson-video-input').val('');
+        $('#add-lesson').modal('hide');
+        });
+
+        $(document).on('click', '.remove-section-btn', function () {
+        const idx = $(this).closest('.accordion-item').data('section-index');
+        $(this).closest('.accordion-item').remove();
+        $(`input[name^="Sections[${idx}]"]`).remove();
+        });
+
+        $(document).on('click', '.remove-lesson-btn', function () {
+        const sectionEl = $(this).closest('.accordion-item');
+        const sectionIdx = sectionEl.data('section-index');
+        $(this).closest('.lesson-item').remove();
+        refreshLessonHiddenFields(sectionIdx, sectionEl.find('.lessons-container'));
+        });
+
+        function refreshLessonHiddenFields(sectionIdx, container) {
+        $(`input[name^="Sections[${sectionIdx}].Lessons"]`).remove();
+        container.children('.lesson-item').each(function (i) {
+        const title = $(this).find('p.fw-medium').text().trim();
+        const videoLinkEl = $(this).find('small.text-muted');
+        const videoLink = videoLinkEl.length ? videoLinkEl.text().trim() : '';
+        $('#hidden-sections-container').append(`<input type="hidden" name="Sections[${sectionIdx}].Lessons[${i}].Title" value="${title}" />`);
+        $('#hidden-sections-container').append(`<input type="hidden" name="Sections[${sectionIdx}].Lessons[${i}].VideoLink" value="${videoLink}" />`);
+        });
+        }
+
+        // Валидация при Submit
+        $('#courseWizardForm').on('submit', function (e) {
+        var errors = [];
+
+        // Очищаем предыдущие ошибки
+        $('.text-danger').text('');
+        $('#validationErrorsList').empty();
+
+        // Step 1: Course Information
+        var title = $('[name="Title"]').val().trim();
+        if (!title) errors.push('Course Title is required.');
+
+        var categoryId = $('[name="CategoryId"]').val();
+        if (!categoryId || categoryId === '') errors.push('Course Category is required.');
+
+        var level = $('[name="LevelForStudent"]').val();
+        if (!level || level === '') errors.push('Course Level is required.');
+
+        var shortDesc = $('[name="ShortDescription"]').val().trim();
+        if (!shortDesc) errors.push('Short Description is required.');
+
+        var fullDesc = $('[name="FullDescription"]').val().trim();
+        if (!fullDesc || fullDesc === '<p><br></p>' || fullDesc === '') errors.push('Course Description is required.');
+
+        // Step 2: Image validation (already handled in change event, but double-check)
+        var imageError = $('span[asp-validation-for="ImageFile"]').text().trim();
+        if (imageError) errors.push(imageError);
+
+        // Step 4: Pricing
+        var isFree = $('#flexCheckChecked1').is(':checked');
+        if (!isFree) {
+        var price = parseFloat($('[name="Price"]').val());
+        if (isNaN(price) || price < 0) errors.push('Course Price must be a valid non-negative number.');
+        }
+
+        // Если есть ошибки — показываем модалку и блокируем отправку
+        if (errors.length > 0) {
+        e.preventDefault(); // Блокируем Submit
+
+        errors.forEach(function (err) {
+        $('#validationErrorsList').append('<li>' + err + '</li>');
+        });
+
+        $('#validationErrorsModal').modal('show');
+        }
+        });
     </script>
+}
 }
