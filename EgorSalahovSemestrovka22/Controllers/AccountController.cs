@@ -200,7 +200,6 @@ namespace EgorSalahovSemestrovka22.Controllers
             return View();
         }
 
-        // POST: Нажатие кнопки "Start Teaching Today"
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> BecomeInstructorConfirmed()
@@ -209,14 +208,27 @@ namespace EgorSalahovSemestrovka22.Controllers
             if (user == null)
                 return RedirectToAction("SignIn");
 
-            // Меняем роль
-            await _userManager.RemoveFromRoleAsync(user, "Student");
+            // Получаем текущие роли
+            var roles = await _userManager.GetRolesAsync(user);
+
+            // Удаляем все существующие роли
+            await _userManager.RemoveFromRolesAsync(user, roles);
+
+            // Добавляем только Instructor
             await _userManager.AddToRoleAsync(user, "Instructor");
 
             // Обновляем cookie
             await _signInManager.RefreshSignInAsync(user);
 
             return RedirectToAction("Dashboard", "Instructor");
+        }
+
+        // GET: /Account/AccessDenied
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

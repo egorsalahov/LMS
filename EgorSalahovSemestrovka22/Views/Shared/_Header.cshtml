@@ -148,36 +148,6 @@
 							</li>
 						</ul>
 					</li>
-					<li class="has-submenu">
-						<a href="javascript:void(0);">Dashboard <i class="fas fa-chevron-down"></i></a>
-						<ul class="submenu">
-							<li class="has-submenu">
-								<a href="javascript:void(0);">Instructor Dashboard</a>
-								<ul class="submenu">
-									<li><a asp-controller="Instructor" asp-action="Dashboard">Dashboard</a></li>
-									<li><a asp-controller="Instructor" asp-action="MyProfile">My Profile</a></li>
-									<li><a asp-controller="Instructor" asp-action="Courses">Courses</a></li>
-									<li class="has-submenu">
-										<a href="javascript:void(0);">Student</a>
-										<ul class="submenu">
-										<li><a asp-controller="Instructor" asp-action="Students">Students</a></li>
-										</ul>
-									</li>
-								<li><a asp-controller="Instructor" asp-action="Settings">Settings</a></li>
-								</ul>
-							</li>
-							<li class="has-submenu">
-								<a href="javascript:void(0);">Student Dashboard</a>
-								<ul class="submenu">
-									<li><a asp-controller="Student" asp-action="MyProfile">My Profile</a></li>
-									<li><a asp-controller="Student" asp-action="Courses">Enrolled Courses</a></li>
-									<li><a asp-controller="Student" asp-action="Wishlist">Wishlist</a></li>
-									<li><a asp-controller="Student" asp-action="OrderHistory">Order History</a></li>
-								<li><a asp-controller="Student" asp-action="Settings">Settings</a></li>
-								</ul>
-							</li>
-						</ul>
-					</li>
 				</ul>
 								
 				<div class="menu-dropdown">
@@ -233,57 +203,109 @@
 					</div>
 				</div>
 				<div class="menu-login">
-					<a asp-controller="Account" asp-action="SignIn" class="btn btn-primary w-100 mb-2"><i class="isax isax-user me-2"></i>Sign In</a>
-					<a asp-controller="Account" asp-action="Register" class="btn btn-secondary w-100"><i class="isax isax-user-edit me-2"></i>Register</a>
+					@if (User.Identity.IsAuthenticated)
+					{
+						string profileUrl = User.IsInRole("Instructor") ? "/Instructor/MyProfile" :
+											User.IsInRole("Admin") ? "/Admin" :
+											"/Student/MyProfile";
+						<a href="@profileUrl" class="btn btn-primary w-100 mb-2">
+							<i class="isax isax-user me-2"></i>@User.Identity.Name
+						</a>
+						<form asp-controller="Account" asp-action="Logout" method="post">
+							<button type="submit" class="btn btn-outline-light w-100">
+								<i class="isax isax-logout5 me-2"></i>Logout
+							</button>
+						</form>
+					}
+					else
+					{
+						<a asp-controller="Account" asp-action="SignIn" class="btn btn-primary w-100 mb-2"><i class="isax isax-user me-2"></i>Sign In</a>
+						<a asp-controller="Account" asp-action="Register" class="btn btn-secondary w-100"><i class="isax isax-user-edit me-2"></i>Register</a>
+					}
 				</div>
 			</div>
-			<div class="header-btn d-flex align-items-center">
-				<div class="icon-btn me-2">
-					<a href="#" class="bg-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><img class="rounded-pill" src="~/img/flags/us-flag.svg" alt="flag"></a>
-					<ul class="dropdown-menu p-2 mt-2" style="">
-						<li class="mb-2">
-							<a class="dropdown-item w-100 rounded d-flex align-items-center" href="javascript:void(0);">
-								<img src="~/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
-							</a>
-						</li>
-						<li class="mb-2">
-							<a class="dropdown-item w-100 rounded d-flex align-items-center" href="javascript:void(0);">
-								<img src="~/img/flags/arab-flag.svg" class="me-2" alt="flag">ARA
-							</a>
-						</li>
+		<div class="header-btn d-flex align-items-center">
+			<div class="icon-btn me-2">
+				<a href="#" class="bg-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><img class="rounded-pill" src="~/img/flags/us-flag.svg" alt="flag"></a>
+				<ul class="dropdown-menu p-2 mt-2" style="">
+					<li class="mb-2">
+						<a class="dropdown-item w-100 rounded d-flex align-items-center" href="javascript:void(0);">
+							<img src="~/img/flags/us-flag.svg" class="me-2" alt="flag">ENG
+						</a>
+					</li>
+					<li class="mb-2">
+						<a class="dropdown-item w-100 rounded d-flex align-items-center" href="javascript:void(0);">
+							<img src="~/img/flags/arab-flag.svg" class="me-2" alt="flag">ARA
+						</a>
+					</li>
+					<li>
+						<a class="dropdown-item w-100 rounded d-flex align-items-center" href="javascript:void(0);">
+							<img src="~/img/flags/france-flag.svg" class="me-2" alt="flag">FRE
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="icon-btn me-2">
+				<a href="#" class="bg-white text-primary"><i class="isax isax-dollar-circle4"></i></a>
+			</div>
+			<div class="icon-btn me-2">
+				<a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate bg-white">
+					<i class="isax isax-sun-15"></i>
+				</a>
+				<a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle bg-white">
+					<i class="isax isax-moon"></i>
+				</a>
+			</div>
+			<div class="icon-btn me-3">
+				<a asp-controller="Order" asp-action="Cart" class="bg-white text-primary position-relative">
+					<i class="isax isax-shopping-cart5"></i>
+					<span class="count-icon bg-success p-2 rounded-pill text-white fs-10 fw-bold">1</span>
+				</a>
+			</div>
+			@if (User.Identity.IsAuthenticated)
+			{
+				<div class="dropdown">
+					<a href="javascript:void(0);" class="btn btn-primary d-inline-flex align-items-center me-2 px-3 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+						<i class="isax isax-user me-2"></i>@User.Identity.Name
+					</a>
+					<ul class="dropdown-menu p-2 mt-2">
+						@if (User.IsInRole("Instructor"))
+						{
+							<li><a class="dropdown-item rounded" href="/Instructor/Dashboard">Dashboard</a></li>
+							<li><a class="dropdown-item rounded" href="/Instructor/MyProfile">My Profile</a></li>
+							<li><a class="dropdown-item rounded" href="/Instructor/Courses">My Courses</a></li>
+							<li><a class="dropdown-item rounded" href="/Instructor/AddNewCourse">Add New Course</a></li>
+						}
+						else if (User.IsInRole("Admin"))
+						{
+							<li><a class="dropdown-item rounded" href="/Admin">Dashboard</a></li>
+						}
+						else // Student
+						{
+							<li><a class="dropdown-item rounded" href="/Student/MyProfile">My Profile</a></li>
+							<li><a class="dropdown-item rounded" href="/Student/Courses">My Courses</a></li>
+							<li><a class="dropdown-item rounded" href="/Student/Wishlist">Wishlist</a></li>
+							<li><a class="dropdown-item rounded" href="/Student/OrderHistory">Order History</a></li>
+						}
+						<li><hr class="dropdown-divider"></li>
 						<li>
-							<a class="dropdown-item w-100 rounded d-flex align-items-center" href="javascript:void(0);">
-								<img src="~/img/flags/france-flag.svg" class="me-2" alt="flag">FRE
-							</a>
+							<form asp-controller="Account" asp-action="Logout" method="post">
+								<button type="submit" class="dropdown-item rounded text-danger">Logout</button>
+							</form>
 						</li>
 					</ul>
 				</div>
-				<div class="icon-btn me-2">
-					<a href="#" class="bg-white text-primary"><i class="isax isax-dollar-circle4"></i></a>
-				</div>
-				<div class="icon-btn me-2">
-					<a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate bg-white">
-						<i class="isax isax-sun-15"></i>
-					</a>
-					<a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle bg-white">
-						<i class="isax isax-moon"></i>
-					</a>
-				</div>
-				<div class="icon-btn me-3">
-					<a asp-controller="Order" asp-action="Cart" class="bg-white text-primary position-relative">
-						<i class="isax isax-shopping-cart5"></i>
-						<span class="count-icon bg-success p-2 rounded-pill text-white fs-10 fw-bold">1</span>
-					</a>
-				</div>
-				<div>
+			}
+			else
+			{
 				<a asp-controller="Account" asp-action="SignIn" class="btn btn-primary d-inline-flex align-items-center me-2 px-3">
-						Sign In
-					</a>
-				</div>
+					Sign In
+				</a>
 				<a asp-controller="Account" asp-action="Register" class="btn btn-secondary me-0 px-3">
 					Register
 				</a>
-			</div>
+			}
+		</div>
 		</div>
 	</div>
 

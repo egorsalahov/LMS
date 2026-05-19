@@ -1,10 +1,12 @@
 ﻿using EgorSalahovSemestrovka22.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace EgorSalahovSemestrovka22.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class DataAdminController : Controller
     {
         private readonly AppDbContext _context;

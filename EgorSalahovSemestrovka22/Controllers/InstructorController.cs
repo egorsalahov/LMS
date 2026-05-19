@@ -199,7 +199,7 @@ namespace EgorSalahovSemestrovka22.Controllers
 
                     var section = new Section
                     {
-                        Title = sectionVm.Title,
+                        Title = sectionVm.Title,    
                         CourseId = course.Id,
                         Lessons = sectionVm.Lessons?
                             .Where(l => !string.IsNullOrWhiteSpace(l.Title))

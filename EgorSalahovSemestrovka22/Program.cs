@@ -1,4 +1,5 @@
 using EgorSalahovSemestrovka22.Data;
+using EgorSalahovSemestrovka22.Middlewares;
 using EgorSalahovSemestrovka22.Models;
 using EgorSalahovSemestrovka22.Models.Entities;
 using EgorSalahovSemestrovka22.Services;
@@ -46,9 +47,15 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+// Обработка 404 и других кодов ошибок
+app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
+
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseRouting();
+
+//свой middleware
+app.UseNoCache();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -66,6 +73,7 @@ app.MapControllerRoute(
 
 
 // Сид пользователей (студентов)
+// Сид пользователей
 using (var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Student>>();
@@ -79,8 +87,42 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(role));
     }
 
-    // 2. Сид студентов (если таблица пустая)
-    if (!userManager.Users.Any())
+    // 2. Сид админа (всегда)
+    var adminEmail = "admin@example.com";
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
+    {
+        adminUser = new Student
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            FirstName = "Admin",
+            LastName = "Adminov",
+            EmailConfirmed = true,
+            PhoneNumber = "+70000000000",
+            Gender = "Male",
+            RegistrationDate = new DateTime(2026, 1, 1),
+            DateOfBirth = new DateTime(1990, 1, 1),
+            Bio = "System Administrator",
+            AvatarPath = "admin-avatar.png"
+        };
+        var adminResult = await userManager.CreateAsync(adminUser, "Admin123!");
+        if (adminResult.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+    }
+    else
+    {
+        // Если админ уже есть, но без роли — выдаём
+        if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+    }
+
+    // 3. Сид студентов (если таблица была пуста)
+    if (userManager.Users.Count() <= 1) // Только админ существует
     {
         var students = new List<(Student, string)>
         {
@@ -100,18 +142,30 @@ using (var scope = app.Services.CreateScope())
             (new Student { FirstName = "Yulia", LastName = "Vasilieva", UserName = "yulia_v", Email = "yulia@example.com", PhoneNumber = "+1234567813", Gender = "Female", DateOfBirth = new DateTime(1999, 7, 11), RegistrationDate = new DateTime(2026, 3, 10), Bio = "QA Automation", AvatarPath = "student-14.png" }, "Password123"),
             (new Student { FirstName = "Maxim", LastName = "Belov", UserName = "maxim_b", Email = "maxim@example.com", PhoneNumber = "+1234567814", Gender = "Male", DateOfBirth = new DateTime(2002, 4, 3), RegistrationDate = new DateTime(2026, 3, 15), Bio = "Cloud computing", AvatarPath = "student-15.png" }, "Password123")
         };
-    }
 
-    // 3. Выдать роль Student всем существующим, у кого её нет
-    var allUsers = userManager.Users.ToList();
-    foreach (var user in allUsers)
-    {
-        if (!await userManager.IsInRoleAsync(user, "Student") &&
-            !await userManager.IsInRoleAsync(user, "Instructor") &&
-            !await userManager.IsInRoleAsync(user, "Admin"))
+        foreach (var (student, password) in students)
         {
-            await userManager.AddToRoleAsync(user, "Student");
+            var result = await userManager.CreateAsync(student, password);
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(student, "Student");
+            }
+        }
+    }
+    else
+    {
+        // 4. Выдать роль Student существующим, у кого её нет
+        var allUsers = userManager.Users.ToList();
+        foreach (var user in allUsers)
+        {
+            if (!await userManager.IsInRoleAsync(user, "Student") &&
+                !await userManager.IsInRoleAsync(user, "Instructor") &&
+                !await userManager.IsInRoleAsync(user, "Admin"))
+            {
+                await userManager.AddToRoleAsync(user, "Student");
+            }
         }
     }
 }
+
 app.Run();

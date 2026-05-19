@@ -12,8 +12,18 @@ namespace EgorSalahovSemestrovka22.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(int? statusCode)
         {
+            if (statusCode == 404)
+            {
+                return View("NotFound");
+            }
+
+            if (statusCode == 403)
+            {
+                return View("AccessDenied");
+            }
+
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
