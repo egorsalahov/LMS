@@ -12,7 +12,7 @@ namespace EgorSalahovSemestrovka22.Models.Entities
         public string FullDescription { get; set; }
         public decimal Price { get; set; }
         public decimal? OldPrice { get; set; } //для скидки
-        public string ImagePath { get; set; }
+        public string? ImagePath { get; set; }
 
         public Level LevelForStudent { get; set; }
         public TimeSpan Duration { get; set; } // Общая длительность (9h 30min)

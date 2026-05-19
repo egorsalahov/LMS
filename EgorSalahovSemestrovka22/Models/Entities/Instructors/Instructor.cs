@@ -14,7 +14,7 @@
         public DateTime DateOfBirth { get; set; }
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
         public string Bio { get; set; }
-        public string AvatarPath { get; set; }
+        public string? AvatarPath { get; set; }
 
         // Статистика (image_34414e.jpg)
         // Эти поля можно вычислять через связи, но иногда их хранят для быстроты
