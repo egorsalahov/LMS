@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
 
-        public int StudentId { get; set; } // Чья корзина
+        public string StudentId { get; set; } // Чья корзина
         public Student Student { get; set; }
 
         public int CourseId { get; set; } // Какой курс

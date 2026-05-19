@@ -1,126 +1,148 @@
-﻿<!-- Breadcrumb -->
+﻿@model List<EgorSalahovSemestrovka22.Models.Entities.Orders.CartItem>
+@{
+    ViewData["Title"] = "Cart";
+    var subtotal = (decimal)ViewBag.Subtotal;
+    var tax = (decimal)ViewBag.Tax;
+    var total = (decimal)ViewBag.Total;
+}
+
+<!-- Breadcrumb -->
 <div class="breadcrumb-bar text-center">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12 col-12">
-				<h2 class="breadcrumb-title mb-2">Cart</h2>
-				<nav aria-label="breadcrumb">
-					<ol class="breadcrumb justify-content-center mb-0">
-						<li class="breadcrumb-item"><a href="index.html">Home</a></li>
-						<li class="breadcrumb-item active" aria-current="page">Cart</li>
-					</ol>
-				</nav>
-			</div>
-		</div>
-	</div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-12">
+                <h2 class="breadcrumb-title mb-2">Cart</h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center mb-0">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Cart</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- /Breadcrumb -->
 <!-- Cart -->
 <div class="content">
-	<div class="container">
-		<div class="cart-cover">
-			<div class="cart-items">
-				<div>
-					<div class="cart-head border-bottom d-flex justify-content-between align-items-center pb-4">
-						<h5 class="mb-0">3 Courses</h5>
-						<button class="btn btn-sm btn-danger-ghost mb-0"><i class="isax isax-close-circle me-1"></i>Clear cart</button>
-					</div>
-					<div class="row row-gap-3 pb-3 mb-3 border-bottom">
-						<div class="col-md-12">
-							<div class="cart-item mb-0">
-								<div class="row align-items-center row-gap-3">
-									<div class="col-md-3">
-										<div class="cart-img">
-											<a href="course-details.html"><img src="~/img/course/course-01.jpg" alt="img" class="img-fluid w-100"></a>
-										</div>
-									</div>
-									<div class="col-md-9">
-										<div class="row align-items-center justify-content-between">
-											<div class="col-md-9">
-												<div class="d-flex align-items-center mb-2">
-													<a href="instructor-profile.html" class="avatar avatar-sm rounded-circle me-2">
-														<img src="~/img/user/user-01.jpg" alt="img" class="img-fluid rounded-circle">
-													</a>
-													<p class="mb-0"><a href="instructor-profile.html">David Benitez</a></p>
-												</div>
-												<div class="mb-2">
-													<h6 class="fs-18 mb-0"><a href="course-details.html">Information About UI/UX Design Degree</a></h6>
-												</div>
-												<div class="d-flex align-items-center">
-													<span class="star me-2"><i class="fa-solid fa-star"></i></span>
-													<p class="mb-0">4.9 (200 Reviews)</p>
-													<span class="mx-2 bg-secondary rounded-circle dot"></span>
-													<p class="mb-0">Intermediate</p>
-												</div>
-											</div>
-											<div class="col-md-3">
-												<div class="d-flex align-items-center justify-content-end gap-4 cart-trash">
-													<h5 class="text-secondary">$120</h5>
-													<a href="#" class="trash-btn"><i class="isax isax-trash4"></i></a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-12">
-							<div class="cart-item mb-0">
-								<div class="row align-items-center row-gap-3">
-									<div class="col-md-3">
-										<div class="cart-img">
-											<a href="course-details.html"><img src="~/img/course/course-03.jpg" alt="img" class="img-fluid w-100"></a>
-										</div>
-									</div>
-									<div class="col-md-9">
-										<div class="row align-items-center justify-content-between">
-											<div class="col-md-9">
-												<div class="d-flex align-items-center mb-2">
-													<a href="instructor-profile.html" class="avatar avatar-sm rounded-circle me-2">
-														<img src="~/img/user/user-08.jpg" alt="img" class="img-fluid rounded-circle">
-													</a>
-													<p class="mb-0"><a href="instructor-profile.html">Andrew Pirtle</a></p>
-												</div>
-												<div class="mb-2">
-													<h6 class="fs-18 mb-0"><a href="course-details.html">Sketch from A to Z (2024): Become an app designer</a></h6>
-												</div>
-												<div class="d-flex align-items-center">
-													<span class="star me-2"><i class="fa-solid fa-star"></i></span>
-													<p class="mb-0">4.6 (170 Reviews)</p>
-													<span class="mx-2 bg-secondary rounded-circle dot"></span>
-													<p class="mb-0">Basic</p>
-												</div>
-											</div>
-											<div class="col-md-3">
-												<div class="d-flex align-items-center justify-content-end gap-4 cart-trash">
-													<h5 class="text-secondary">$160</h5>
-													<a href="#" class="trash-btn"><i class="isax isax-trash4"></i></a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="bg-light border rounded-2 p-3 mb-4">
-						<div class="row align-items-center justify-content-between row-gap-3">
-							<div class="col-md-6">
-								<h6 class="mb-1">Subtotal</h6>
-								<p class="mb-0">All Courses have a <span class="text-gray-9 fw-medium mx-1">30-day</span>money-back guarantee</p>
-							</div>
-							<div class="col-md-6 text-end">
-								<h5>$450</h5>
-							</div>
-						</div>
-					</div>
-					<div class="d-flex align-items-center justify-content-end flex-wrap">
-						<a asp-controller="Course" asp-action="List" class="btn continue-shopping-btn rounded-pill me-2">Continue Shopping</a>
-						<a asp-controller="Order" asp-action="Checkout" class="btn checkout-btn rounded-pill">Checkout</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="container">
+        <div class="cart-cover">
+            <div class="cart-items">
+                @if (Model.Any())
+                {
+                    <div>
+                        <div class="cart-head border-bottom d-flex justify-content-between align-items-center pb-4">
+                            <h5 class="mb-0">@Model.Count Course(s)</h5>
+                            <form asp-action="ClearCart" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger-ghost mb-0">
+                                    <i class="isax isax-close-circle me-1"></i>Clear cart
+                                </button>
+                            </form>
+                        </div>
+                        <div class="row row-gap-3 pb-3 mb-3 border-bottom">
+                            @foreach (var item in Model)
+                            {
+                                var course = item.Course;
+                                var avgRating = course.Reviews?.Any() == true
+                                    ? course.Reviews.Average(r => r.Rating)
+                                    : 0;
+                                var reviewCount = course.Reviews?.Count ?? 0;
+                                var imageUrl = string.IsNullOrEmpty(course.ImagePath) || !course.ImagePath.StartsWith("/")
+                                    ? "/img/course/default.jpg"
+                                    : course.ImagePath;
+
+                                <div class="col-md-12">
+                                    <div class="cart-item mb-0">
+                                        <div class="row align-items-center row-gap-3">
+                                            <div class="col-md-3">
+                                                <div class="cart-img">
+                                                    <a asp-controller="Course" asp-action="Detail" asp-route-id="@course.Id">
+                                                        <img src="@imageUrl" alt="@course.Title" class="img-fluid w-100" onerror="this.onerror=null; this.src='/img/course/default.jpg';">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="row align-items-center justify-content-between">
+                                                    <div class="col-md-9">
+                                                        <div class="mb-2">
+                                                            <p class="mb-0"><a href="#">@(course.Instructor?.FirstName ?? "Instructor") @(course.Instructor?.LastName ?? "")</a></p>
+                                                        </div>
+                                                        <div class="mb-2">
+                                                            <h6 class="fs-18 mb-0">
+                                                                <a asp-controller="Course" asp-action="Detail" asp-route-id="@course.Id">@course.Title</a>
+                                                            </h6>
+                                                        </div>
+                                                        <div class="d-flex align-items-center">
+                                                            <span class="star me-2"><i class="fa-solid fa-star"></i></span>
+                                                            <p class="mb-0">@avgRating.ToString("0.0") (@reviewCount Reviews)</p>
+                                                            <span class="mx-2 bg-secondary rounded-circle dot"></span>
+                                                            <p class="mb-0">@course.LevelForStudent</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="d-flex align-items-center justify-content-end gap-4 cart-trash">
+                                                            <h5 class="text-secondary">$@course.Price</h5>
+                                                            <form asp-action="RemoveFromCart" method="post">
+                                                                <input type="hidden" name="cartItemId" value="@item.Id" />
+                                                                <button type="submit" class="trash-btn" style="border:none;background:none;"><i class="isax isax-trash4"></i></button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="bg-light border rounded-2 p-3 mb-4">
+                            <div class="row align-items-center justify-content-between row-gap-3">
+                                <div class="col-md-6">
+                                    <h6 class="mb-1">Subtotal</h6>
+                                    <p class="mb-0">All Courses have a <span class="text-gray-9 fw-medium mx-1">30-day</span>money-back guarantee</p>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <h5>$@subtotal</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-light border rounded-2 p-3 mb-4">
+                            <div class="row align-items-center justify-content-between row-gap-3">
+                                <div class="col-md-6">
+                                    <h6 class="mb-1">Tax (13%)</h6>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <h5>$@tax</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-light border rounded-2 p-3 mb-4">
+                            <div class="row align-items-center justify-content-between row-gap-3">
+                                <div class="col-md-6">
+                                    <h6 class="mb-1 fw-bold">Total</h6>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <h5 class="fw-bold">$@total</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-end flex-wrap">
+                            <a asp-controller="Course" asp-action="List" class="btn continue-shopping-btn rounded-pill me-2">Continue Shopping</a>
+                            <a asp-controller="Order" asp-action="Checkout" class="btn checkout-btn rounded-pill">Checkout</a>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="isax isax-shopping-cart5 fs-48 text-muted mb-3"></i>
+                        <h4>Your cart is empty</h4>
+                        <p class="text-muted">Looks like you haven't added any courses yet.</p>
+                        <a asp-controller="Course" asp-action="List" class="btn btn-primary rounded-pill">Browse Courses</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>
 <!-- /Cart -->

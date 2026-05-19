@@ -23,7 +23,7 @@ namespace EgorSalahovSemestrovka22.Models.Entities
         public Category Category { get; set; } //Course Category Page 
 
         public int InstructorId { get; set; }
-        public Instructor Instructor { get; set; } //TODO: сейчас ЗАГЛУШКА
+        public Instructor Instructor { get; set; } 
 
         public ICollection<Section> Sections { get; set; } // Для Course Content (программа курса)
         public ICollection<Review> Reviews { get; set; } //звездочки (с возможностью расширения до комментов если добавить string Comment)

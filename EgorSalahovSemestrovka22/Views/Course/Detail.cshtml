@@ -204,7 +204,18 @@
                                 <div class="d-flex justify-content-between gap-3 wishlist-btns">
                                     <a class="btn d-flex btn-wish" href="#"><i class="isax isax-heart me-1 fs-18"></i>Add to Wishlist</a>
                                 </div>
-                                <a href="#" class="btn btn-primary w-100 mt-3 btn-enroll">Enroll Now</a>
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <button type="button" class="btn btn-primary w-100 mt-3 btn-enroll add-to-cart-btn" data-course-id="@Model.Id">
+                                        <i class="isax isax-shopping-cart5 me-2"></i>Add to Cart
+                                    </button>
+                                }
+                                else
+                                {
+                                    <a asp-controller="Account" asp-action="SignIn" class="btn btn-primary w-100 mt-3 btn-enroll">
+                                        Sign In to Enroll
+                                    </a>
+                                }
                             </div>
                         </div>
                         <div class="card mb-4">
@@ -257,3 +268,45 @@
         </div>
     </section>
 </div>
+
+@section Scripts{
+    <script>
+        // Обновление счётчика корзины при загрузке страницы
+        $(function () {
+            updateCartCount();
+
+            // Кнопка Add to Cart
+            $(document).on('click', '.add-to-cart-btn', function () {
+                var btn = $(this);
+                var courseId = btn.data('course-id');
+                btn.prop('disabled', true).text('Adding...');
+
+                $.post('/Order/AddToCart', { courseId: courseId }, function (response) {
+                    if (response.success) {
+                        btn.removeClass('btn-primary').addClass('btn-success').text('Added to Cart!');
+                        $('.count-icon').text(response.cartCount).show();
+                        setTimeout(function () {
+                            btn.removeClass('btn-success').addClass('btn-primary').html('<i class="isax isax-shopping-cart5 me-2"></i>Add to Cart').prop('disabled', false);
+                        }, 2000);
+                    } else {
+                        alert(response.message);
+                        btn.prop('disabled', false).html('<i class="isax isax-shopping-cart5 me-2"></i>Add to Cart');
+                    }
+                }).fail(function () {
+                    alert('Error adding to cart');
+                    btn.prop('disabled', false).html('<i class="isax isax-shopping-cart5 me-2"></i>Add to Cart');
+                });
+            });
+        });
+
+        function updateCartCount() {
+            $.get('/Order/GetCartCount', function (data) {
+                if (data.count > 0) {
+                    $('.count-icon').text(data.count).show();
+                } else {
+                    $('.count-icon').text('0').hide();
+                }
+            });
+        }
+    </script>
+}

@@ -1,8 +1,10 @@
-﻿using EgorSalahovSemestrovka22.Models.Entities;
+﻿using EgorSalahovSemestrovka22.Data;
+using EgorSalahovSemestrovka22.Models.Entities;
 using EgorSalahovSemestrovka22.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EgorSalahovSemestrovka22.Controllers
 {
@@ -10,10 +12,12 @@ namespace EgorSalahovSemestrovka22.Controllers
     public class StudentController : Controller
     {
         private readonly UserManager<Student> _userManager;
+        private readonly AppDbContext _context;
 
-        public StudentController(UserManager<Student> userManager)
+        public StudentController(UserManager<Student> userManager, AppDbContext context)
         {
             _userManager = userManager;
+            _context = context;
         }
 
         public async Task<IActionResult> MyProfile()
@@ -58,7 +62,24 @@ namespace EgorSalahovSemestrovka22.Controllers
 
             return View("MyProfile", currentUser);
         }
-        public IActionResult Courses() => View();
+        public async Task<IActionResult> Courses()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("SignIn", "Account");
+
+            var enrollments = await _context.Enrollments
+                .Include(e => e.Course)
+                    .ThenInclude(c => c.Category)
+                .Include(e => e.Course)
+                    .ThenInclude(c => c.Instructor)
+                .Include(e => e.Course)
+                    .ThenInclude(c => c.Reviews)
+                .Where(e => e.StudentId == user.Id)
+                .OrderByDescending(e => e.EnrollmentDate)
+                .ToListAsync();
+
+            return View(enrollments);
+        }
         public IActionResult Wishlist() => View();
         public IActionResult OrderHistory() => View();
         public IActionResult Settings() => View();
