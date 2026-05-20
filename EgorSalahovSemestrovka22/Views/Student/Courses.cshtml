@@ -51,10 +51,10 @@
                                             : 0;
                                         var reviewCount = course.Reviews?.Count ?? 0;
                                         var imageUrl = string.IsNullOrEmpty(course.ImagePath) || !course.ImagePath.StartsWith("/")
-                                            ? "/img/course/default.jpg"
+                                            ? "/img/default.jpg"
                                             : course.ImagePath;
 
-                                        <div class="col-xl-4 col-md-6">
+                                        <div class="col-xl-4 col-md-6 d-flex">
                                             <div class="course-item-two course-item mx-0">
                                                 <div class="course-img">
                                                     <a asp-controller="Course" asp-action="Detail" asp-route-id="@course.Id">
@@ -73,9 +73,16 @@
                                                     <div class="d-flex justify-content-between mb-2">
                                                         <div class="d-flex align-items-center">
                                                             <div class="avatar avatar-sm">
-                                                                <span class="d-flex align-items-center justify-content-center bg-secondary text-white rounded-circle" style="width:100%;height:100%;font-size:10px;">
-                                                                    @(course.Instructor?.FirstName?.FirstOrDefault())@(course.Instructor?.LastName?.FirstOrDefault())
-                                                                </span>
+                                                                @if (!string.IsNullOrEmpty(course.Instructor?.AvatarPath))
+                                                                {
+                                                                    <img src="@course.Instructor.AvatarPath" class="rounded-circle" alt="" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'d-flex align-items-center justify-content-center bg-secondary text-white rounded-circle\' style=\'width:100%;height:100%;font-size:10px;\'>@(course.Instructor?.FirstName?.FirstOrDefault())@(course.Instructor?.LastName?.FirstOrDefault())</span>';">
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="d-flex align-items-center justify-content-center bg-secondary text-white rounded-circle" style="width:100%;height:100%;font-size:10px;">
+                                                                        @(course.Instructor?.FirstName?.FirstOrDefault())@(course.Instructor?.LastName?.FirstOrDefault())
+                                                                    </span>
+                                                                }
                                                             </div>
                                                             <div class="ms-2">
                                                                 <a href="#" class="link-default fs-14">@(course.Instructor?.FirstName ?? "Instructor") @(course.Instructor?.LastName ?? "")</a>
@@ -119,3 +126,33 @@
         </div>
     </div>
 </div>
+
+<style>
+    .course-item-two {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+        .course-item-two .course-img {
+            height: 200px;
+            overflow: hidden;
+        }
+
+            .course-item-two .course-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .course-item-two .course-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+    .row > [class*="col-"] {
+        margin-bottom: 24px;
+    }
+</style>

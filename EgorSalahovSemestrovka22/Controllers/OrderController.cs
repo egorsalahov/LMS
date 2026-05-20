@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Metrics;
 
 namespace EgorSalahovSemestrovka22.Controllers
 {
@@ -131,9 +132,125 @@ namespace EgorSalahovSemestrovka22.Controllers
 
         // GET: /Order/Checkout
         [Authorize]
-        public IActionResult Checkout()
+        [HttpGet]
+        public async Task<IActionResult> Checkout()
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("SignIn", "Account");
+
+            var cartItems = await _context.CartItems
+                .Include(c => c.Course)
+                .Where(c => c.StudentId == user.Id)
+                .ToListAsync();
+
+            if (!cartItems.Any())
+                return RedirectToAction("Cart");
+
+            var subtotal = cartItems.Sum(c => c.Course.Price);
+            var tax = Math.Round(subtotal * 0.13m, 2);
+            var total = subtotal + tax;
+
+            ViewBag.Subtotal = subtotal;
+            ViewBag.Tax = tax;
+            ViewBag.Total = total;
+
+            return View(cartItems);
+        }
+
+        // POST: /Order/Checkout
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Checkout(string firstName, string lastName, string phone,
+            string addressLine1, string addressLine2, string country, string state, string city,
+            string paymentMethod)
+        {
+            // Серверная валидация
+            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) ||
+                string.IsNullOrWhiteSpace(addressLine1) || string.IsNullOrWhiteSpace(country) ||
+                string.IsNullOrWhiteSpace(state) || string.IsNullOrWhiteSpace(city))
+            {
+                TempData["ErrorMessage"] = "All required fields must be filled.";
+                return RedirectToAction("Checkout");
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("SignIn", "Account");
+
+            var cartItems = await _context.CartItems
+                .Include(c => c.Course)
+                .Where(c => c.StudentId == user.Id)
+                .ToListAsync();
+
+            if (!cartItems.Any())
+                return RedirectToAction("Cart");
+
+            var subtotal = cartItems.Sum(c => c.Course.Price);
+            var tax = Math.Round(subtotal * 0.13m, 2);
+            var total = subtotal + tax;
+
+            var order = new Order
+            {
+                StudentId = user.Id,
+                OrderDate = DateTime.Now,
+                TotalAmount = total,
+                Tax = tax,
+                FirstName = firstName,
+                LastName = lastName,
+                AddressLine1 = addressLine1,
+                AddressLine2 = addressLine2,
+                Country = country,
+                State = state,
+                City = city,
+                PaymentMethod = total == 0 ? "Free" : paymentMethod,
+                OrderStatus = "Completed",
+                OrderItems = cartItems.Select(c => new OrderItem
+                {
+                    CourseId = c.CourseId,
+                    PriceAtPurchase = c.Course.Price
+                }).ToList()
+            };
+
+            _context.Orders.Add(order);
+
+            // Создаём Enrollment для каждого курса
+            foreach (var item in cartItems)
+            {
+                var enrollment = new Enrollment
+                {
+                    StudentId = user.Id,
+                    CourseId = item.CourseId,
+                    EnrollmentDate = DateTime.Now,
+                    ProgressPercentage = 0
+                };
+                _context.Enrollments.Add(enrollment);
+            }
+
+            // Очищаем корзину
+            _context.CartItems.RemoveRange(cartItems);
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Order placed successfully!";
+            return RedirectToAction("Confirmation", new { orderId = order.Id });
+        }
+
+
+        // GET: /Order/Confirmation
+        [Authorize]
+        public async Task<IActionResult> Confirmation(int orderId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("SignIn", "Account");
+
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Course)
+                .FirstOrDefaultAsync(o => o.Id == orderId && o.StudentId == user.Id);
+
+            if (order == null)
+                return NotFound("Order not found");
+
+            return View(order);
         }
     }
 }

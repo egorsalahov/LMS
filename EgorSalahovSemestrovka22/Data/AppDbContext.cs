@@ -107,7 +107,7 @@ namespace EgorSalahovSemestrovka22.Data
             modelBuilder.Entity<Order>().HasData(new Order
             {
                 Id = 1,
-                StudentId = 1,
+                StudentId = "021914cc-ba3c-4bf5-aa53-6fc9bb467f1a",
                 TotalAmount = 150.00m,
                 Tax = 10.00m,
                 OrderDate = new DateTime(2026, 06, 06),

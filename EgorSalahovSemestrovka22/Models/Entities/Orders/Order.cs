@@ -7,7 +7,7 @@ namespace EgorSalahovSemestrovka22.Models.Entities.Orders
         public int Id { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.Now;
 
-        public int StudentId { get; set; }
+        public string StudentId { get; set; }
         public Student Student { get; set; }
 
         public decimal TotalAmount { get; set; } // Итоговая сумма (225.20 на скрине)
