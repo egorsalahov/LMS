@@ -1,35 +1,36 @@
 ﻿@{
-
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 }
 
 <div class="col-lg-3 theiaStickySidebar">
-	<div class="settings-sidebar mb-lg-0">
-		<div>
-			<h6 class="mb-3">Main Menu</h6>
-			<ul class="mb-3 pb-1">
-				<li>
-					<a asp-controller="Instructor" asp-action="Dashboard" class="d-inline-flex align-items-center active"><i class="isax isax-grid-35 me-2"></i>Dashboard</a>
-				</li>
-				<li>
-					<a asp-controller ="Instructor" asp-action="MyProfile" class="d-inline-flex align-items-center"><i class="fa-solid fa-user me-2"></i>My Profile</a>
-				</li>
-				<li>
-					<a asp-controller="Instructor" asp-action="Courses" class="d-inline-flex align-items-center"><i class="isax isax-teacher5 me-2"></i>Courses</a>
-				</li>
-				<li>
-					<a asp-controller="Instructor" asp-action="Students" class="d-inline-flex align-items-center"><i class="isax isax-profile-2user5 me-2"></i>Students</a>
-				</li>
-				<li>
-					<a href="instructor-message.html" class="d-inline-flex align-items-center"><i class="isax isax-messages-35 me-2"></i>Messages</a>
-				</li>
-			</ul>
-			<hr>
-			<h6 class="mb-3">Account Settings</h6>
-			<ul>
-				<li>
-					<a asp-controller="Instructor" asp-action="Settings" class="d-inline-flex align-items-center"><i class="isax isax-setting-25 me-2"></i>Settings</a>
-				</li>
-			</ul>
-		</div>
-	</div>
+    <div class="settings-sidebar mb-lg-0">
+        <div>
+            <h6 class="mb-3">Main Menu</h6>
+            <ul class="mb-3 pb-1">
+                <li>
+                    <a asp-controller="Instructor" asp-action="Dashboard"
+                       class="d-inline-flex align-items-center @(currentAction == "Dashboard" ? "active" : "")">
+                        <i class="isax isax-grid-35 me-2"></i>Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Instructor" asp-action="MyProfile"
+                       class="d-inline-flex align-items-center @(currentAction == "MyProfile" ? "active" : "")">
+                        <i class="fa-solid fa-user me-2"></i>My Profile
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Instructor" asp-action="Students"
+                       class="d-inline-flex align-items-center @(currentAction == "Students" ? "active" : "")">
+                        <i class="isax isax-profile-2user5 me-2"></i>Students
+                    </a>
+                </li>
+                <li>
+                    <a href="instructor-message.html" class="d-inline-flex align-items-center">
+                        <i class="isax isax-messages-35 me-2"></i>Messages
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>

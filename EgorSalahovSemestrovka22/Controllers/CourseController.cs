@@ -79,12 +79,12 @@ namespace EgorSalahovSemestrovka22.Controllers
                 .Include(c => c.Sections)
                     .ThenInclude(s => s.Lessons)
                 .Include(c => c.Reviews)
+                .Include(c => c.Enrollments)   // <-- Добавить
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (course == null)
                 return NotFound();
 
-            // Количество курсов этого инструктора
             ViewBag.InstructorCourseCount = await _context.Courses
                 .CountAsync(c => c.InstructorId == course.InstructorId);
 

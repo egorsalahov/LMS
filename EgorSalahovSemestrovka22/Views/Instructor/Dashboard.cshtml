@@ -1,158 +1,121 @@
-﻿@{
-
+﻿@model List<EgorSalahovSemestrovka22.Models.Entities.Course>
+@{
+    ViewData["Title"] = "Dashboard";
+    var totalStudents = ViewBag.TotalStudents ?? 0;
+    var totalCourses = ViewBag.TotalCourses ?? 0;
+    var totalEarnings = ViewBag.TotalEarnings ?? 0m;
+    var instructorName = ViewBag.InstructorName as string ?? "Instructor";
 }
 
 <!-- Breadcrumb -->
 <div class="breadcrumb-bar text-center">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12 col-12">
-				<h2 class="breadcrumb-title mb-2">Dashboard</h2>
-				<nav aria-label="breadcrumb">
-					<ol class="breadcrumb justify-content-center mb-0">
-						<li class="breadcrumb-item"><a href="index.html">Home</a></li>
-						<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-					</ol>
-				</nav>
-			</div>
-		</div>
-	</div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-12">
+                <h2 class="breadcrumb-title mb-2">Dashboard</h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center mb-0">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- /Breadcrumb -->
 
 <div class="content">
-	<div class="container">
-		@await Html.PartialAsync("_InstructorProfile")
-		<div class="row">
+    <div class="container">
+        @await Html.PartialAsync("_InstructorProfile")
+        <div class="row">
 
-			<!-- Sidebar -->
-			@await Html.PartialAsync("_InstructorSidebar")
-			<!-- /Sidebar -->
+            <!-- Sidebar -->
+            @await Html.PartialAsync("_InstructorSidebar")
+            <!-- /Sidebar -->
 
-			<div class="col-lg-9">
-				<div class="row">
-					<div class="col-md-6 col-xl-4">
-						<div class="card">
-							<div class="card-body">
-								<div class="d-flex align-items-center">
-									<span class="icon-box bg-info-transparent me-2 me-xxl-3 flex-shrink-0">
-										<img src="~/img/icon/user-octagon.svg" alt="">
-									</span>
-									<div>
-										<span class="d-block">Total Students</span>
-										<h4 class="fs-24 mt-1">17</h4>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6 col-xl-4">
-						<div class="card">
-							<div class="card-body">
-								<div class="d-flex align-items-center">
-									<span class="icon-box bg-blue-transparent me-2 me-xxl-3 flex-shrink-0">
-										<img src="~/img/icon/book-2.svg" alt="">
-									</span>
-									<div>
-										<span class="d-block">Total Courses</span>
-										<h4 class="fs-24 mt-1">11</h4>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6 col-xl-4">
-						<div class="card">
-							<div class="card-body">
-								<div class="d-flex align-items-center">
-									<span class="icon-box bg-purple-transparent me-2 me-xxl-3 flex-shrink-0">
-										<img src="~/img/icon/money-add.svg" alt="">
-									</span>
-									<div>
-										<span class="d-block">Total Earnings</span>
-										<h4 class="fs-24 mt-1">$486</h4>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<h5 class="mb-3 fw-bold">Recently Created Courses</h5>
-				<div class="table-responsive custom-table">
-					<table class="table">
-						<thead class="thead-light">
-							<tr>
-								<th>Courses</th>
-								<th>Enrolled</th>
-								<th>Status</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>
-									<div class="course-title d-flex align-items-center">
-										<a href="course-details.html" class="avatar avatar-xl flex-shrink-0 me-2"><img src="~/img/instructor/instructor-table-01.jpg" alt="Img"></a>
-										<div>
-											<p class="fw-medium"><a href="course-details.html">Complete HTML, CSS and Javascript<br> Course</a></p>
-										</div>
-									</div>
-								</td>
-								<td>0</td>
-								<td>Published</td>
-							</tr>
-							<tr>
-								<td>
-									<div class="course-title d-flex align-items-center">
-										<a href="course-details.html" class="avatar avatar-xl flex-shrink-0 me-2"><img src="~/img/instructor/instructor-table-02.jpg" alt="Img"></a>
-										<div>
-											<p class="fw-medium"><a href="course-details.html">Complete Course on Fullstack Web<br> Developer</a></p>
-										</div>
-									</div>
-								</td>
-								<td>2</td>
-								<td>Published</td>
-							</tr>
-							<tr>
-								<td>
-									<div class="course-title d-flex align-items-center">
-										<a href="course-details.html" class="avatar avatar-xl flex-shrink-0 me-2"><img src="~/img/instructor/instructor-table-03.jpg" alt="Img"></a>
-										<div>
-											<p class="fw-medium"><a href="course-details.html">Data Science Fundamentals and<br> Advanced Bootcampr</a></p>
-										</div>
-									</div>
-								</td>
-								<td>2</td>
-								<td>Published</td>
-							</tr>
-							<tr>
-								<td>
-									<div class="course-title d-flex align-items-center">
-										<a href="course-details.html" class="avatar avatar-xl flex-shrink-0 me-2"><img src="~/img/instructor/instructor-table-04.jpg" alt="Img"></a>
-										<div>
-											<p class="fw-medium"><a href="course-details.html">Master Microservices with Spring Boot<br> and Spring Cloud</a></p>
-										</div>
-									</div>
-								</td>
-								<td>1</td>
-								<td>Published</td>
-							</tr>
-							<tr>
-								<td>
-									<div class="course-title d-flex align-items-center">
-										<a href="course-details.html" class="avatar avatar-xl flex-shrink-0 me-2"><img src="~/img/instructor/instructor-table-05.jpg" alt="Img"></a>
-										<div>
-											<p class="fw-medium"><a href="course-details.html">Information About UI/UX Design<br> Degree</a></p>
-										</div>
-									</div>
-								</td>
-								<td>0</td>
-								<td>Published</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
+            <div class="col-lg-9">
+                <div class="row">
+                    <div class="col-md-6 col-xl-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <span class="icon-box bg-info-transparent me-2 me-xxl-3 flex-shrink-0">
+                                        <img src="~/img/icon/user-octagon.svg" alt="">
+                                    </span>
+                                    <div>
+                                        <span class="d-block">Total Students</span>
+                                        <h4 class="fs-24 mt-1">@totalStudents</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <span class="icon-box bg-blue-transparent me-2 me-xxl-3 flex-shrink-0">
+                                        <img src="~/img/icon/book-2.svg" alt="">
+                                    </span>
+                                    <div>
+                                        <span class="d-block">Total Courses</span>
+                                        <h4 class="fs-24 mt-1">@totalCourses</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <span class="icon-box bg-purple-transparent me-2 me-xxl-3 flex-shrink-0">
+                                        <img src="~/img/icon/money-add.svg" alt="">
+                                    </span>
+                                    <div>
+                                        <span class="d-block">Total Earnings</span>
+                                        <h4 class="fs-24 mt-1">$@totalEarnings.ToString("0.00")</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h5 class="mb-3 fw-bold">Recently Created Courses</h5>
+                <div class="table-responsive custom-table">
+                    <table class="table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Courses</th>
+                                <th>Enrolled</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var course in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="course-title d-flex align-items-center">
+                                            <a href="#" class="avatar avatar-xl flex-shrink-0 me-2">
+                                                <img src="@(string.IsNullOrEmpty(course.ImagePath) || !course.ImagePath.StartsWith("/") ? "/img/default.jpg" : course.ImagePath)"
+                                                     alt="Course Image"
+                                                     onerror="this.onerror=null;this.src='/img/default.jpg';">
+                                            </a>
+                                            <div>
+                                                <p class="fw-medium">@course.Title</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>@(course.Enrollments?.Count ?? 0)</td>
+                                    <td>Published</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-

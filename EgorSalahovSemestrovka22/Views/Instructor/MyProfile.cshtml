@@ -1,160 +1,380 @@
-﻿@{
+﻿@model EgorSalahovSemestrovka22.Models.Entities.Instructors.Instructor
+@{
+    ViewData["Title"] = "My Profile";
+    var editMode = ViewData["EditMode"] as bool? == true;
 }
 
 <!-- Main Wrapper -->
 <div class="main-wrapper">
+    <div class="breadcrumb-bar text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-12">
+                    <h2 class="breadcrumb-title mb-2">My Profile</h2>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center mb-0">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">My Profile</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
 
-			
+    <div class="content">
+        <div class="container">
+            @await Html.PartialAsync("_InstructorProfile")
+            <div class="row">
+                @await Html.PartialAsync("_InstructorSidebar")
+                <div class="col-lg-9">
+                    <div class="page-title d-flex align-items-center justify-content-between">
+                        <h5 class="fw-bold">My Profile</h5>
+                        <a href="javascript:void(0)" class="edit-profile-icon"><i class="isax isax-edit-2"></i></a>
+                    </div>
 
-	<!-- Breadcrumb -->
-	<div class="breadcrumb-bar text-center">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12 col-12">
-					<h2 class="breadcrumb-title mb-2">My Profile</h2>
-					<nav aria-label="breadcrumb">
-						<ol class="breadcrumb justify-content-center mb-0">
-							<li class="breadcrumb-item"><a href="index.html">Home</a></li>
-							<li class="breadcrumb-item active" aria-current="page">My Profile</li>
-						</ol>
-					</nav>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- /Breadcrumb -->
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show">
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        TempData.Remove("SuccessMessage");
+                    }
 
-	<div class="content">
-		<div class="container">
-			<!-- Instructor Proflie-->
-			@await Html.PartialAsync("_InstructorProfile")
-			<div class="row">
-				<!-- Sidebar -->
-				@await Html.PartialAsync("_InstructorSidebar")
-				<!-- /Sidebar -->
-				<div class="col-lg-9">
-					<div class="page-title d-flex align-items-center justify-content-between">
-						<h5 class="fw-bold">My Profile</h5>
-						<a href="#" class="edit-profile-icon"><i class="isax isax-edit-2"></i></a>
-					</div>
-					<div class="card">
-						<div class="card-body">
-							<h5 class="fs-18 pb-3 border-bottom mb-3">Basic Information</h5>
-							<div class="row">
-								<div class="col-md-4">
-									<div class="mb-3">
-										<h6>First Name</h6>
-										<span>Eugene</span>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="mb-3">
-										<h6>Last Name</h6>
-										<span>Andre</span>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="mb-3">
-										<h6>Registration Date</h6>
-										<span>16 Jan 2024, 11:15 AM</span>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="mb-3">
-										<h6>User Name</h6>
-										<span>instructordemo</span>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="mb-3">
-										<h6>Phone Number</h6>
-										<span>89104-71829</span>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="mb-3">
-										<h6>Email</h6>
-										<span>instructordemo@example.com</span>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="mb-3">
-										<h6>Gender</h6>
-										<span>Male</span>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="mb-3">
-										<h6>DOB</h6>
-										<span>16 Jan 2020</span>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="mb-3">
-										<h6>Age</h6>
-										<span>24</span>
-									</div>
-								</div>
-								<div class="col-md-12">
-									<div>
-										<h6>Bio</h6>
-										<span>
-											I am a web developer with a vast array of knowledge in
-											many different front end and back end languages,
-											responsive frameworks, databases, and best code practices.
-										</span>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="card">
-						<div class="card-body">
-							<h5 class="fs-18 pb-3 border-bottom mb-3">Education</h5>
-							<div class="education-flow">
-								<div class="ps-4 pb-3 timeline-flow">
-									<div>
-										<h6 class="mb-1">BCA - Bachelor of Computer Applications</h6>
-										<p>International University - (2004 - 2010)</p>
-									</div>
-								</div>
-								<div class="ps-4 pb-3 timeline-flow">
-									<div>
-										<h6 class="mb-1">MCA - Master of Computer Application</h6>
-										<p>International University - (2010 - 2012)</p>
-									</div>
-								</div>
-								<div class="ps-4 pb-0 timeline-flow">
-									<div>
-										<h6 class="mb-1">Design Communication Visual</h6>
-										<p>International University - (2012-2015)</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+                    <!-- VIEW MODE -->
+                    <div id="profile-view" @(editMode ? "style=display:none" : "")>
+                        <!-- Basic Info -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="fs-18 pb-3 border-bottom mb-3">Basic Information</h5>
+                                <div class="row">
+                                    <div class="col-md-4"><div class="mb-3"><h6>First Name</h6><span>@(Model.FirstName ?? "-")</span></div></div>
+                                    <div class="col-md-4"><div class="mb-3"><h6>Last Name</h6><span>@(Model.LastName ?? "-")</span></div></div>
+                                    <div class="col-md-4"><div class="mb-3"><h6>Registration Date</h6><span>@Model.RegistrationDate.ToString("dd MMM yyyy, HH:mm")</span></div></div>
+                                    <div class="col-md-4"><div class="mb-3"><h6>Phone Number</h6><span>@(Model.PhoneNumber ?? "-")</span></div></div>
+                                    <div class="col-md-4"><div class="mb-3"><h6>Email</h6><span>@Model.Email</span></div></div>
+                                    <div class="col-md-4"><div class="mb-3"><h6>Gender</h6><span>@(Model.Gender ?? "-")</span></div></div>
+                                    <div class="col-md-4"><div class="mb-3"><h6>DOB</h6><span>@Model.DateOfBirth.ToString("dd MMM yyyy")</span></div></div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <h6>Age</h6>
+                                            @{
+                                                var age = DateTime.Now.Year - Model.DateOfBirth.Year; if (DateTime.Now.DayOfYear < Model.DateOfBirth.DayOfYear) age--;
+                                            }
+                                            <span>@age</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12"><div><h6>Bio</h6><span>@Html.Raw(Model.Bio ?? "-")</span></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Education -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="fs-18 pb-3 border-bottom mb-3">Education</h5>
+                                @if (Model.Educations != null && Model.Educations.Any())
+                                {
+                                    <div class="education-flow">
+                                        @foreach (var edu in Model.Educations)
+                                        {
+                                            <div class="ps-4 pb-3 timeline-flow">
+                                                <h6 class="mb-1">@edu.Degree</h6>
+                                                <p>@edu.Institute - (@edu.Years)</p>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <p class="text-muted">No education records yet.</p>
+                                }
+                            </div>
+                        </div>
+                        <!-- Experience -->
+                        <div class="card mb-0">
+                            <div class="card-body">
+                                <h5 class="fs-18 pb-3 border-bottom mb-3">Experience</h5>
+                                @if (Model.Experiences != null && Model.Experiences.Any())
+                                {
+                                    foreach (var exp in Model.Experiences)
+                                    {
+                                        <div class="d-flex align-items-center mb-4">
+                                            <span class="bg-light border avatar avatar-lg text-gray-9 flex-shrink-0 me-3"><i class="isax isax-briefcase fw-bold"></i></span>
+                                            <div>
+                                                <h6 class="mb-1">@exp.Position</h6>
+                                                <p>@exp.Company - (@exp.Years)</p>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p class="text-muted">No experience records yet.</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
 
-					<div class="card mb-0">
-						<div class="card-body">
-							<h5 class="fs-18 pb-3 border-bottom mb-3">Experience</h5>
-							<div class="d-flex align-items-center mb-4">
-								<span class="bg-light border avatar avatar-lg text-gray-9 flex-shrink-0 me-3"><i class="isax isax-briefcase fw-bold"></i></span>
-								<div>
-									<h6 class="mb-1">Web Design & Development Team Leader</h6>
-									<p>Creative Agency - (2013 - 2016)</p>
-								</div>
-							</div>
-							<div class="d-flex align-items-center">
-								<span class="bg-light border avatar avatar-lg text-gray-9 flex-shrink-0 me-3"><i class="isax isax-briefcase fw-bold"></i></span>
-								<div>
-									<h6 class="mb-1">Project Manager</h6>
-									<p>CJobcy Technology Pvt.Ltd - (Present)</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                    <!-- EDIT MODE -->
+                    <div id="profile-edit" @(editMode ? "" : "style=display:none")>
+                        <form asp-action="EditFullProfile" method="post" id="editFullProfileForm">
+                            <!-- Basic Info -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="fs-18 pb-3 border-bottom mb-3">Edit Profile</h5>
+                                    <div class="row">
+                                        <div class="col-md-6"><div class="input-block mb-3"><label class="form-label">First Name<span class="text-danger">*</span></label><input name="FirstName" class="form-control" value="@Model.FirstName" /></div></div>
+                                        <div class="col-md-6"><div class="input-block mb-3"><label class="form-label">Last Name<span class="text-danger">*</span></label><input name="LastName" class="form-control" value="@Model.LastName" /></div></div>
+                                        <div class="col-md-6"><div class="input-block mb-3"><label class="form-label">Gender<span class="text-danger">*</span></label><select name="Gender" class="form-select"><option value="">Select</option><option value="Male" selected="@(Model.Gender == "Male")">Male</option><option value="Female" selected="@(Model.Gender == "Female")">Female</option></select></div></div>
+                                        <div class="col-md-6"><div class="input-block mb-3"><label class="form-label">Phone Number</label><input name="PhoneNumber" id="phone-input" class="form-control" type="tel" value="@Model.PhoneNumber" placeholder="+7 (999) 999-99-99" /><span class="text-danger fs-12" id="phone-error"></span></div></div>
+                                        <div class="col-md-6"><div class="input-block mb-3"><label class="form-label">Date of Birth<span class="text-danger">*</span></label><input name="DateOfBirth" class="form-control" type="date" value="@Model.DateOfBirth.ToString("yyyy-MM-dd")" /></div></div>
+                                        <div class="col-md-12"><div class="input-block mb-3"><label class="form-label">Bio</label><textarea name="Bio" class="form-control summernote">@Model.Bio</textarea></div></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Education Edit -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="fs-18 pb-3 border-bottom mb-3">Education</h5>
+                                    <div id="education-container">
+                                        @if (Model.Educations != null)
+                                        {
+                                            for (int i = 0; i < Model.Educations.Count; i++)
+                                            {
+                                                var edu = Model.Educations.ElementAt(i);
+                                                var eduYears = edu.Years?.Split('-').Select(y => y.Trim()).ToArray();
+                                                var eduStart = eduYears != null && eduYears.Length > 0 ? eduYears[0] : "";
+                                                var eduEnd = eduYears != null && eduYears.Length > 1 ? eduYears[1] : "";
+
+                                                <div class="education-item row mb-3">
+                                                    <div class="col-md-4"><input name="Educations[@i].Degree" class="form-control" value="@edu.Degree" placeholder="Degree" /></div>
+                                                    <div class="col-md-4"><input name="Educations[@i].Institute" class="form-control" value="@edu.Institute" placeholder="Institute" /></div>
+                                                    <div class="col-md-3">
+                                                        <div class="d-flex gap-2 align-items-center">
+                                                            <select name="Educations[@i].YearsStart" class="form-select edu-year-start" style="width:45%;">
+                                                                <option value="">From</option>
+                                                                @for (int y = DateTime.Now.Year + 5; y >= 1970; y--)
+                                                                {
+                                                                    <option value="@y" selected="@(eduStart == y.ToString())">@y</option>
+                                                                }
+                                                            </select>
+                                                            <span>-</span>
+                                                            <select name="Educations[@i].YearsEnd" class="form-select edu-year-end" style="width:45%;">
+                                                                <option value="">To</option>
+                                                                @for (int y = DateTime.Now.Year + 5; y >= 1970; y--)
+                                                                {
+                                                                    <option value="@y" selected="@(eduEnd == y.ToString())">@y</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                        <input type="hidden" name="Educations[@i].Years" class="edu-years-hidden" value="@edu.Years" />
+                                                    </div>
+                                                    <div class="col-md-1"><button type="button" class="btn btn-sm btn-outline-danger remove-edu-btn"><i class="isax isax-trash"></i></button></div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-primary add-edu-btn">+ Add Education</button>
+                                </div>
+                            </div>
+
+                            <!-- Experience Edit -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="fs-18 pb-3 border-bottom mb-3">Experience</h5>
+                                    <div id="experience-container">
+                                        @if (Model.Experiences != null)
+                                        {
+                                            for (int i = 0; i < Model.Experiences.Count; i++)
+                                            {
+                                                var exp = Model.Experiences.ElementAt(i);
+                                                var expYears = exp.Years?.Split('-').Select(y => y.Trim()).ToArray();
+                                                var expStart = expYears != null && expYears.Length > 0 ? expYears[0] : "";
+                                                var expEnd = expYears != null && expYears.Length > 1 ? expYears[1] : "";
+
+                                                <div class="experience-item row mb-3">
+                                                    <div class="col-md-4"><input name="Experiences[@i].Position" class="form-control" value="@exp.Position" placeholder="Position" /></div>
+                                                    <div class="col-md-4"><input name="Experiences[@i].Company" class="form-control" value="@exp.Company" placeholder="Company" /></div>
+                                                    <div class="col-md-3">
+                                                        <div class="d-flex gap-2 align-items-center">
+                                                            <select name="Experiences[@i].YearsStart" class="form-select exp-year-start" style="width:45%;">
+                                                                <option value="">From</option>
+                                                                @for (int y = DateTime.Now.Year + 5; y >= 1970; y--)
+                                                                {
+                                                                    <option value="@y" selected="@(expStart == y.ToString())">@y</option>
+                                                                }
+                                                            </select>
+                                                            <span>-</span>
+                                                            <select name="Experiences[@i].YearsEnd" class="form-select exp-year-end" style="width:45%;">
+                                                                <option value="">To</option>
+                                                                @for (int y = DateTime.Now.Year + 5; y >= 1970; y--)
+                                                                {
+                                                                    <option value="@y" selected="@(expEnd == y.ToString())">@y</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                        <input type="hidden" name="Experiences[@i].Years" class="exp-years-hidden" value="@exp.Years" />
+                                                    </div>
+                                                    <div class="col-md-1"><button type="button" class="btn btn-sm btn-outline-danger remove-exp-btn"><i class="isax isax-trash"></i></button></div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-primary add-exp-btn">+ Add Experience</button>
+                                </div>
+                            </div>
+
+                            <div class="text-end mt-3">
+                                <button type="button" class="btn btn-light me-2" id="cancelEditBtn">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Validation Errors Modal -->
+<div class="modal fade" id="validationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Validation Errors</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Please fix the following errors:</p>
+                <ul id="validation-errors-list" class="text-danger mb-0"></ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.9/dist/jquery.inputmask.min.js"></script>
+    <script>
+        $(function () {
+        $('.summernote').summernote({ height: 200, toolbar: [['style', ['bold', 'italic', 'underline', 'clear']], ['fontsize', ['fontsize']], ['color', ['color']], ['para', ['ul', 'ol', 'paragraph']], ['insert', ['link']]] });
+        var originalBio = @Html.Raw(Json.Serialize(Model.Bio ?? ""));
+        $('#phone-input').inputmask({ mask: '+7 (999) 999-99-99', placeholder: '_', showMaskOnHover: false, showMaskOnFocus: true, onincomplete: function () { $('#phone-error').text('Enter full phone number'); }, oncomplete: function () { $('#phone-error').text(''); } });
+
+        $('.edit-profile-icon').click(function () { $('#profile-view').hide(); $('#profile-edit').show(); });
+        $('#cancelEditBtn').click(function () { location.reload(); });
+
+        let eduIndex = @(Model.Educations?.Count ?? 0);
+        let expIndex = @(Model.Experiences?.Count ?? 0);
+
+        function generateYearSelects(nameStart, nameEnd, startVal, endVal) {
+        var html = '<div class="d-flex gap-2 align-items-center">';
+        html += '<select name="' + nameStart + '" class="form-select year-start" style="width:45%;"><option value="">From</option>';
+        for (var y = new Date().getFullYear() + 5; y >= 1970; y--) {
+        html += '<option value="' + y + '"' + (y.toString() === startVal ? ' selected' : '') + '>' + y + '</option>';
+        }
+        html += '</select>';
+        html += '<span>-</span>';
+        html += '<select name="' + nameEnd + '" class="form-select year-end" style="width:45%;"><option value="">To</option>';
+        for (var y = new Date().getFullYear() + 5; y >= 1970; y--) {
+        html += '<option value="' + y + '"' + (y.toString() === endVal ? ' selected' : '') + '>' + y + '</option>';
+        }
+        html += '</select>';
+        html += '</div>';
+        return html;
+        }
+
+        $('.add-edu-btn').click(function () {
+        var selects = generateYearSelects('Educations[' + eduIndex + '].YearsStart', 'Educations[' + eduIndex + '].YearsEnd', '', '');
+        var html = `<div class="education-item row mb-3">
+        <div class="col-md-4"><input name="Educations[${eduIndex}].Degree" class="form-control" placeholder="Degree" /></div>
+        <div class="col-md-4"><input name="Educations[${eduIndex}].Institute" class="form-control" placeholder="Institute" /></div>
+        <div class="col-md-3">${selects}<input type="hidden" name="Educations[${eduIndex}].Years" class="edu-years-hidden" /></div>
+        <div class="col-md-1"><button type="button" class="btn btn-sm btn-outline-danger remove-edu-btn"><i class="isax isax-trash"></i></button></div>
+        </div>`;
+        $('#education-container').append(html);
+        eduIndex++;
+        });
+
+        $('.add-exp-btn').click(function () {
+        var selects = generateYearSelects('Experiences[' + expIndex + '].YearsStart', 'Experiences[' + expIndex + '].YearsEnd', '', '');
+        var html = `<div class="experience-item row mb-3">
+        <div class="col-md-4"><input name="Experiences[${expIndex}].Position" class="form-control" placeholder="Position" /></div>
+        <div class="col-md-4"><input name="Experiences[${expIndex}].Company" class="form-control" placeholder="Company" /></div>
+        <div class="col-md-3">${selects}<input type="hidden" name="Experiences[${expIndex}].Years" class="exp-years-hidden" /></div>
+        <div class="col-md-1"><button type="button" class="btn btn-sm btn-outline-danger remove-exp-btn"><i class="isax isax-trash"></i></button></div>
+        </div>`;
+        $('#experience-container').append(html);
+        expIndex++;
+        });
+
+        $(document).on('click', '.remove-edu-btn', function () { $(this).closest('.education-item').remove(); });
+        $(document).on('click', '.remove-exp-btn', function () { $(this).closest('.experience-item').remove(); });
+
+        $('#editFullProfileForm').on('submit', function (e) {
+        var valid = true;
+        var errors = [];
+
+        // Собираем Years из select и валидируем Education
+        $('#education-container .education-item').each(function () {
+        var start = parseInt($(this).find('.edu-year-start').val());
+        var end = parseInt($(this).find('.edu-year-end').val());
+        var years = '';
+        if (!isNaN(start) && !isNaN(end)) {
+        if (start >= end) {
+        errors.push('Education: Start year (' + start + ') must be less than End year (' + end + ').');
+        valid = false;
+        }
+        years = start + ' - ' + end;
+        }
+        $(this).find('.edu-years-hidden').val(years);
+        });
+
+        // Собираем Years из select и валидируем Experience
+        $('#experience-container .experience-item').each(function () {
+        var start = parseInt($(this).find('.exp-year-start').val());
+        var end = parseInt($(this).find('.exp-year-end').val());
+        var years = '';
+        if (!isNaN(start) && !isNaN(end)) {
+        if (start >= end) {
+        errors.push('Experience: Start year (' + start + ') must be less than End year (' + end + ').');
+        valid = false;
+        }
+        years = start + ' - ' + end;
+        }
+        $(this).find('.exp-years-hidden').val(years);
+        });
+
+        // Валидация телефона
+        var phone = $('#phone-input').val().replace(/\D/g, '');
+        if (phone && phone.length !== 11) {
+        errors.push('Phone number must contain 11 digits.');
+        $('#phone-error').text('Number must contain 11 digits');
+        valid = false;
+        } else {
+        $('#phone-error').text('');
+        }
+
+        if (!valid) {
+        e.preventDefault();
+        var list = $('#validation-errors-list');
+        list.empty();
+        errors.forEach(function (err) {
+        list.append('<li>' + err + '</li>');
+        });
+        $('#validationModal').modal('show');
+        }
+        });
+
+        @if (editMode)
+        {
+            <text>$('#profile-view').hide(); $('#profile-edit').show(); </text>
+        }
+        });
+    </script>
+}

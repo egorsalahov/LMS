@@ -33,60 +33,185 @@ namespace EgorSalahovSemestrovka22.Controllers
 
             var instructor = await _context.Instructors
                 .Include(i => i.Courses)
+                    .ThenInclude(c => c.Enrollments)
                 .FirstOrDefaultAsync(i => i.Email == user.Email);
 
-            ViewBag.CoursesCount = instructor?.Courses?.Count ?? 0;
-            ViewBag.InstructorName = instructor?.FirstName ?? user.Email;
+            if (instructor == null)
+            {
+                // Инструктор ещё не создан в таблице Instructors
+                ViewBag.TotalStudents = 0;
+                ViewBag.TotalCourses = 0;
+                ViewBag.TotalEarnings = 0m;
+                ViewBag.InstructorName = user.Email;
+                return View(new List<Course>());
+            }
 
-            if (TempData["SuccessMessage"] != null)
-                ViewBag.SuccessMessage = TempData["SuccessMessage"];
+            var courses = instructor.Courses.ToList();
+            var totalStudents = courses.Sum(c => c.Enrollments?.Count ?? 0);
+            var totalCourses = courses.Count;
+            var totalEarnings = courses.Sum(c => c.Price * (c.Enrollments?.Count ?? 0));
 
-            return View();
+            ViewBag.TotalStudents = totalStudents;
+            ViewBag.TotalCourses = totalCourses;
+            ViewBag.TotalEarnings = totalEarnings;
+            ViewBag.InstructorName = instructor.FirstName ?? user.Email;
+
+            return View(courses.OrderByDescending(c => c.Id).ToList());
         }
 
         // GET: /Instructor/MyProfile
         [HttpGet]
-        public IActionResult MyProfile()
+        public async Task<IActionResult> MyProfile()
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("SignIn", "Account");
+
+            // Загружаем инструктора с Education и Experience
+            var instructor = await _context.Instructors
+                .Include(i => i.Educations)
+                .Include(i => i.Experiences)
+                .FirstOrDefaultAsync(i => i.Email == user.Email);
+
+            if (instructor == null)
+            {
+                // Если запись инструктора еще не создана – создаём
+                instructor = new Instructor
+                {
+                    FirstName = user.FirstName ?? "Instructor",
+                    LastName = user.LastName ?? "",
+                    UserName = user.UserName ?? user.Email,
+                    Email = user.Email,
+                    Bio = user.Bio ?? "",
+                    AvatarPath = user.AvatarPath ?? "",
+                    RegistrationDate = user.RegistrationDate,
+                    DateOfBirth = user.DateOfBirth,
+                    Gender = user.Gender ?? "",
+                    PhoneNumber = user.PhoneNumber ?? "",
+                    TotalEarnings = 0
+                };
+                _context.Instructors.Add(instructor);
+                await _context.SaveChangesAsync();
+            }
+
+            return View(instructor);
         }
 
-        // GET: /Instructor/Courses
+        // GET: /Instructor/Students
         [HttpGet]
-        public async Task<IActionResult> Courses()
+        public async Task<IActionResult> Students()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return RedirectToAction("SignIn", "Account");
 
             var instructor = await _context.Instructors
+                .Include(i => i.Courses)
+                    .ThenInclude(c => c.Enrollments)
+                        .ThenInclude(e => e.Student)
                 .FirstOrDefaultAsync(i => i.Email == user.Email);
 
             if (instructor == null)
-                return View(new List<Course>());
+                return View(new List<Student>());
 
-            var courses = await _context.Courses
-                .Include(c => c.Category)
-                .Where(c => c.InstructorId == instructor.Id)
-                .OrderByDescending(c => c.Id)
-                .ToListAsync();
+            // Все уникальные студенты, записанные на курсы этого инструктора
+            var students = instructor.Courses
+                .SelectMany(c => c.Enrollments ?? Enumerable.Empty<Enrollment>())
+                .Select(e => e.Student)
+                .Where(s => s != null)
+                .DistinctBy(s => s.Id)
+                .OrderBy(s => s.FirstName)
+                .ToList();
 
-            return View(courses);
+            return View(students);
         }
 
-        // GET: /Instructor/Students
-        [HttpGet]
-        public IActionResult Students()
+        [HttpPost]
+        public async Task<IActionResult> EditFullProfile(EditInstructorFullViewModel model)
         {
-            return View();
+            if (!ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null) return RedirectToAction("SignIn", "Account");
+
+                var instructor = await _context.Instructors
+                    .Include(i => i.Educations)
+                    .Include(i => i.Experiences)
+                    .FirstOrDefaultAsync(i => i.Email == user.Email);
+
+                ViewData["EditMode"] = true;
+                return View("MyProfile", instructor);
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return RedirectToAction("SignIn", "Account");
+
+            var currentInstructor = await _context.Instructors
+                .Include(i => i.Educations)
+                .Include(i => i.Experiences)
+                .FirstOrDefaultAsync(i => i.Email == currentUser.Email);
+
+            if (currentInstructor == null)
+            {
+                currentInstructor = new Instructor
+                {
+                    Email = currentUser.Email,
+                    UserName = currentUser.UserName ?? currentUser.Email,
+                    FirstName = currentUser.FirstName ?? "",
+                    LastName = currentUser.LastName ?? "",
+                    RegistrationDate = currentUser.RegistrationDate,
+                    DateOfBirth = currentUser.DateOfBirth,
+                    Gender = currentUser.Gender ?? "",
+                    PhoneNumber = currentUser.PhoneNumber ?? ""
+                };
+                _context.Instructors.Add(currentInstructor);
+                await _context.SaveChangesAsync();
+            }
+
+            // Обновляем базовые поля
+            currentInstructor.FirstName = model.FirstName;
+            currentInstructor.LastName = model.LastName;
+            currentInstructor.Gender = model.Gender;
+            currentInstructor.PhoneNumber = model.PhoneNumber;
+            currentInstructor.DateOfBirth = model.DateOfBirth;
+            currentInstructor.Bio = model.Bio;
+
+            // Обновляем Education
+            _context.Educations.RemoveRange(currentInstructor.Educations);
+            if (model.Educations != null)
+            {
+                currentInstructor.Educations = model.Educations
+                    .Where(e => !string.IsNullOrWhiteSpace(e.Degree) || !string.IsNullOrWhiteSpace(e.Institute))
+                    .Select(e => new Education
+                    {
+                        Degree = e.Degree ?? "",
+                        Institute = e.Institute ?? "",
+                        Years = e.Years ?? "",
+                        InstructorId = currentInstructor.Id
+                    }).ToList();
+            }
+
+            // Обновляем Experience
+            _context.Experiences.RemoveRange(currentInstructor.Experiences);
+            if (model.Experiences != null)
+            {
+                currentInstructor.Experiences = model.Experiences
+                    .Where(e => !string.IsNullOrWhiteSpace(e.Position) || !string.IsNullOrWhiteSpace(e.Company))
+                    .Select(e => new Experience
+                    {
+                        Position = e.Position ?? "",
+                        Company = e.Company ?? "",
+                        Years = e.Years ?? "",
+                        InstructorId = currentInstructor.Id
+                    }).ToList();
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Profile updated successfully!";
+            return RedirectToAction("MyProfile");
         }
 
-        // GET: /Instructor/Settings
-        [HttpGet]
-        public IActionResult Settings()
-        {
-            return View();
-        }
+
 
         // GET: /Instructor/AddNewCourse
         [HttpGet]

@@ -27,6 +27,7 @@ namespace EgorSalahovSemestrovka22.Models.Entities
 
         public ICollection<Section> Sections { get; set; } // Для Course Content (программа курса)
         public ICollection<Review> Reviews { get; set; } //звездочки (с возможностью расширения до комментов если добавить string Comment)
+        public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 
         //Includes (Course Detail Page)
         public bool HasLifetimeAccess { get; set; } = true;

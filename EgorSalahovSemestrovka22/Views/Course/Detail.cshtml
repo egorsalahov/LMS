@@ -57,7 +57,8 @@
                                         </p>
                                     }
                                     <p class="fw-medium d-flex align-items-center mb-0">
-                                        <img class="me-2" src="~/img/icons/people.svg" alt="img">0 students enrolled
+                                        <img class="me-2" src="~/img/icons/people.svg" alt="img">
+                                        @(Model.Enrollments?.Count ?? 0) students enrolled
                                     </p>
                                     <span class="badge badge-sm rounded-pill bg-warning fs-12">@Model.Category?.Name</span>
                                 </div>
@@ -130,8 +131,6 @@
                                                             <li class="p-4 px-3 d-flex justify-content-between">
                                                                 <p class="mb-0"><img class="me-2" src="~/img/icons/play.svg" alt="img">@lesson.Title</p>
                                                                 <div class="d-flex gap-xl-5 gap-3">
-                                                                    <a href="#" class="preview-link">Preview</a>
-                                                                    <p class="mb-0">@lesson.Duration</p>
                                                                 </div>
                                                             </li>
                                                         }
@@ -262,7 +261,7 @@
                             <div class="card-body cou-features">
                                 <h5 class="subs-title">Course Features</h5>
                                 <ul>
-                                    <li><p class="mb-0"><img class="me-2" src="~/img/icons/people2.svg" alt="img">Enrolled: 0 students</p></li>
+                                    <li><p class="mb-0"><img class="me-2" src="~/img/icons/people2.svg" alt="img">Enrolled: @(Model.Enrollments?.Count ?? 0) students</p></li>
                                     @if (totalDuration.TotalMinutes > 0)
                                     {
                                         <li><p class="mb-0"><img class="me-2" src="~/img/icons/timer-start3.svg" alt="img">Duration: @(totalDuration.Hours)hr @(totalDuration.Minutes)min</p></li>
