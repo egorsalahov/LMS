@@ -97,7 +97,18 @@
                                                      onerror="this.onerror=null; this.src='/img/course/default.jpg';">
                                             </a>
                                             <div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-2">
-                                                <a href="javascript:void(0);" class="like"><i class="isax isax-heart"></i></a>
+                                                @if (User.Identity.IsAuthenticated)
+                                                {
+                                                    <a href="javascript:void(0);" class="like add-to-wishlist-btn" data-course-id="@course.Id">
+                                                        <i class="isax isax-heart"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a asp-controller="Account" asp-action="SignIn" class="like">
+                                                        <i class="isax isax-heart"></i>
+                                                    </a>
+                                                }
                                             </div>
                                         </div>
                                         <div class="course-list-contents w-100 ps-0 ps-md-3 pt-4 pt-md-0">
@@ -211,9 +222,38 @@
     </section>
 </div>
 
+<!-- Already in Wishlist Modal -->
+<div class="modal fade" id="wishlistInfoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Wishlist</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="isax isax-heart5 text-danger fs-48 mb-2"></i>
+                <p>This course is already in your wishlist.</p>
+                <a href="/Student/Wishlist" class="btn btn-primary btn-sm">View Wishlist</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         $(function () {
+            // ID курсов в Wishlist из ViewBag
+            var wishlistIds = @Html.Raw(Json.Serialize(ViewBag.WishlistCourseIds ?? new List<int>()));
+
+            // Закрашиваем сердечки для курсов в Wishlist
+            $('.add-to-wishlist-btn').each(function () {
+                var courseId = $(this).data('course-id');
+                if (wishlistIds.includes(courseId)) {
+                    $(this).find('i').removeClass('isax-heart').addClass('isax-heart5').css('color', 'red');
+                }
+            });
+
+            // Фильтр категорий
             $('.category-checkbox').on('change', function () {
                 $('.category-checkbox').not(this).prop('checked', false);
                 var selectedId = $(this).is(':checked') ? $(this).val() : null;
@@ -222,6 +262,35 @@
                 } else {
                     window.location.href = '/Course/List';
                 }
+            });
+
+            // Add to Wishlist
+            $(document).on('click', '.add-to-wishlist-btn', function (e) {
+                e.preventDefault();
+                var btn = $(this);
+                var courseId = btn.data('course-id');
+                var icon = btn.find('i');
+
+                // Если уже в Wishlist — показываем модалку
+                if (icon.hasClass('isax-heart5')) {
+                    $('#wishlistInfoModal').modal('show');
+                    return;
+                }
+
+                icon.removeClass('isax-heart').addClass('isax-heart5').css('color', 'red');
+
+                $.post('/Student/AddToWishlist', { courseId: courseId }, function (response) {
+                    if (response.success) {
+                        // Всё ок, сердечко красное
+                    } else {
+                        icon.removeClass('isax-heart5').addClass('isax-heart').css('color', '');
+                        if (response.message !== 'Already in wishlist') {
+                            alert(response.message);
+                        }
+                    }
+                }).fail(function () {
+                    icon.removeClass('isax-heart5').addClass('isax-heart').css('color', '');
+                });
             });
         });
     </script>

@@ -202,7 +202,18 @@
                                     }
                                 </div>
                                 <div class="d-flex justify-content-between gap-3 wishlist-btns">
-                                    <a class="btn d-flex btn-wish" href="#"><i class="isax isax-heart me-1 fs-18"></i>Add to Wishlist</a>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <button type="button" class="btn d-flex btn-wish add-to-wishlist-btn" data-course-id="@Model.Id">
+                                            <i class="isax isax-heart me-1 fs-18"></i>Add to Wishlist
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Account" asp-action="SignIn" class="btn d-flex btn-wish">
+                                            <i class="isax isax-heart me-1 fs-18"></i>Sign In to Add
+                                        </a>
+                                    }
                                 </div>
                                 @if (User.Identity.IsAuthenticated)
                                 {
@@ -308,5 +319,28 @@
                 }
             });
         }
+
+        // Кнопка Add to Wishlist
+        $(document).on('click', '.add-to-wishlist-btn', function () {
+            var btn = $(this);
+            var courseId = btn.data('course-id');
+            btn.prop('disabled', true).html('<i class="isax isax-heart me-1 fs-18"></i>Adding...');
+
+            $.post('/Student/AddToWishlist', { courseId: courseId }, function (response) {
+                if (response.success) {
+                    btn.removeClass('btn-wish').addClass('btn-success').html('<i class="isax isax-heart5 me-1 fs-18"></i>Added!');
+                    setTimeout(function () {
+                        btn.removeClass('btn-success').addClass('btn-wish')
+                            .html('<i class="isax isax-heart me-1 fs-18"></i>Add to Wishlist').prop('disabled', false);
+                    }, 2000);
+                } else {
+                    alert(response.message);
+                    btn.prop('disabled', false).html('<i class="isax isax-heart me-1 fs-18"></i>Add to Wishlist');
+                }
+            }).fail(function () {
+                alert('Error adding to wishlist');
+                btn.prop('disabled', false).html('<i class="isax isax-heart me-1 fs-18"></i>Add to Wishlist');
+            });
+        });
     </script>
 }

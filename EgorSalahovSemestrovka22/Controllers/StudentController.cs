@@ -80,7 +80,76 @@ namespace EgorSalahovSemestrovka22.Controllers
 
             return View(enrollments);
         }
-        public IActionResult Wishlist() => View();
+        // GET: /Student/Wishlist
+        public async Task<IActionResult> Wishlist()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("SignIn", "Account");
+
+            var wishlistItems = await _context.Wishlists
+                .Include(w => w.Course)
+                    .ThenInclude(c => c.Instructor)
+                .Include(w => w.Course)
+                    .ThenInclude(c => c.Reviews)
+                .Include(w => w.Course)
+                    .ThenInclude(c => c.Category)
+                .Where(w => w.StudentId == user.Id)
+                .OrderByDescending(w => w.Id) // или по дате, если добавите
+                .ToListAsync();
+
+            return View(wishlistItems);
+        }
+
+        // POST: /Student/AddToWishlist?courseId=5 (AJAX)
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> AddToWishlist(int courseId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Json(new { success = false, message = "Not authorized" });
+
+            // Проверяем, нет ли уже в вишлисте
+            var alreadyInWishlist = await _context.Wishlists
+                .AnyAsync(w => w.StudentId == user.Id && w.CourseId == courseId);
+            if (alreadyInWishlist)
+                return Json(new { success = false, message = "Already in wishlist" });
+
+            var wishlistItem = new Wishlist
+            {
+                StudentId = user.Id,
+                CourseId = courseId
+            };
+
+            _context.Wishlists.Add(wishlistItem);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Added to wishlist" });
+        }
+
+        // POST: /Student/RemoveFromWishlist?courseId=5 (AJAX или форма)
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> RemoveFromWishlist(int courseId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction("SignIn", "Account");
+
+            var item = await _context.Wishlists
+                .FirstOrDefaultAsync(w => w.StudentId == user.Id && w.CourseId == courseId);
+            if (item != null)
+            {
+                _context.Wishlists.Remove(item);
+                await _context.SaveChangesAsync();
+            }
+
+            // Если вызов был с формы на странице Wishlist — вернёмся обратно, иначе JSON
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                return Json(new { success = true });
+
+            return RedirectToAction("Wishlist");
+        }
         public IActionResult OrderHistory() => View();
         public IActionResult Settings() => View();
         public IActionResult BecomeInstructor() => View();
