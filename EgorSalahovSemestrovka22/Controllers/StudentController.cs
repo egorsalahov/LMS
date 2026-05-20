@@ -84,5 +84,57 @@ namespace EgorSalahovSemestrovka22.Controllers
         public IActionResult OrderHistory() => View();
         public IActionResult Settings() => View();
         public IActionResult BecomeInstructor() => View();
+
+        // GET: /Student/WatchCourse/{enrollmentId}
+        [HttpGet]
+        public async Task<IActionResult> WatchCourse(int enrollmentId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("SignIn", "Account");
+
+            var enrollment = await _context.Enrollments
+                .Include(e => e.Course)
+                    .ThenInclude(c => c.Sections)
+                        .ThenInclude(s => s.Lessons)
+                .Include(e => e.Course)
+                    .ThenInclude(c => c.Instructor)
+                .Include(e => e.Course)
+                    .ThenInclude(c => c.Category)
+                .FirstOrDefaultAsync(e => e.Id == enrollmentId && e.StudentId == user.Id);
+
+            if (enrollment == null)
+                return NotFound("Enrollment not found or access denied");
+
+            return View(enrollment);
+        }
+
+        // GET: /Student/WatchLesson?enrollmentId=5&lessonId=12
+        [HttpGet]
+        public async Task<IActionResult> WatchLesson(int enrollmentId, int lessonId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("SignIn", "Account");
+
+            // Проверяем, что студент записан на этот курс
+            var enrollment = await _context.Enrollments
+                .Include(e => e.Course)
+                .FirstOrDefaultAsync(e => e.Id == enrollmentId && e.StudentId == user.Id);
+
+            if (enrollment == null)
+                return NotFound("Enrollment not found or access denied");
+
+            // Загружаем урок (должен принадлежать курсу этой записи)
+            var lesson = await _context.Lessons
+                .Include(l => l.Section)
+                .FirstOrDefaultAsync(l => l.Id == lessonId && l.Section.CourseId == enrollment.CourseId);
+
+            if (lesson == null)
+                return NotFound("Lesson not found");
+
+            ViewBag.CourseTitle = enrollment.Course.Title;
+            ViewBag.EnrollmentId = enrollmentId;
+
+            return View(lesson);
+        }
     }
 }

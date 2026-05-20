@@ -1,0 +1,146 @@
+﻿@model EgorSalahovSemestrovka22.Models.Entities.Enrollment
+@{
+    var course = Model.Course;
+    var totalLessons = course.Sections?.Sum(s => s.Lessons?.Count) ?? 0;
+}
+
+<div class="main-wrapper">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-bar text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-12">
+                    <h2 class="breadcrumb-title mb-2">Course Watch</h2>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center mb-0">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item"><a asp-controller="Student" asp-action="Courses">My Courses</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">@course.Title</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Breadcrumb -->
+
+    <div class="content pt-0">
+        <div class="container-fluid">
+            <div class="course-watch-section">
+                <div class="row">
+                    <!-- Sidebar: Sections and Lessons -->
+                    <div class="col-lg-4 border-end">
+                        <div class="progress-overview-section">
+                            <a href="javascript:history.back()" class="back-to-course mb-3 d-inline-block">
+                                <i class="isax isax-arrow-left me-1"></i>Back to My Courses
+                            </a>
+                            <h3 class="mb-3">@course.Title</h3>
+
+                            <div class="accordions-items-seperate" id="accordionSpacingExample">
+                                @if (course.Sections != null && course.Sections.Any())
+                                {
+                                    int secIndex = 0;
+                                    foreach (var section in course.Sections)
+                                    {
+                                        var headingId = $"heading{secIndex}";
+                                        var collapseId = $"section{secIndex}";
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="@headingId">
+                                                <button class="accordion-button @(secIndex > 0 ? "collapsed" : "")" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#@collapseId"
+                                                        aria-expanded="@(secIndex == 0 ? "true" : "false")" aria-controls="@collapseId">
+                                                    <div>
+                                                        <span class="d-block mb-1">Section @(secIndex + 1)</span>
+                                                        <h6 class="mb-0">@(section.Title)</h6>
+                                                    </div>
+                                                </button>
+                                            </h2>
+                                            <div id="@collapseId" class="accordion-collapse collapse @(secIndex == 0 ? "show" : "")"
+                                                 aria-labelledby="@headingId" data-bs-parent="#accordionSpacingExample">
+                                                <div class="accordion-body">
+                                                    @if (section.Lessons != null && section.Lessons.Any())
+                                                    {
+                                                        foreach (var lesson in section.Lessons)
+                                                        {
+                                                            <div class="d-flex align-items-center mb-3">
+                                                                <span><i class="isax isax-play-circle5 text-success fs-24 me-1"></i></span>
+                                                                <a asp-controller="Student" asp-action="WatchLesson"
+                                                                   asp-route-enrollmentId="@Model.Id" asp-route-lessonId="@lesson.Id"
+                                                                   class="accordian-content mb-0 text-decoration-none">
+                                                                    @lesson.Title
+                                                                </a>
+                                                            </div>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <p class="text-muted mb-0">No lessons in this section.</p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        secIndex++;
+                                    }
+                                }
+                                else
+                                {
+                                    <p class="text-muted">No curriculum yet.</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main content: Video, Tabs -->
+                    <div class="col-lg-8">
+                        <div class="course-watch-content">
+                            <div class="position-relative video-btn mb-4">
+                                @if (!string.IsNullOrEmpty(course.ImagePath) && course.ImagePath.StartsWith("/"))
+                                {
+                                    <img src="@course.ImagePath" class="img-fluid rounded" alt="@course.Title">
+                                }
+                                else
+                                {
+                                    <img src="/img/default.jpg" class="img-fluid rounded" alt="Course preview">
+                                }
+                                <!-- Можно добавить заглушку видео, если нужно -->
+                            </div>
+
+                            <ul class="nav-tabs mb-4 nav-justified border-0 nav-style-1 d-sm-flex d-block" role="tablist">
+                                <li class="nav-item active">
+                                    <a class="btn nav-link active" data-bs-toggle="tab" role="tab" href="#overview">Overview</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <!-- Overview Tab -->
+                                <div class="tab-pane active show" id="overview" role="tabpanel">
+                                    <div class="mb-4">
+                                        <h6 class="fs-18 fw-semibold mb-1">About this course</h6>
+                                        <p>@course.ShortDescription</p>
+                                    </div>
+                                    <div class="mb-4">
+                                        <h6 class="fs-18 fw-semibold mb-2">Description</h6>
+                                        <div>@Html.Raw(course.FullDescription ?? "No description provided.")</div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <h6 class="fs-18 fw-semibold mb-2">What You’ll Learn</h6>
+                                        <ul class="list-unstyled what-you-learn ms-4" style="list-style-type: disc;">
+                                            <!-- Можно вытащить из Sections/Lessons заголовки -->
+                                            @if (course.Sections != null)
+                                            {
+                                                foreach (var section in course.Sections)
+                                                {
+                                                    <li class="mb-2">@(section.Title)</li>
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

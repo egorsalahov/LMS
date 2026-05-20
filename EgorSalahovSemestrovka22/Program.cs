@@ -3,6 +3,7 @@ using EgorSalahovSemestrovka22.Middlewares;
 using EgorSalahovSemestrovka22.Models;
 using EgorSalahovSemestrovka22.Models.Entities;
 using EgorSalahovSemestrovka22.Services;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
 builder.Services.AddScoped<EmailService>();
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 200 * 1024 * 1024; // 200 MB видео лимит
+});
 
 //Identity
 builder.Services.AddIdentity<Student, IdentityRole>(options =>

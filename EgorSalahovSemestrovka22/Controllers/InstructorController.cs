@@ -199,17 +199,48 @@ namespace EgorSalahovSemestrovka22.Controllers
 
                     var section = new Section
                     {
-                        Title = sectionVm.Title,    
+                        Title = sectionVm.Title,
                         CourseId = course.Id,
-                        Lessons = sectionVm.Lessons?
-                            .Where(l => !string.IsNullOrWhiteSpace(l.Title))
-                            .Select(l => new Lesson
+                        Lessons = new List<Lesson>()
+                    };
+
+                    if (sectionVm.Lessons != null)
+                    {
+                        foreach (var lessonVm in sectionVm.Lessons)
+                        {
+                            if (string.IsNullOrWhiteSpace(lessonVm.Title)) continue;
+
+                            var lesson = new Lesson
                             {
-                                Title = l.Title,
+                                Title = lessonVm.Title,
                                 Duration = "0:00",
                                 IsPreview = false
-                            }).ToList() ?? new List<Lesson>()
-                    };
+                            };
+
+                            // Сохранение видеофайла
+                            if (lessonVm.VideoFile != null && lessonVm.VideoFile.Length > 0)
+                            {
+                                var videoFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/videos");
+                                if (!Directory.Exists(videoFolder))
+                                    Directory.CreateDirectory(videoFolder);
+
+                                var uniqueVideoName = Guid.NewGuid().ToString() + "_" +
+                                    Path.GetFileNameWithoutExtension(lessonVm.VideoFile.FileName)
+                                        .Replace("(", "").Replace(")", "").Replace(";", "").Replace(",", "").Replace(" ", "_")
+                                    + Path.GetExtension(lessonVm.VideoFile.FileName);
+
+                                var videoPath = Path.Combine(videoFolder, uniqueVideoName);
+                                using (var stream = new FileStream(videoPath, FileMode.Create))
+                                {
+                                    await lessonVm.VideoFile.CopyToAsync(stream);
+                                }
+                                lesson.VideoLink = "/uploads/videos/" + uniqueVideoName;
+                            }
+
+                            section.Lessons.Add(lesson);
+                        }
+                    }
+
                     _context.Sections.Add(section);
                 }
 

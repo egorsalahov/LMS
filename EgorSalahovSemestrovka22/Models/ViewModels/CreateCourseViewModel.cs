@@ -71,6 +71,7 @@ namespace EgorSalahovSemestrovka22.Models.ViewModels
         {
             public string Title { get; set; }
             public string? VideoLink { get; set; }
+            public IFormFile? VideoFile { get; set; }
         }
     }
 }

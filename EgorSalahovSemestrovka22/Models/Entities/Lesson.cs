@@ -6,6 +6,7 @@
         public string Title { get; set; }
         public string Duration { get; set; }
         public bool IsPreview { get; set; } // Можно ли посмотреть бесплатно
+        public string? VideoLink { get; set; }
         public int SectionId { get; set; }
         public Section Section { get; set; }
     }

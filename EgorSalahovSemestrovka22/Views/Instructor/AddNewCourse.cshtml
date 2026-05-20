@@ -329,8 +329,9 @@
                     <input type="text" class="form-control" id="lesson-name-input">
                 </div>
                 <div class="input-block mb-4">
-                    <label class="form-label">Video link<span class="text-danger ms-1">*</span></label>
-                    <input type="text" class="form-control" id="lesson-video-input">
+                    <label class="form-label">Upload Video<span class="text-danger ms-1">*</span></label>
+                    <input type="file" class="form-control" id="lesson-video-input" accept="video/*">
+                    <span class="text-danger fs-12" id="video-error"></span>
                 </div>
             </div>
             <div class="modal-footer">
@@ -411,33 +412,22 @@
         });
         });
 
-        // Валидация и показ имени файла
+        // Валидация изображения
         $('#file-upload').on('change', function () {
         var file = this.files[0];
         var $span = $(this).closest('.input-block').find('span[asp-validation-for="ImageFile"]');
         $span.text('');
-
-        if (!file) {
-        $('#file-name-display').val('No File Selected');
-        return;
-        }
-
+        if (!file) { $('#file-name-display').val('No File Selected'); return; }
         var allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         if ($.inArray(file.type, allowedTypes) === -1) {
         $span.text('Only JPEG, PNG, GIF, WebP are allowed.');
-        $(this).val('');
-        $('#file-name-display').val('No File Selected');
-        return;
+        $(this).val(''); $('#file-name-display').val('No File Selected'); return;
         }
-
         var maxSize = 2 * 1024 * 1024;
         if (file.size > maxSize) {
         $span.text('File size must be up to 2 MB.');
-        $(this).val('');
-        $('#file-name-display').val('No File Selected');
-        return;
+        $(this).val(''); $('#file-name-display').val('No File Selected'); return;
         }
-
         $('#file-name-display').val(file.name);
         });
 
@@ -450,12 +440,10 @@
         $('#add-lesson').modal('show');
         });
 
+        // Добавление топика (секции)
         $('#btn-add-topic').click(function () {
         const title = $('#topic-name-input').val().trim();
-        if (!title) {
-        alert('Enter topic name');
-        return;
-        }
+        if (!title) { alert('Enter topic name'); return; }
 
         const sectionHtml = `
         <div class="accordion-item" data-section-index="${sectionIndex}">
@@ -479,27 +467,35 @@
 
         $('#curriculum-accordion').append(sectionHtml);
         $('#hidden-sections-container').append(`<input type="hidden" name="Sections[${sectionIndex}].Title" value="${title}" />`);
-
         $('#topic-name-input').val('');
         $('#add-topic').modal('hide');
         sectionIndex++;
         });
 
+        // Добавление урока
         $('#btn-add-lesson').click(function () {
         const title = $('#lesson-name-input').val().trim();
-        const videoLink = $('#lesson-video-input').val().trim();
-        if (!title) {
-        alert('Enter lesson name');
-        return;
+        const videoFile = $('#lesson-video-input')[0].files[0];
+
+        if (!title) { alert('Enter lesson name'); return; }
+        if (currentSectionIndex < 0) { alert('Select a topic first'); return; }
+
+        if (videoFile) {
+        var allowedVideoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
+        if ($.inArray(videoFile.type, allowedVideoTypes) === -1) {
+        $('#video-error').text('Only MP4, WebM, OGG are allowed.'); return;
         }
-        if (currentSectionIndex < 0) {
-        alert('Select a topic first');
-        return;
+        var maxVideoSize = 100 * 1024 * 1024;
+        if (videoFile.size > maxVideoSize) {
+        $('#video-error').text('File size must be up to 100 MB.'); return;
         }
+        }
+        $('#video-error').text('');
 
         const sectionEl = $(`#curriculum-accordion [data-section-index="${currentSectionIndex}"]`);
         const lessonsContainer = sectionEl.find('.lessons-container');
         const lessonIndex = lessonsContainer.children('.lesson-item').length;
+        const fileName = videoFile ? videoFile.name : 'No video';
 
         const lessonHtml = `
         <div class="lesson-item d-flex align-items-center justify-content-between bg-white p-2 border rounded-3 mb-2">
@@ -507,7 +503,7 @@
         <span><i class="isax isax-play-circle5 text-success fs-24 me-1"></i></span>
         <div>
         <p class="fw-medium text-gray-5 mb-0">${title}</p>
-        ${videoLink ? `<small class="text-muted">${videoLink}</small>` : ''}
+        <small class="text-muted">${fileName}</small>
         </div>
         </div>
         <button type="button" class="btn btn-sm btn-outline-danger remove-lesson-btn"><i class="isax isax-trash"></i></button>
@@ -516,7 +512,14 @@
         lessonsContainer.append(lessonHtml);
 
         $('#hidden-sections-container').append(`<input type="hidden" name="Sections[${currentSectionIndex}].Lessons[${lessonIndex}].Title" value="${title}" />`);
-        $('#hidden-sections-container').append(`<input type="hidden" name="Sections[${currentSectionIndex}].Lessons[${lessonIndex}].VideoLink" value="${videoLink}" />`);
+
+        if (videoFile) {
+        var fileInput = $('#lesson-video-input').clone()
+        .attr('name', `Sections[${currentSectionIndex}].Lessons[${lessonIndex}].VideoFile`)
+        .attr('id', '')
+        .hide();
+        $('#hidden-sections-container').append(fileInput);
+        }
 
         $('#lesson-name-input').val('');
         $('#lesson-video-input').val('');
@@ -540,22 +543,16 @@
         $(`input[name^="Sections[${sectionIdx}].Lessons"]`).remove();
         container.children('.lesson-item').each(function (i) {
         const title = $(this).find('p.fw-medium').text().trim();
-        const videoLinkEl = $(this).find('small.text-muted');
-        const videoLink = videoLinkEl.length ? videoLinkEl.text().trim() : '';
         $('#hidden-sections-container').append(`<input type="hidden" name="Sections[${sectionIdx}].Lessons[${i}].Title" value="${title}" />`);
-        $('#hidden-sections-container').append(`<input type="hidden" name="Sections[${sectionIdx}].Lessons[${i}].VideoLink" value="${videoLink}" />`);
         });
         }
 
         // Валидация при Submit
         $('#courseWizardForm').on('submit', function (e) {
         var errors = [];
-
-        // Очищаем предыдущие ошибки
         $('.text-danger').text('');
         $('#validationErrorsList').empty();
 
-        // Step 1: Course Information
         var title = $('[name="Title"]').val().trim();
         if (!title) errors.push('Course Title is required.');
 
@@ -571,28 +568,22 @@
         var fullDesc = $('[name="FullDescription"]').val().trim();
         if (!fullDesc || fullDesc === '<p><br></p>' || fullDesc === '') errors.push('Course Description is required.');
 
-        // Step 2: Image validation (already handled in change event, but double-check)
         var imageError = $('span[asp-validation-for="ImageFile"]').text().trim();
         if (imageError) errors.push(imageError);
 
-        // Step 4: Pricing
         var isFree = $('#flexCheckChecked1').is(':checked');
         if (!isFree) {
         var price = parseFloat($('[name="Price"]').val());
         if (isNaN(price) || price < 0) errors.push('Course Price must be a valid non-negative number.');
         }
 
-        // Если есть ошибки — показываем модалку и блокируем отправку
         if (errors.length > 0) {
-        e.preventDefault(); // Блокируем Submit
-
+        e.preventDefault();
         errors.forEach(function (err) {
         $('#validationErrorsList').append('<li>' + err + '</li>');
         });
-
         $('#validationErrorsModal').modal('show');
         }
         });
     </script>
-}
 }

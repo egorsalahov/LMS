@@ -1,0 +1,77 @@
+﻿@model EgorSalahovSemestrovka22.Models.Entities.Lesson
+@{
+    var courseTitle = ViewBag.CourseTitle as string;
+    var enrollmentId = (int)ViewBag.EnrollmentId;
+}
+
+<div class="main-wrapper">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-bar text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-12">
+                    <h2 class="breadcrumb-title mb-2">@Model.Title</h2>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center mb-0">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item"><a asp-action="Courses">My Courses</a></li>
+                            <li class="breadcrumb-item"><a asp-action="WatchCourse" asp-route-enrollmentId="@enrollmentId">@courseTitle</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Breadcrumb -->
+
+    <div class="content pt-0">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h4>@Model.Title</h4>
+                                <a asp-action="WatchCourse" asp-route-enrollmentId="@enrollmentId"
+                                   class="btn btn-secondary btn-sm">
+                                    <i class="isax isax-arrow-left me-1"></i> Back to Course
+                                </a>
+                            </div>
+
+                            <!-- Video Player -->
+                            <div class="ratio ratio-16x9 mb-4 bg-dark">
+                                @if (!string.IsNullOrEmpty(Model.VideoLink))
+                                {
+                                    <video controls style="width:100%;height:100%;object-fit:contain;">
+                                        <source src="@Model.VideoLink" type="video/mp4">
+                                        @{
+                                            var ext = System.IO.Path.GetExtension(Model.VideoLink)?.ToLower();
+                                            var mimeType = ext switch
+                                            {
+                                                ".webm" => "video/webm",
+                                                ".ogg" or ".ogv" => "video/ogg",
+                                                _ => "video/mp4"
+                                            };
+                                        }
+                                        <source src="@Model.VideoLink" type="@mimeType">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                }
+                                else
+                                {
+                                    <div class="d-flex align-items-center justify-content-center h-100">
+                                        <div class="text-center text-white">
+                                            <i class="isax isax-video-play5 fs-48 mb-2"></i>
+                                            <p>No video available for this lesson</p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
