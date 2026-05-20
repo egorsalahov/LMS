@@ -150,7 +150,36 @@ namespace EgorSalahovSemestrovka22.Controllers
 
             return RedirectToAction("Wishlist");
         }
-        public IActionResult OrderHistory() => View();
+        public async Task<IActionResult> OrderHistory()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("SignIn", "Account");
+
+            var orders = await _context.Orders
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Course)
+                .Where(o => o.StudentId == user.Id)
+                .OrderByDescending(o => o.OrderDate)
+                .ToListAsync();
+
+            return View(orders);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> OrderDetail(int orderId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Course)
+                .FirstOrDefaultAsync(o => o.Id == orderId && o.StudentId == user.Id);
+
+            if (order == null) return NotFound();
+
+            return PartialView("_OrderDetailPartial", order);
+        }
         public IActionResult Settings() => View();
         public IActionResult BecomeInstructor() => View();
 

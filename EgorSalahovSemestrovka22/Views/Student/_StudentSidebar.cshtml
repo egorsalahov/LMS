@@ -1,30 +1,44 @@
 ﻿@{
-
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 }
 
 <!-- sidebar -->
 <div class="col-lg-3 theiaStickySidebar">
-	<div class="settings-sidebar">
-		<div>
-			<h6 class="mb-3">Dashboard</h6>
-			<ul class="mb-3 pb-1">
-				<li>
-					<a asp-controller="Student" asp-action="MyProfile" class="d-inline-flex align-items-center active"><i class="fa-solid fa-user me-2"></i>My Profile</a>
-				</li>
-				<li>
-					<a asp-controller="Student" asp-action="Courses" class="d-inline-flex align-items-center"><i class="isax isax-teacher5 me-2"></i>Enrolled Courses</a>
-				</li>
-				<li>
-					<a asp-controller="Student" asp-action="Wishlist" class="d-inline-flex align-items-center"><i class="isax isax-heart5 me-2"></i>Wishlist</a>
-				</li>
-				<li>
-					<a asp-controller="Student" asp-action="OrderHistory" class="d-inline-flex align-items-center"><i class="isax isax-shopping-cart5 me-2"></i>Order History</a>
-				</li>
-				<li>
-					<a href="student-messages.html" class="d-inline-flex align-items-center"><i class="isax isax-messages-35 me-2"></i>Messages</a>
-				</li>
-			</ul>
-		</div>
-	</div>
+    <div class="settings-sidebar">
+        <div>
+            <h6 class="mb-3">Dashboard</h6>
+            <ul class="mb-3 pb-1">
+                <li>
+                    <a asp-controller="Student" asp-action="MyProfile"
+                       class="d-inline-flex align-items-center @(currentAction == "MyProfile" ? "active" : "")">
+                        <i class="fa-solid fa-user me-2"></i>My Profile
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Student" asp-action="Courses"
+                       class="d-inline-flex align-items-center @(currentAction == "Courses" ? "active" : "")">
+                        <i class="isax isax-teacher5 me-2"></i>Enrolled Courses
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Student" asp-action="Wishlist"
+                       class="d-inline-flex align-items-center @(currentAction == "Wishlist" ? "active" : "")">
+                        <i class="isax isax-heart5 me-2"></i>Wishlist
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Student" asp-action="OrderHistory"
+                       class="d-inline-flex align-items-center @(currentAction == "OrderHistory" ? "active" : "")">
+                        <i class="isax isax-shopping-cart5 me-2"></i>Order History
+                    </a>
+                </li>
+                <li>
+                    <a href="student-messages.html" class="d-inline-flex align-items-center">
+                        <i class="isax isax-messages-35 me-2"></i>Messages
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 <!-- sidebar -->

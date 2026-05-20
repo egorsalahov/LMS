@@ -1,98 +1,131 @@
-﻿@{
-
+﻿@model List<EgorSalahovSemestrovka22.Models.Entities.Orders.Order>
+@{
+    ViewData["Title"] = "Order History";
 }
 
 <!-- Main Wrapper -->
 <div class="main-wrapper">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-bar text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-12">
+                    <h2 class="breadcrumb-title mb-2">Order History</h2>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center mb-0">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Order History</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Breadcrumb -->
 
-			
-		   
-	<!-- Breadcrumb -->
-	<div class="breadcrumb-bar text-center">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12 col-12">
-					<h2 class="breadcrumb-title mb-2">Order History</h2>
-					<nav aria-label="breadcrumb">
-						<ol class="breadcrumb justify-content-center mb-0">
-							<li class="breadcrumb-item"><a href="index.html">Home</a></li>
-							<li class="breadcrumb-item active" aria-current="page">Order History</li>
-						</ol>
-					</nav>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- /Breadcrumb -->
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                @await Html.PartialAsync("_StudentSidebar")
+                <div class="col-lg-9">
+                    <div class="page-title d-flex align-items-center justify-content-between">
+                        <h5>Order History</h5>
+                    </div>
 
-	<div class="content">
-		<div class="container">
-						
-			<div class="row">
-				<!-- sidebar -->
-				@await Html.PartialAsync("_StudentSidebar")
-				<!-- sidebar -->
-				<div class="col-lg-9">
-					<div class="page-title d-flex align-items-center justify-content-between">
-						<h5>Order History</h5>
-					</div>
-					<div class="row">
-						<div class="col-md-8">
-							<div class="mb-3">
-								
-							</div>
-						</div>
-					</div>
-					<div class="table-responsive custom-table">
-						<table class="table">
-							<thead class="thead-light">
-								<tr>
-									<th>Order ID</th>
-									<th>Date</th>
-									<th>Amount</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#view_invoice">#ORD010</a></td>
-									<td>22 Aug 2025</td>
-									<td>$160</td>
-									
-								</tr>
-								<tr>
-									<td><a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#view_invoice">#ORD009</a></td>
-									<td>10 Aug 2025</td>
-									<td>$180</td>
-									
-								</tr>
-								<tr>
-									<td><a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#view_invoice">#ORD008</a></td>
-									<td>26 Jul 2025</td>
-									<td>$200</td>
-									
-								</tr>
-								<tr>
-									<td><a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#view_invoice">#ORD007</a></td>
-									<td>12 Jul 2025</td>
-									<td>$220</td>
-									
-								</tr>
-								<tr>
-									<td><a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#view_invoice">#ORD006</a></td>
-									<td>02 Jul 2025</td>
-									<td>$170</td>
-									
-								</tr>
-								<tr>
-									<td><a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#view_invoice">#ORD005</a></td>
-									<td>25 Jun 2025</td>
-									<td>$150</td>
-									
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                    @if (!Model.Any())
+                    {
+                        <div class="text-center py-5">
+                            <i class="isax isax-receipt-item5 fs-48 text-muted mb-3"></i>
+                            <p class="text-muted">You have no orders yet.</p>
+                            <a asp-controller="Course" asp-action="List" class="btn btn-primary">Browse Courses</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive custom-table">
+                            <table class="table table-hover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Order #</th>
+                                        <th>Date</th>
+                                        <th>Courses</th>
+                                        <th>Tax</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Payment</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var order in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <a href="javascript:void(0);" class="text-primary fw-bold order-detail-link"
+                                                   data-bs-toggle="modal" data-bs-target="#orderDetailModal"
+                                                   data-order-id="@order.Id">
+                                                    #ORD@(order.Id.ToString("D3"))
+                                                </a>
+                                            </td>
+                                            <td>@order.OrderDate.ToString("dd MMM yyyy")</td>
+                                            <td>
+                                                @foreach (var item in order.OrderItems)
+                                                {
+                                                    <span class="d-block small">@item.Course?.Title</span>
+                                                }
+                                            </td>
+                                            <td>$@order.Tax.ToString("0.00")</td>
+                                            <td class="fw-bold">$@order.TotalAmount.ToString("0.00")</td>
+                                            <td>
+                                                <span class="badge @(order.OrderStatus == "Completed" ? "bg-success" : "bg-warning")">
+                                                    @order.OrderStatus
+                                                </span>
+                                            </td>
+                                            <td>@order.PaymentMethod</td>
+                                            <td>
+                                                <a asp-controller="Student" asp-action="Courses" class="btn btn-sm btn-outline-primary">
+                                                    View Courses
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Order Detail Modal -->
+<div class="modal fade" id="orderDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Order Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="orderDetailContent">
+                <p class="text-center">Loading...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            // Загрузка деталей заказа в модалку
+            $('.order-detail-link').on('click', function () {
+                var orderId = $(this).data('order-id');
+                $('#orderDetailContent').html('<p class="text-center">Loading...</p>');
+
+                $.get('/Student/OrderDetail', { orderId: orderId }, function (data) {
+                    $('#orderDetailContent').html(data);
+                });
+            });
+        });
+    </script>
+}
