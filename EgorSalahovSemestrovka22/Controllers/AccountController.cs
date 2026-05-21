@@ -1,5 +1,6 @@
 ﻿using EgorSalahovSemestrovka22.Models.Entities;
 using EgorSalahovSemestrovka22.Models.ViewModels;
+using EgorSalahovSemestrovka22.Models.ViewModels.EgorSalahovSemestrovka22.Models.ViewModels;
 using EgorSalahovSemestrovka22.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -187,11 +188,80 @@ namespace EgorSalahovSemestrovka22.Controllers
             return View();
         }
 
-        // GET: /Account/SetPassword
-        [HttpGet]
-        public IActionResult SetPassword()
+        // POST: /Account/ForgotPassword
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
-            return View();
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null || !user.EmailConfirmed)
+            {
+                // Не говорим что пользователь не найден (безопасность)
+                TempData["SuccessMessage"] = "If your email is registered, you will receive a password reset link.";
+                return RedirectToAction("SignIn");
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var resetLink = Url.Action(
+                "ResetPassword",
+                "Account",
+                new { email = user.Email, token = token },
+                protocol: HttpContext.Request.Scheme);
+
+            await _emailService.SendEmailAsync(
+                user.Email,
+                "Сброс пароля на Dreams LMS",
+                $@"
+            <h2>Сброс пароля</h2>
+            <p>Для сброса пароля перейдите по ссылке:</p>
+            <p><a href='{resetLink}'>Сбросить пароль</a></p>
+            <p>Если вы не запрашивали сброс пароля, проигнорируйте это письмо.</p>
+        ");
+
+            TempData["SuccessMessage"] = "If your email is registered, you will receive a password reset link.";
+            return RedirectToAction("SignIn");
+        }
+
+        // GET: /Account/ResetPassword
+        [HttpGet]
+        public IActionResult ResetPassword(string email, string token)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
+                return RedirectToAction("Index", "Home");
+
+            var model = new ResetPasswordViewModel { Email = email, Token = token };
+            return View(model);
+        }
+
+        // POST: /Account/ResetPassword
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "Invalid request.";
+                return RedirectToAction("SignIn");
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+
+            if (result.Succeeded)
+            {
+                TempData["SuccessMessage"] = "Password has been reset successfully! You can now sign in.";
+                return RedirectToAction("SignIn");
+            }
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
+
+            return View(model);
         }
 
         [HttpGet]
