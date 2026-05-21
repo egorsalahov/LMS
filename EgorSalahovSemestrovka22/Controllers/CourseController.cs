@@ -1,5 +1,6 @@
 ﻿using EgorSalahovSemestrovka22.Data;
 using EgorSalahovSemestrovka22.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -109,14 +110,20 @@ namespace EgorSalahovSemestrovka22.Controllers
                 .Include(c => c.Sections)
                     .ThenInclude(s => s.Lessons)
                 .Include(c => c.Reviews)
-                .Include(c => c.Enrollments)   // <-- Добавить
+                .Include(c => c.Enrollments)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (course == null)
-                return NotFound();
+            if (course == null) return NotFound();
 
             ViewBag.InstructorCourseCount = await _context.Courses
                 .CountAsync(c => c.InstructorId == course.InstructorId);
+
+            if (User.Identity.IsAuthenticated && User.IsInRole("Student"))
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var existingReview = course.Reviews.FirstOrDefault(r => r.StudentId == user.Id);
+                ViewBag.UserRating = existingReview?.Rating ?? 0;
+            }
 
             return View(course);
         }
@@ -154,6 +161,55 @@ namespace EgorSalahovSemestrovka22.Controllers
                 .ToListAsync();
 
             return Json(courses);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> RateCourse(int courseId, int rating)
+        {
+            if (rating < 1 || rating > 5)
+                return Json(new { success = false, message = "Invalid rating" });
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Json(new { success = false, message = "Not authorized" });
+
+            if (!User.IsInRole("Student") || User.IsInRole("Instructor"))
+                return Json(new { success = false, message = "Only enrolled students can rate" });
+
+            var enrollment = await _context.Enrollments
+                .AnyAsync(e => e.StudentId == user.Id && e.CourseId == courseId);
+            if (!enrollment)
+                return Json(new { success = false, message = "You must purchase the course first" });
+
+            var review = await _context.Reviews
+                .FirstOrDefaultAsync(r => r.StudentId == user.Id && r.CourseId == courseId);
+
+            if (review == null)
+            {
+                review = new Review
+                {
+                    StudentId = user.Id,
+                    CourseId = courseId,
+                    Rating = rating,
+                    CreatedAt = DateTime.Now
+                };
+                _context.Reviews.Add(review);
+            }
+            else
+            {
+                review.Rating = rating;
+                review.CreatedAt = DateTime.Now;
+            }
+
+            await _context.SaveChangesAsync();
+
+            var avg = await _context.Reviews
+                .Where(r => r.CourseId == courseId)
+                .AverageAsync(r => (double?)r.Rating) ?? 0;
+            var count = await _context.Reviews.CountAsync(r => r.CourseId == courseId);
+
+            return Json(new { success = true, average = avg.ToString("0.0"), count = count });
         }
     }
 }

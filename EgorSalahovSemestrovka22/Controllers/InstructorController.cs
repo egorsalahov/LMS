@@ -34,6 +34,8 @@ namespace EgorSalahovSemestrovka22.Controllers
             var instructor = await _context.Instructors
                 .Include(i => i.Courses)
                     .ThenInclude(c => c.Enrollments)
+                      .Include(i => i.Courses)
+                        .ThenInclude(c => c.Reviews)
                 .FirstOrDefaultAsync(i => i.Email == user.Email);
 
             if (instructor == null)

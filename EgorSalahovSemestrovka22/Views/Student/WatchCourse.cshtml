@@ -137,6 +137,22 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Rate Course -->
+                            <div class="card mt-4">
+                                <div class="card-body text-center">
+                                    <h5 class="subs-title mb-3">Rate this course</h5>
+                                    <div class="rating-stars" id="rating-stars" data-course-id="@course.Id">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <i class="fa-star @(i <= (ViewBag.UserRating ?? 0) ? "fas text-warning" : "far") fs-24 me-1" data-rating="@i" style="cursor:pointer;"></i>
+                                        }
+                                    </div>
+                                    <p class="mt-2 mb-0">
+                                        Average: <strong id="avg-rating">@(course.Reviews?.Any() == true ? course.Reviews.Average(r => r.Rating).ToString("0.0") : "0.0")</strong>
+                                        (<span id="reviews-count">@(course.Reviews?.Count ?? 0)</span> reviews)
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -144,3 +160,34 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Рейтинг курса
+        $(document).on('click', '#rating-stars .fa-star', function () {
+            var rating = $(this).data('rating');
+            var courseId = $('#rating-stars').data('course-id');
+            var stars = $('#rating-stars .fa-star');
+
+            stars.removeClass('fas text-warning').addClass('far');
+            stars.each(function (index) {
+                if (index < rating) {
+                    $(this).removeClass('far').addClass('fas text-warning');
+                }
+            });
+
+            $.post('/Course/RateCourse', { courseId: courseId, rating: rating }, function (response) {
+                if (response.success) {
+                    $('#avg-rating').text(response.average);
+                    $('#reviews-count').text(response.count);
+                } else {
+                    alert(response.message);
+                    location.reload();
+                }
+            }).fail(function () {
+                alert('Error saving rating');
+                location.reload();
+            });
+        });
+    </script>
+}

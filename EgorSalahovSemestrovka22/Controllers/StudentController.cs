@@ -188,6 +188,7 @@ namespace EgorSalahovSemestrovka22.Controllers
 
         // GET: /Student/WatchCourse/{enrollmentId}
         [HttpGet]
+        [HttpGet]
         public async Task<IActionResult> WatchCourse(int enrollmentId)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -201,10 +202,17 @@ namespace EgorSalahovSemestrovka22.Controllers
                     .ThenInclude(c => c.Instructor)
                 .Include(e => e.Course)
                     .ThenInclude(c => c.Category)
+                .Include(e => e.Course)
+                    .ThenInclude(c => c.Reviews)
                 .FirstOrDefaultAsync(e => e.Id == enrollmentId && e.StudentId == user.Id);
 
             if (enrollment == null)
                 return NotFound("Enrollment not found or access denied");
+
+            // Рейтинг текущего студента
+            var existingReview = enrollment.Course.Reviews?
+                .FirstOrDefault(r => r.StudentId == user.Id);
+            ViewBag.UserRating = existingReview?.Rating ?? 0;
 
             return View(enrollment);
         }

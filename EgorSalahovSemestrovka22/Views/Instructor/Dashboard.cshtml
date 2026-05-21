@@ -89,12 +89,15 @@
                             <tr>
                                 <th>Courses</th>
                                 <th>Enrolled</th>
+                                <th>Rating</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var course in Model)
                             {
+                                var avgRating = course.Reviews?.Any() == true ? course.Reviews.Average(r => r.Rating) : 0;
+                                var reviewCount = course.Reviews?.Count ?? 0;
                                 <tr>
                                     <td>
                                         <div class="course-title d-flex align-items-center">
@@ -109,6 +112,16 @@
                                         </div>
                                     </td>
                                     <td>@(course.Enrollments?.Count ?? 0)</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <i class="fa-star @(i <= Math.Round(avgRating) ? "fas text-warning" : "far text-muted") fs-12 me-0"></i>
+                                            }
+                                            <span class="ms-2 fw-medium">@avgRating.ToString("0.0")</span>
+                                            <small class="text-muted ms-1">(@reviewCount)</small>
+                                        </div>
+                                    </td>
                                     <td>Published</td>
                                 </tr>
                             }
