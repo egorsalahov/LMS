@@ -17,7 +17,7 @@ namespace EgorSalahovSemestrovka22.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> List(int? categoryId, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> List(int? categoryId, string? search, int page = 1, int pageSize = 10)
         {
             var query = _context.Courses
                 .Include(c => c.Category)
@@ -29,6 +29,12 @@ namespace EgorSalahovSemestrovka22.Controllers
             {
                 query = query.Where(c => c.CategoryId == categoryId.Value);
                 ViewBag.SelectedCategory = categoryId.Value;
+            }
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(c => c.Title.Contains(search) || c.ShortDescription.Contains(search));
+                ViewBag.SearchQuery = search;
             }
 
             var totalCourses = await query.CountAsync();
@@ -113,6 +119,41 @@ namespace EgorSalahovSemestrovka22.Controllers
                 .CountAsync(c => c.InstructorId == course.InstructorId);
 
             return View(course);
+        }
+
+        // GET: /Course/Search?query=react
+        [HttpGet]
+        [HttpGet]
+        public async Task<IActionResult> Search(string query, int? categoryId)
+        {
+            if (string.IsNullOrWhiteSpace(query) || query.Length < 2)
+                return Json(new List<object>());
+
+            var queryable = _context.Courses
+                .Include(c => c.Instructor)
+                .Where(c => c.Title.Contains(query) || c.ShortDescription.Contains(query))
+                .AsQueryable();
+
+            // Фильтр по категории
+            if (categoryId.HasValue && categoryId.Value > 0)
+            {
+                queryable = queryable.Where(c => c.CategoryId == categoryId.Value);
+            }
+
+            var courses = await queryable
+                .OrderBy(c => c.Title)
+                .Take(8)
+                .Select(c => new
+                {
+                    c.Id,
+                    c.Title,
+                    Instructor = c.Instructor.FirstName + " " + c.Instructor.LastName,
+                    c.Price,
+                    ImagePath = string.IsNullOrEmpty(c.ImagePath) || !c.ImagePath.StartsWith("/") ? "/img/default.jpg" : c.ImagePath
+                })
+                .ToListAsync();
+
+            return Json(courses);
         }
     }
 }

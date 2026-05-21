@@ -264,25 +264,32 @@
                 }
             });
 
-            // Add to Wishlist
+            // Add/Remove Wishlist
             $(document).on('click', '.add-to-wishlist-btn', function (e) {
                 e.preventDefault();
                 var btn = $(this);
                 var courseId = btn.data('course-id');
                 var icon = btn.find('i');
 
-                // Если уже в Wishlist — показываем модалку
+                // Если уже в Wishlist — убираем
                 if (icon.hasClass('isax-heart5')) {
-                    $('#wishlistInfoModal').modal('show');
+                    icon.removeClass('isax-heart5').addClass('isax-heart').css('color', '');
+
+                    $.post('/Student/RemoveFromWishlist', { courseId: courseId }, function (response) {
+                        if (!response.success) {
+                            icon.removeClass('isax-heart').addClass('isax-heart5').css('color', 'red');
+                        }
+                    }).fail(function () {
+                        icon.removeClass('isax-heart').addClass('isax-heart5').css('color', 'red');
+                    });
                     return;
                 }
 
+                // Добавляем в Wishlist
                 icon.removeClass('isax-heart').addClass('isax-heart5').css('color', 'red');
 
                 $.post('/Student/AddToWishlist', { courseId: courseId }, function (response) {
-                    if (response.success) {
-                        // Всё ок, сердечко красное
-                    } else {
+                    if (!response.success) {
                         icon.removeClass('isax-heart5').addClass('isax-heart').css('color', '');
                         if (response.message !== 'Already in wishlist') {
                             alert(response.message);
