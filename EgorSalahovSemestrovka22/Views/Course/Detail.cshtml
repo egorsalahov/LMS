@@ -201,26 +201,26 @@
                                     }
                                 </div>
                                 <div class="d-flex justify-content-between gap-3 wishlist-btns">
-                                    @if (User.Identity.IsAuthenticated)
+                                    @if (User.Identity.IsAuthenticated && !User.IsInRole("Instructor"))
                                     {
                                         <button type="button" class="btn d-flex btn-wish add-to-wishlist-btn" data-course-id="@Model.Id">
                                             <i class="isax isax-heart me-1 fs-18"></i>Add to Wishlist
                                         </button>
                                     }
-                                    else
+                                    else if (!User.Identity.IsAuthenticated)
                                     {
                                         <a asp-controller="Account" asp-action="SignIn" class="btn d-flex btn-wish">
                                             <i class="isax isax-heart me-1 fs-18"></i>Sign In to Add
                                         </a>
                                     }
                                 </div>
-                                @if (User.Identity.IsAuthenticated)
+                                @if (User.Identity.IsAuthenticated && !User.IsInRole("Instructor"))
                                 {
                                     <button type="button" class="btn btn-primary w-100 mt-3 btn-enroll add-to-cart-btn" data-course-id="@Model.Id">
                                         <i class="isax isax-shopping-cart5 me-2"></i>Add to Cart
                                     </button>
                                 }
-                                else
+                                else if (!User.Identity.IsAuthenticated)
                                 {
                                     <a asp-controller="Account" asp-action="SignIn" class="btn btn-primary w-100 mt-3 btn-enroll">
                                         Sign In to Enroll

@@ -1,0 +1,93 @@
+﻿@model EgorSalahovSemestrovka22.Models.Entities.Category
+@{
+    ViewData["Title"] = Model.Name;
+    var courses = Model.Courses?.OrderBy(c => c.Id).ToList();
+}
+
+<div class="main-wrapper">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-bar text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-12">
+                    <h2 class="breadcrumb-title mb-2">@Model.Name</h2>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center mb-0">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item"><a asp-action="Category">Categories</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Breadcrumb -->
+
+    <div class="content">
+        <div class="container">
+            @if (courses == null || !courses.Any())
+            {
+                <div class="text-center py-5">
+                    <p class="text-muted">No courses in this category yet.</p>
+                    <a asp-action="List" class="btn btn-primary">Browse All Courses</a>
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    @foreach (var course in courses)
+                    {
+                        var avgRating = course.Reviews?.Any() == true ? course.Reviews.Average(r => r.Rating) : 0;
+                        var reviewCount = course.Reviews?.Count ?? 0;
+                        var imageUrl = string.IsNullOrEmpty(course.ImagePath) || !course.ImagePath.StartsWith("/") ? "/img/default.jpg" : course.ImagePath;
+
+                        <div class="col-xl-4 col-md-6 d-flex">
+                            <div class="course-item-two course-item mx-0 w-100">
+                                <div class="course-img">
+                                    <a asp-action="Detail" asp-route-id="@course.Id">
+                                        <img src="@imageUrl" alt="@course.Title" class="img-fluid" onerror="this.onerror=null;this.src='/img/default.jpg';">
+                                    </a>
+                                    <div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-3">
+                                        @if (course.OldPrice.HasValue)
+                                        {
+                                            var discount = (int)((course.OldPrice.Value - course.Price) / course.OldPrice.Value * 100);
+                                            <div class="badge text-bg-danger">@discount% off</div>
+                                        }
+                                        <a href="javascript:void(0);" class="fav-icon ms-auto"><i class="isax isax-heart"></i></a>
+                                    </div>
+                                </div>
+                                <div class="course-content">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <p class="fs-14 mb-0"><a href="#">@(course.Instructor?.FirstName ?? "Instructor") @(course.Instructor?.LastName ?? "")</a></p>
+                                        </div>
+                                        <span class="badge badge-light rounded-pill bg-light fs-13 fw-medium">@course.Category?.Name</span>
+                                    </div>
+                                    <h6 class="title mb-2"><a asp-action="Detail" asp-route-id="@course.Id">@course.Title</a></h6>
+                                    <p class="d-flex align-items-center mb-3"><i class="fa-solid fa-star text-warning me-2"></i>@avgRating.ToString("0.0") (@reviewCount Reviews)</p>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <h5 class="text-secondary mb-0">
+                                            @if (course.Price == 0)
+                                            {
+                                                <span>FREE</span>
+                                            }
+                                            else
+                                            {
+
+                                                <span>$@course.Price</span>
+                                            }
+                                        </h5>
+                                        <a asp-action="Detail" asp-route-id="@course.Id" class="btn btn-dark btn-sm d-inline-flex align-items-center">
+                                            View Course<i class="isax isax-arrow-right-3 ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

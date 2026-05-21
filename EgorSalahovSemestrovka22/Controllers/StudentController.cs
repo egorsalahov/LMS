@@ -109,6 +109,9 @@ namespace EgorSalahovSemestrovka22.Controllers
             if (user == null)
                 return Json(new { success = false, message = "Not authorized" });
 
+            if (await _userManager.IsInRoleAsync(user, "Instructor"))
+                return Json(new { success = false, message = "Instructors cannot add to wishlist" });
+
             // Проверяем, нет ли уже в вишлисте
             var alreadyInWishlist = await _context.Wishlists
                 .AnyAsync(w => w.StudentId == user.Id && w.CourseId == courseId);

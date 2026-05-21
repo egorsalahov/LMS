@@ -56,6 +56,9 @@ namespace EgorSalahovSemestrovka22.Controllers
             if (user == null)
                 return Json(new { success = false, message = "Not authorized" });
 
+            if (await _userManager.IsInRoleAsync(user, "Instructor"))
+                return Json(new { success = false, message = "Instructors cannot purchase courses" });
+
             var alreadyEnrolled = await _context.Enrollments
                 .AnyAsync(e => e.StudentId == user.Id && e.CourseId == courseId);
             if (alreadyEnrolled)

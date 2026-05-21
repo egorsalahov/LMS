@@ -97,13 +97,13 @@
                                                      onerror="this.onerror=null; this.src='/img/course/default.jpg';">
                                             </a>
                                             <div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-2">
-                                                @if (User.Identity.IsAuthenticated)
+                                                @if (User.Identity.IsAuthenticated && !User.IsInRole("Instructor"))
                                                 {
                                                     <a href="javascript:void(0);" class="like add-to-wishlist-btn" data-course-id="@course.Id">
                                                         <i class="isax isax-heart"></i>
                                                     </a>
                                                 }
-                                                else
+                                                else if (!User.Identity.IsAuthenticated)
                                                 {
                                                     <a asp-controller="Account" asp-action="SignIn" class="like">
                                                         <i class="isax isax-heart"></i>

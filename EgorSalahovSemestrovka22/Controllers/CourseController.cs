@@ -66,9 +66,33 @@ namespace EgorSalahovSemestrovka22.Controllers
             return View(courses);
         }
 
-        public IActionResult Category()
+        // GET: /Course/Category – список всех категорий
+        public async Task<IActionResult> Category()
         {
-            return View();
+            var categories = await _context.Categories
+                .Include(c => c.Courses)
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+
+            return View(categories);
+        }
+
+        // GET: /Course/CategoryCourses/5 – курсы конкретной категории
+        public async Task<IActionResult> CategoryCourses(int id)
+        {
+            var category = await _context.Categories
+                .Include(c => c.Courses)
+                    .ThenInclude(c => c.Instructor)
+                .Include(c => c.Courses)
+                    .ThenInclude(c => c.Reviews)
+                .Include(c => c.Courses)
+                    .ThenInclude(c => c.Enrollments)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (category == null)
+                return NotFound();
+
+            return View(category);
         }
 
         public async Task<IActionResult> Detail(int id)
