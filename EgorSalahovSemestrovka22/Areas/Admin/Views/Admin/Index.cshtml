@@ -1,4 +1,5 @@
 ﻿@{
+    ViewData["Title"] = "Analysis";
 }
 
 <!--breadcrumb-->
@@ -20,20 +21,25 @@
 <!--end breadcrumb-->
 
 <div class="row">
-    <div class="col-xl-6 col-xxl-2 d-flex align-items-stretch">
+    <div class="col-12 mt-4">
+        <div class="card w-100 rounded-4">
+            <div class="card-body">
+                <h5 class="mb-0 mb-3">User Registrations Over Time</h5>
+                <div id="registrationChart" style="min-height:350px;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 col-xxl-3 d-flex align-items-stretch">
         <div class="card w-100 rounded-4">
             <div class="card-body">
                 <div class="d-flex align-items-start justify-content-between mb-3">
                     <div class="">
-                        <h5 class="mb-0">97.4K</h5>
+                        <h5 class="mb-0">@ViewBag.TotalUsers</h5>
                         <p class="mb-0">Total Users</p>
                     </div>
                 </div>
                 <div class="chart-container2">
                     <div id="chart2"></div>
-                </div>
-                <div class="text-center">
-                    <p class="mb-0 font-12"><span class="text-success me-1">12.5%</span> from last month</p>
                 </div>
             </div>
         </div>
@@ -50,76 +56,21 @@
             <div class="card-body p-0">
                 <div class="user-list p-3">
                     <div class="d-flex flex-column gap-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <img src="~/img/admin/avatars/01.png" width="45" height="45" class="rounded-circle" alt="">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-0">Elon Jonado</h6>
-                                <p class="mb-0">elon_deo</p>
-                            </div>
-                            <div class="form-check form-check-inline me-0">
-                                
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-3">
-                            <img src="~/img/admin/avatars/02.png" width="45" height="45" class="rounded-circle" alt="">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-0">Alexzender Clito</h6>
-                                <p class="mb-0">zli_alexzender</p>
-                            </div>
-                            <div class="form-check form-check-inline me-0">
-                                
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-3">
-                            <img src="~/img/admin/avatars/03.png" width="45" height="45" class="rounded-circle" alt="">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-0">Michle Tinko</h6>
-                                <p class="mb-0">tinko_michle</p>
-                            </div>
-                            <div class="form-check form-check-inline me-0">
-                                
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-3">
-                            <img src="~/img/admin/avatars/04.png" width="45" height="45" class="rounded-circle" alt="">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-0">KailWemba</h6>
-                                <p class="mb-0">wemba_kl</p>
-                            </div>
-                            <div class="form-check form-check-inline me-0">
-                                
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-3">
-                            <img src="~/img/admin/avatars/05.png" width="45" height="45" class="rounded-circle" alt="">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-0">Henhco Tino</h6>
-                                <p class="mb-0">Henhco_tino</p>
-                            </div>
-                            <div class="form-check form-check-inline me-0">
-                                
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-3">
-                            <img src="~/img/admin/avatars/06.png" width="45" height="45" class="rounded-circle" alt="">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-0">Gonjiko Fernando</h6>
-                                <p class="mb-0">gonjiko_fernando</p>
-                            </div>
-                            <div class="form-check form-check-inline me-0">
-                                
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-3">
-                            <img src="~/img/admin/avatars/08.png" width="45" height="45" class="rounded-circle" alt="">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-0">Specer Kilo</h6>
-                                <p class="mb-0">specer_kilo</p>
-                            </div>
-                            <div class="form-check form-check-inline me-0">
-                               
-                            </div>
-                        </div>
+                        @if (ViewBag.NewUsers != null)
+                        {
+                            foreach (var user in ViewBag.NewUsers)
+                            {
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="@(string.IsNullOrEmpty(user.AvatarPath) ? "/img/default.jpg" : user.AvatarPath)"
+                                         width="45" height="45" class="rounded-circle" alt=""
+                                         onerror="this.onerror=null;this.src='/img/default.jpg';">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0">@user.FirstName @user.LastName</h6>
+                                        <p class="mb-0">@user.UserName</p>
+                                    </div>
+                                </div>
+                            }
+                        }
                     </div>
                 </div>
             </div>
@@ -137,79 +88,25 @@
                     <table class="table align-middle">
                         <thead>
                             <tr>
-                                <th>Item Name</th>
+                                <th>Order #</th>
+                                <th>Customer</th>
                                 <th>Amount</th>
-                                <th>Vendor</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="">
-                                            <img src="~/img/admin/top-products/01.png" class="rounded-circle" width="50" height="50" alt="">
-                                        </div>
-                                        <p class="mb-0">Sports Shoes</p>
-                                    </div>
-                                </td>
-                                <td>$149</td>
-                                <td>Julia Sunota</td>
-                                <td><p class="dash-lable mb-0 bg-success bg-opacity-10 text-success rounded-2">Completed</p></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="">
-                                            <img src="~/img/admin/top-products/02.png" class="rounded-circle" width="50" height="50" alt="">
-                                        </div>
-                                        <p class="mb-0">Goldan Watch</p>
-                                    </div>
-                                </td>
-                                <td>$168</td>
-                                <td>Julia Sunota</td>
-                                <td><p class="dash-lable mb-0 bg-success bg-opacity-10 text-success rounded-2">Completed</p></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="">
-                                            <img src="~/img/admin/top-products/03.png" class="rounded-circle" width="50" height="50" alt="">
-                                        </div>
-                                        <p class="mb-0">Men Polo Tshirt</p>
-                                    </div>
-                                </td>
-                                <td>$124</td>
-                                <td>Julia Sunota</td>
-                                <td><p class="dash-lable mb-0 bg-warning bg-opacity-10 text-warning rounded-2">Pending</p></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="">
-                                            <img src="~/img/admin/top-products/04.png" class="rounded-circle" width="50" height="50" alt="">
-                                        </div>
-                                        <p class="mb-0">Blue Jeans Casual</p>
-                                    </div>
-                                </td>
-                                <td>$289</td>
-                                <td>Julia Sunota</td>
-                                <td><p class="dash-lable mb-0 bg-success bg-opacity-10 text-success rounded-2">Completed</p></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="">
-                                            <img src="~/img/admin/top-products/06.png" class="rounded-circle" width="50" height="50" alt="">
-                                        </div>
-                                        <p class="mb-0">Fancy Shirts</p>
-                                    </div>
-                                </td>
-                                <td>$389</td>
-                                <td>Julia Sunota</td>
-                                <td><p class="dash-lable mb-0 bg-danger bg-opacity-10 text-danger rounded-2">Canceled</p></td>
-                            </tr>
-
+                            @if (ViewBag.RecentOrders != null)
+                            {
+                                foreach (var order in ViewBag.RecentOrders)
+                                {
+                                    <tr>
+                                        <td>#ORD@(order.Id.ToString("D3"))</td>
+                                        <td>@order.CustomerName</td>
+                                        <td>$@order.TotalAmount.ToString("0.00")</td>
+                                        <td><p class="dash-lable mb-0 bg-@(order.OrderStatus == "Completed" ? "success" : "warning") bg-opacity-10 text-@(order.OrderStatus == "Completed" ? "success" : "warning") rounded-2">@order.OrderStatus</p></td>
+                                    </tr>
+                                }
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -219,40 +116,38 @@
 </div>
 
 @section Scripts {
-    <script src="~/plugins/admin/peity/jquery.peity.min.js"></script>
-    <script>
-        $(".data-attributes span").peity("donut")
-    </script>
-    <script src="~/js/admin/dashboard1.js"></script>
+    <script src="~/plugins/admin/apexchart/apexcharts.min.js"></script>
     <script>
         if ($('.user-list').length) {
         new PerfectScrollbar(".user-list");
         }
-    </script>
 
-    <script>
-        $(function () {
-        // Инициализация при открытии модального окна
-        $('#add-lesson').on('shown.bs.modal', function () {
-        $('.summernote').summernote({
-        placeholder: 'Введите описание курса...',
-        height: 200,  // Поменьше для модалки
-        toolbar: [
-        ['style', ['bold', 'italic', 'underline', 'clear']],
-        ['fontsize', ['fontsize']],
-        ['color', ['color']],
-        ['para', ['ul', 'ol', 'paragraph']],
-        ['insert', ['link']],
-        ['view', ['codeview']]
-        ]
-        });
-        });
+        // Данные из ViewBag
+        var registrationData = @Html.Raw(Json.Serialize(ViewBag.RegistrationData ?? new List<object>()));
 
-        // Уничтожаем при закрытии (чтобы не дублировался)
-        $('#add-lesson').on('hidden.bs.modal', function () {
-        $('.summernote').summernote('destroy');
-        });
-        });
+        var categories = registrationData.map(function (item) { return item.label; });
+        var studentsData = registrationData.map(function (item) { return item.students; });
+        var instructorsData = registrationData.map(function (item) { return item.instructors; });
+
+        var options = {
+        chart: {
+        type: 'area',
+        height: 350,
+        toolbar: { show: false }
+        },
+        series: [
+        { name: 'Students', data: studentsData },
+        { name: 'Instructors', data: instructorsData }
+        ],
+        xaxis: { categories: categories },
+        colors: ['#0d6efd', '#6f42c1'],
+        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.1 } },
+        stroke: { curve: 'smooth', width: 2 },
+        legend: { position: 'top' },
+        tooltip: { y: { formatter: function (val) { return val + ' users'; } } }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#registrationChart"), options);
+        chart.render();
     </script>
 }
-

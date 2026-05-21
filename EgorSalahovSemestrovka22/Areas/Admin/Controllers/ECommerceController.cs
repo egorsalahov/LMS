@@ -9,13 +9,13 @@ namespace EgorSalahovSemestrovka22.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class ECommerceController : Controller
     {
-
         private readonly AppDbContext _context;
 
         public ECommerceController(AppDbContext context)
         {
             _context = context;
         }
+
         public async Task<IActionResult> Products()
         {
             var courses = await _context.Courses
@@ -26,13 +26,44 @@ namespace EgorSalahovSemestrovka22.Areas.Admin.Controllers
 
             return View(courses);
         }
-        public IActionResult Customers()
+
+        // GET: /Admin/ECommerce/Customers
+        public async Task<IActionResult> Customers()
         {
-            return View();
+            var instructors = await _context.Instructors
+                .Include(i => i.Courses)
+                .OrderBy(i => i.FirstName)
+                .Select(i => new
+                {
+                    i.Id,
+                    FullName = i.FirstName + " " + i.LastName,
+                    i.Email,
+                    CoursesCount = i.Courses.Count,
+                    TotalEarnings = i.TotalEarnings,
+                    i.RegistrationDate
+                })
+                .ToListAsync();
+
+            return View(instructors);
         }
-        public IActionResult Orders()
+
+        // GET: /Admin/ECommerce/Orders
+        public async Task<IActionResult> Orders()
         {
-            return View();
+            var orders = await _context.Orders
+                .Include(o => o.Student)
+                .OrderByDescending(o => o.OrderDate)
+                .Select(o => new
+                {
+                    o.Id,
+                    o.TotalAmount,
+                    CustomerName = o.Student != null ? o.Student.FirstName + " " + o.Student.LastName : "Unknown",
+                    o.OrderDate,
+                    o.OrderStatus
+                })
+                .ToListAsync();
+
+            return View(orders);
         }
     }
 }

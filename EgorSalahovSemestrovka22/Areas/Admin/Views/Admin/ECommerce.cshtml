@@ -1,183 +1,173 @@
-﻿
-    <div class="main-content container-xxl">
-        <!--breadcrumb-->
-        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">Dashboard</div>
-            <div class="ps-3">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0 p-0">
-                        <li class="breadcrumb-item">
-                            <a href="javascript:;"><i class="bx bx-home-alt"></i></a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">eCommerce</li>
-                    </ol>
-                </nav>
-            </div>
-            <div class="ms-auto">
+﻿@{
+    ViewData["Title"] = "eCommerce";
+}
+
+<div class="main-content container-xxl">
+    <!--breadcrumb-->
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+        <div class="breadcrumb-title pe-3">Dashboard</div>
+        <div class="ps-3">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0 p-0">
+                    <li class="breadcrumb-item">
+                        <a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">eCommerce</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="ms-auto">
+        </div>
+    </div>
+    <!--end breadcrumb-->
+
+    <div class="row">
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card w-100 rounded-4">
+                    <div class="card-body">
+                        <h5 class="mb-3">Orders Over Time</h5>
+                        <div id="ordersChart" style="min-height:350px;"></div>
+                    </div>
+                </div>
             </div>
         </div>
-        <!--end breadcrumb-->
-
-
-        <div class="row">
-            <div class="col-12 col-lg-4 col-xxl-2 d-flex">
-                <div class="card rounded-4 w-100">
-                    <div class="card-body">
-                        <div class="mb-3 d-flex align-items-center justify-content-between">
-                            <div class="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                                <span class="material-icons-outlined fs-5">shopping_cart</span>
-                            </div>
-                            <div>
-                                <span class="text-success d-flex align-items-center">
-                                    +24%<i class="material-icons-outlined">expand_less</i>
-                                </span>
-                            </div>
+        <div class="col-12 col-lg-4 col-xxl-2 d-flex">
+            <div class="card rounded-4 w-100">
+                <div class="card-body">
+                    <div class="mb-3 d-flex align-items-center justify-content-between">
+                        <div class="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
+                            <span class="material-icons-outlined fs-5">shopping_cart</span>
                         </div>
-                        <div>
-                            <h4 class="mb-0">248k</h4>
-                            <p class="mb-3">Total Orders</p>
-                            <div id="chart1"></div>
-                        </div>
+                    </div>
+                    <div>
+                        <h4 class="mb-0">@ViewBag.TotalOrders</h4>
+                        <p class="mb-3">Total Orders</p>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-4 col-xxl-2 d-flex">
-                <div class="card rounded-4 w-100">
-                    <div class="card-body">
-                        <div class="mb-3 d-flex align-items-center justify-content-between">
-                            <div class="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-success bg-opacity-10 text-success">
-                                <span class="material-icons-outlined fs-5">attach_money</span>
-                            </div>
-                            <div>
-                                <span class="text-success d-flex align-items-center">
-                                    +14%<i class="material-icons-outlined">expand_less</i>
-                                </span>
-                            </div>
+        </div>
+        <div class="col-12 col-lg-4 col-xxl-2 d-flex">
+            <div class="card rounded-4 w-100">
+                <div class="card-body">
+                    <div class="mb-3 d-flex align-items-center justify-content-between">
+                        <div class="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-success bg-opacity-10 text-success">
+                            <span class="material-icons-outlined fs-5">attach_money</span>
                         </div>
-                        <div>
-                            <h4 class="mb-0">$47.6k</h4>
-                            <p class="mb-3">Total Sales</p>
-                            <div id="chart2"></div>
-                        </div>
+                    </div>
+                    <div>
+                        <h4 class="mb-0">$@ViewBag.TotalSales.ToString("0.00")</h4>
+                        <p class="mb-3">Total Sales</p>
                     </div>
                 </div>
             </div>
-        </div><!--end row-->
+        </div>
+    </div><!--end row-->
 
-        <div class="row">
-            <div class="col-12 col-lg-6 col-xxl-4 d-flex">
-                <div class="card w-100 rounded-4">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start justify-content-between mb-3">
-                            <div class="">
-                                <h5 class="mb-0">Popular Products</h5>
-                            </div>
+    <div class="row">
+        <!-- Popular Courses (Products) -->
+        <div class="col-12 col-lg-6 col-xxl-4 d-flex">
+            <div class="card w-100 rounded-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-start justify-content-between mb-3">
+                        <div class="">
+                            <h5 class="mb-0">Popular Courses</h5>
                         </div>
-                        <div class="d-flex flex-column gap-4">
-                            <div class="d-flex align-items-center gap-3">
-                                <img src="~/img/admin/top-products/01.png" width="55" class="rounded-circle" alt="">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0">Apple Hand Watch</h6>
-                                    <p class="mb-0">Sale: 258</p>
-                                </div>
-                                <div class="text-center">
-                                    <h6 class="mb-1">$199</h6>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center gap-3">
-                                <img src="~/img/admin/top-products/02.png" width="55" class="rounded-circle" alt="">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0">Mobile Phone Set</h6>
-                                    <p class="mb-0">Sale: 169</p>
-                                </div>
-                                <div class="text-center">
-                                    <h6 class="mb-1">$159</h6>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center gap-3">
-                                <img src="~/img/admin/top-products/04.png" width="55" class="rounded-circle" alt="">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0">Grey Shoes Pair</h6>
-                                    <p class="mb-0">Sale: 859</p>
-                                </div>
-                                <div class="">
+                    </div>
+                    <div class="d-flex flex-column gap-4">
+                        @if (ViewBag.PopularCourses != null)
+                        {
+                            foreach (var item in ViewBag.PopularCourses)
+                            {
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="@(string.IsNullOrEmpty(item.Course.ImagePath) ? "/img/default.jpg" : item.Course.ImagePath)"
+                                         width="55" height="55" class="rounded-circle" alt=""
+                                         style="object-fit:cover;"
+                                         onerror="this.onerror=null;this.src='/img/default.jpg';">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0">@item.Course.Title</h6>
+                                        <p class="mb-0">Sold: @item.OrdersCount</p>
+                                    </div>
                                     <div class="text-center">
-                                        <h6 class="mb-1">$279</h6>
+                                        <h6 class="mb-1">$@item.TotalRevenue.ToString("0.00")</h6>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="d-flex align-items-center gap-3">
-                                <img src="~/img/admin/top-products/05.png" width="55" class="rounded-circle" alt="">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0">Blue Yoga Mat</h6>
-                                    <p class="mb-0">Sale: 328</p>
-                                </div>
-                                <div class="text-center">
-                                    <h6 class="mb-1">$389</h6>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center gap-3">
-                                <img src="~/img/admin/top-products/06.png" width="55" class="rounded-circle" alt="">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0">White water Bottle</h6>
-                                    <p class="mb-0">Sale: 992</p>
-                                </div>
-                                <div class="text-center">
-                                    <h6 class="mb-1">$584</h6>
-                                </div>
-                            </div>
-                        </div>
+                            }
+                        }
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-12 col-xxl-4 d-flex">
-                <div class="card w-100 rounded-4">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start justify-content-between mb-3">
-                            <div class="">
-                                <h5 class="mb-0">Top Vendors</h5>
-                            </div>
+        </div>
+
+        <!-- Top Instructors (Vendors) -->
+        <div class="col-12 col-lg-12 col-xxl-4 d-flex">
+            <div class="card w-100 rounded-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-start justify-content-between mb-3">
+                        <div class="">
+                            <h5 class="mb-0">Top Instructors</h5>
                         </div>
-                        <div class="d-flex flex-column gap-4">
-                            <div class="d-flex align-items-center gap-3">
-                                <img src="~/img/admin/avatars/01.png" width="55" class="rounded-circle" alt="">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0">Ajay Sidhu</h6>
-                                    <p class="mb-0">Sale: 879</p>
+                    </div>
+                    <div class="d-flex flex-column gap-4">
+                        @if (ViewBag.TopInstructors != null)
+                        {
+                            foreach (var item in ViewBag.TopInstructors)
+                            {
+                                <div class="d-flex align-items-center gap-3">
+                                    @if (!string.IsNullOrEmpty(item.Instructor.AvatarPath))
+                                    {
+                                        <img src="@item.Instructor.AvatarPath" width="55" height="55" class="rounded-circle" alt="" style="object-fit:cover;">
+                                    }
+                                    else
+                                    {
+                                        <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:55px;height:55px;font-size:16px;flex-shrink:0;">
+                                            @(item.Instructor.FirstName?.Length > 0 ? item.Instructor.FirstName[0].ToString() : "")@(item.Instructor.LastName?.Length > 0 ? item.Instructor.LastName[0].ToString() : "")
+                                        </div>
+                                    }
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0">@item.Instructor.FirstName @item.Instructor.LastName</h6>
+                                        <p class="mb-0">Sales: @item.OrdersCount</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-flex align-items-center gap-3">
-                                <img src="~/img/admin/avatars/02.png" width="55" class="rounded-circle" alt="">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0">Ajay Sidhu</h6>
-                                    <p class="mb-0">Sale: 879</p>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center gap-3">
-                                <img src="~/img/admin/avatars/03.png" width="55" class="rounded-circle" alt="">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0">Ajay Sidhu</h6>
-                                    <p class="mb-0">Sale: 879</p>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center gap-3">
-                                <img src="~/img/admin/avatars/04.png" width="55" class="rounded-circle" alt="">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0">Ajay Sidhu</h6>
-                                    <p class="mb-0">Sale: 879</p>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center gap-3">
-                                <img src="~/img/admin/avatars/08.png" width="55" class="rounded-circle" alt="">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0">Ajay Sidhu</h6>
-                                    <p class="mb-0">Sale: 879</p>
-                                </div>
-                            </div>
-                        </div>
+                            }
+                        }
                     </div>
                 </div>
             </div>
-        </div><!--end row-->
-    </div>
+        </div>
+    </div><!--end row-->
+</div>
 <!--end main wrapper-->
+@section Scripts {
+    <script src="~/plugins/admin/apexchart/apexcharts.min.js"></script>
+    <script>
+        var orderChartData = @Html.Raw(Json.Serialize(ViewBag.OrderChartData ?? new List<object>()));
+
+        var categories = orderChartData.map(function (item) { return item.label; });
+        var ordersData = orderChartData.map(function (item) { return item.orders; });
+        var revenueData = orderChartData.map(function (item) { return item.revenue; });
+
+        var options = {
+        chart: {
+        type: 'line',
+        height: 350,
+        toolbar: { show: false }
+        },
+        series: [
+        { name: 'Orders', data: ordersData },
+        { name: 'Revenue ($)', data: revenueData }
+        ],
+        xaxis: { categories: categories },
+        colors: ['#0d6efd', '#198754'],
+        stroke: { curve: 'smooth', width: 2 },
+        legend: { position: 'top' },
+        yaxis: [
+        { title: { text: 'Orders' } },
+        { opposite: true, title: { text: 'Revenue ($)' } }
+        ]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#ordersChart"), options);
+        chart.render();
+    </script>
+}

@@ -1,4 +1,20 @@
-﻿<div class="main-content container-xxl">
+﻿@model dynamic
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<div class="main-content container-xxl">
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+        <div class="breadcrumb-title pe-3">eCommerce</div>
+        <div class="ps-3">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0 p-0">
+                    <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Customers</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
 
     <div class="card mt-4">
         <div class="card-body">
@@ -7,236 +23,42 @@
                     <table class="table align-middle">
                         <thead class="table-light">
                             <tr>
-                                <th>
-                                    <input class="form-check-input" type="checkbox">
-                                </th>
-                                <th>Customers</th>
+                                <th>#</th>
+                                <th>Instructor</th>
                                 <th>Email</th>
-                                <th>Orders</th>
-                                <th>Total Spent</th>
-                                <th>Location</th>
-                                <th>Last Seen</th>
-                                <th>Last Order</th>
+                                <th>Courses</th>
+                                <th>Total Earnings</th>
+                                <th>Registered</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <input class="form-check-input" type="checkbox">
-                                </td>
-                                <td>
-                                    <a class="d-flex align-items-center gap-3" href="javascript:;">
-                                        <div class="customer-pic">
-                                            <img src="~/img/admin/avatars/01.png" class="rounded-circle" width="40" height="40" alt="">
-                                        </div>
-                                        <p class="mb-0 customer-name fw-bold">Andrew Carry</p>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="javascript:;" class="font-text1">abcexample.com</a>
-                                </td>
-                                <td>142</td>
-                                <td>$2485</td>
-                                <td>England</td>
-                                <td>24 min ago</td>
-                                <td>Nov 12, 10:45 PM</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input class="form-check-input" type="checkbox">
-                                </td>
-                                <td>
-                                    <a class="d-flex align-items-center gap-3" href="javascript:;">
-                                        <div class="customer-pic">
-                                            <img src="~/img/admin/avatars/02.png" class="rounded-circle" width="40" height="40" alt="">
-                                        </div>
-                                        <p class="mb-0 customer-name fw-bold">Andrew Carry</p>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="javascript:;" class="font-text1">abcexample.com</a>
-                                </td>
-                                <td>142</td>
-                                <td>$2485</td>
-                                <td>England</td>
-                                <td>24 min ago</td>
-                                <td>Nov 12, 10:45 PM</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input class="form-check-input" type="checkbox">
-                                </td>
-                                <td>
-                                    <a class="d-flex align-items-center gap-3" href="javascript:;">
-                                        <div class="customer-pic">
-                                            <img src="~/img/admin/avatars/03.png" class="rounded-circle" width="40" height="40" alt="">
-                                        </div>
-                                        <p class="mb-0 customer-name fw-bold">Andrew Carry</p>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="javascript:;" class="font-text1">abcexample.com</a>
-                                </td>
-                                <td>142</td>
-                                <td>$2485</td>
-                                <td>England</td>
-                                <td>24 min ago</td>
-                                <td>Nov 12, 10:45 PM</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input class="form-check-input" type="checkbox">
-                                </td>
-                                <td>
-                                    <a class="d-flex align-items-center gap-3" href="javascript:;">
-                                        <div class="customer-pic">
-                                            <img src="~/img/admin/avatars/04.png" class="rounded-circle" width="40" height="40" alt="">
-                                        </div>
-                                        <p class="mb-0 customer-name fw-bold">Andrew Carry</p>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="javascript:;" class="font-text1">abcexample.com</a>
-                                </td>
-                                <td>142</td>
-                                <td>$2485</td>
-                                <td>England</td>
-                                <td>24 min ago</td>
-                                <td>Nov 12, 10:45 PM</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input class="form-check-input" type="checkbox">
-                                </td>
-                                <td>
-                                    <a class="d-flex align-items-center gap-3" href="javascript:;">
-                                        <div class="customer-pic">
-                                            <img src="~/img/admin/avatars/05.png" class="rounded-circle" width="40" height="40" alt="">
-                                        </div>
-                                        <p class="mb-0 customer-name fw-bold">Andrew Carry</p>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="javascript:;" class="font-text1">abcexample.com</a>
-                                </td>
-                                <td>142</td>
-                                <td>$2485</td>
-                                <td>England</td>
-                                <td>24 min ago</td>
-                                <td>Nov 12, 10:45 PM</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input class="form-check-input" type="checkbox">
-                                </td>
-                                <td>
-                                    <a class="d-flex align-items-center gap-3" href="javascript:;">
-                                        <div class="customer-pic">
-                                            <img src="~/img/admin/avatars/06.png" class="rounded-circle" width="40" height="40" alt="">
-                                        </div>
-                                        <p class="mb-0 customer-name fw-bold">Andrew Carry</p>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="javascript:;" class="font-text1">abcexample.com</a>
-                                </td>
-                                <td>142</td>
-                                <td>$2485</td>
-                                <td>England</td>
-                                <td>24 min ago</td>
-                                <td>Nov 12, 10:45 PM</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input class="form-check-input" type="checkbox">
-                                </td>
-                                <td>
-                                    <a class="d-flex align-items-center gap-3" href="javascript:;">
-                                        <div class="customer-pic">
-                                            <img src="~/img/admin/avatars/07.png" class="rounded-circle" width="40" height="40" alt="">
-                                        </div>
-                                        <p class="mb-0 customer-name fw-bold">Andrew Carry</p>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="javascript:;" class="font-text1">abcexample.com</a>
-                                </td>
-                                <td>142</td>
-                                <td>$2485</td>
-                                <td>England</td>
-                                <td>24 min ago</td>
-                                <td>Nov 12, 10:45 PM</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input class="form-check-input" type="checkbox">
-                                </td>
-                                <td>
-                                    <a class="d-flex align-items-center gap-3" href="javascript:;">
-                                        <div class="customer-pic">
-                                            <img src="~/img/admin/avatars/08.png" class="rounded-circle" width="40" height="40" alt="">
-                                        </div>
-                                        <p class="mb-0 customer-name fw-bold">Andrew Carry</p>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="javascript:;" class="font-text1">abcexample.com</a>
-                                </td>
-                                <td>142</td>
-                                <td>$2485</td>
-                                <td>England</td>
-                                <td>24 min ago</td>
-                                <td>Nov 12, 10:45 PM</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input class="form-check-input" type="checkbox">
-                                </td>
-                                <td>
-                                    <a class="d-flex align-items-center gap-3" href="javascript:;">
-                                        <div class="customer-pic">
-                                            <img src="~/img/admin/avatars/09.png" class="rounded-circle" width="40" height="40" alt="">
-                                        </div>
-                                        <p class="mb-0 customer-name fw-bold">Andrew Carry</p>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="javascript:;" class="font-text1">abcexample.com</a>
-                                </td>
-                                <td>142</td>
-                                <td>$2485</td>
-                                <td>England</td>
-                                <td>24 min ago</td>
-                                <td>Nov 12, 10:45 PM</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input class="form-check-input" type="checkbox">
-                                </td>
-                                <td>
-                                    <a class="d-flex align-items-center gap-3" href="javascript:;">
-                                        <div class="customer-pic">
-                                            <img src="~/img/admin/avatars/10.png" class="rounded-circle" width="40" height="40" alt="">
-                                        </div>
-                                        <p class="mb-0 customer-name fw-bold">Andrew Carry</p>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="javascript:;" class="font-text1">abcexample.com</a>
-                                </td>
-                                <td>142</td>
-                                <td>$2485</td>
-                                <td>England</td>
-                                <td>24 min ago</td>
-                                <td>Nov 12, 10:45 PM</td>
-                            </tr>
-
+                            @if (Model != null)
+                            {
+                                int index = 1;
+                                foreach (var instructor in Model)
+                                {
+                                    <tr>
+                                        <td>@index</td>
+                                        <td>
+                                            <a class="d-flex align-items-center gap-3" href="javascript:;">
+                                                <div class="customer-pic">
+                                                    <img src="~/img/admin/avatars/01.png" class="rounded-circle" width="40" height="40" alt="">
+                                                </div>
+                                                <p class="mb-0 customer-name fw-bold">@instructor.FullName</p>
+                                            </a>
+                                        </td>
+                                        <td>@instructor.Email</td>
+                                        <td>@instructor.CoursesCount</td>
+                                        <td>$@instructor.TotalEarnings</td>
+                                        <td>@instructor.RegistrationDate.ToString("dd MMM yyyy")</td>
+                                    </tr>
+                                    index++;
+                                }
+                            }
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-
-       
 </div>

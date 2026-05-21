@@ -157,6 +157,18 @@ namespace EgorSalahovSemestrovka22.Controllers
             ViewBag.Tax = tax;
             ViewBag.Total = total;
 
+            // Обновляем TotalEarnings инструкторов
+            foreach (var item in cartItems)
+            {
+                var course = item.Course;
+                var instructor = await _context.Instructors.FindAsync(course.InstructorId);
+                if (instructor != null)
+                {
+                    instructor.TotalEarnings += course.Price;
+                }
+            }
+            await _context.SaveChangesAsync();
+
             return View(cartItems);
         }
 
