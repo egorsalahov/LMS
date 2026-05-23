@@ -1,5 +1,6 @@
 ﻿using EgorSalahovSemestrovka22.Data;
 using EgorSalahovSemestrovka22.Models.Entities;
+using EgorSalahovSemestrovka22.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,8 @@ namespace EgorSalahovSemestrovka22.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> List(int? categoryId, string? search, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> List(int? categoryId, string? search, int page = 1, int pageSize = 10,
+    string? priceType = null, Level? level = null, decimal? priceFrom = null, decimal? priceTo = null)
         {
             var query = _context.Courses
                 .Include(c => c.Category)
@@ -36,6 +38,37 @@ namespace EgorSalahovSemestrovka22.Controllers
             {
                 query = query.Where(c => c.Title.Contains(search) || c.ShortDescription.Contains(search));
                 ViewBag.SearchQuery = search;
+            }
+
+            if (level.HasValue)
+            {
+                query = query.Where(c => c.LevelForStudent == level.Value);
+                ViewBag.SelectedLevel = level.Value;
+            }
+
+            if (priceType == "free")
+            {
+                query = query.Where(c => c.Price == 0);
+                ViewBag.SelectedPriceType = "free";
+            }
+            else if (priceType == "paid")
+            {
+                query = query.Where(c => c.Price > 0);
+                ViewBag.SelectedPriceType = "paid";
+            }
+            else if (priceType == "range")
+            {
+                if (priceFrom.HasValue)
+                {
+                    query = query.Where(c => c.Price >= priceFrom.Value);
+                    ViewBag.PriceFrom = priceFrom.Value;
+                }
+                if (priceTo.HasValue)
+                {
+                    query = query.Where(c => c.Price <= priceTo.Value);
+                    ViewBag.PriceTo = priceTo.Value;
+                }
+                ViewBag.SelectedPriceType = "range";
             }
 
             var totalCourses = await query.CountAsync();
@@ -57,7 +90,6 @@ namespace EgorSalahovSemestrovka22.Controllers
             ViewBag.TotalCourses = totalCourses;
             ViewBag.PageSize = pageSize;
 
-            // ID курсов в Wishlist текущего пользователя
             if (User.Identity.IsAuthenticated)
             {
                 var user = await _userManager.GetUserAsync(User);

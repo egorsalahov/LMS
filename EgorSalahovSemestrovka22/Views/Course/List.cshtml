@@ -63,7 +63,77 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Price and Level filters unchanged -->
+                            <!-- Price -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingPrice">
+                                    <a href="#" class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapsePrice">
+                                        Price <i class="fa-solid fa-chevron-down"></i>
+                                    </a>
+                                </h2>
+                                <div id="collapsePrice" class="accordion-collapse collapse show" aria-labelledby="headingPrice" data-bs-parent="#filterAccordion">
+                                    <div class="accordion-body">
+                                        <div>
+                                            <label class="custom_check">
+                                                <input type="radio" name="priceFilter" value="" class="price-radio" @(string.IsNullOrEmpty((string)ViewBag.SelectedPriceType) ? "checked" : "") />
+                                                <span class="checkmark"></span> All
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label class="custom_check">
+                                                <input type="radio" name="priceFilter" value="free" class="price-radio" @(ViewBag.SelectedPriceType == "free" ? "checked" : "") />
+                                                <span class="checkmark"></span> Free
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label class="custom_check">
+                                                <input type="radio" name="priceFilter" value="paid" class="price-radio" @(ViewBag.SelectedPriceType == "paid" ? "checked" : "") />
+                                                <span class="checkmark"></span> Paid
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label class="custom_check">
+                                                <input type="radio" name="priceFilter" value="range" class="price-radio" id="priceRangeRadio" @(ViewBag.SelectedPriceType == "range" ? "checked" : "") />
+                                                <span class="checkmark"></span> Range
+                                            </label>
+                                        </div>
+                                        <!-- Поля диапазона -->
+                                        <div class="mt-2 ms-3" id="priceRangeInputs" style="@(ViewBag.SelectedPriceType == "range" ? "" : "display:none;")">
+                                            <div class="d-flex gap-2 align-items-center">
+                                                <input type="number" id="priceFrom" class="form-control form-control-sm" placeholder="From" value="@ViewBag.PriceFrom" min="0" step="0.01" style="width:80px;">
+                                                <span>-</span>
+                                                <input type="number" id="priceTo" class="form-control form-control-sm" placeholder="To" value="@ViewBag.PriceTo" min="0" step="0.01" style="width:80px;">
+                                                <button type="button" class="btn btn-sm btn-primary" id="applyPriceRange">Go</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingLevel">
+                                    <a href="#" class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapseLevel">
+                                        Level <i class="fa-solid fa-chevron-down"></i>
+                                    </a>
+                                </h2>
+                                <div id="collapseLevel" class="accordion-collapse collapse show" aria-labelledby="headingLevel" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <div>
+                                            <label class="custom_check">
+                                                <input type="radio" name="levelFilter" value="" class="level-radio" @(ViewBag.SelectedLevel == null ? "checked" : "") />
+                                                <span class="checkmark"></span> All
+                                            </label>
+                                        </div>
+                                        @foreach (var lvl in Enum.GetValues(typeof(Level)).Cast<Level>())
+                                        {
+                                            <div>
+                                                <label class="custom_check">
+                                                    <input type="radio" name="levelFilter" value="@((int)lvl)" class="level-radio" @(ViewBag.SelectedLevel != null && (Level)ViewBag.SelectedLevel == lvl ? "checked" : "") />
+                                                    <span class="checkmark"></span> @lvl
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -92,9 +162,9 @@
                                         <div class="position-relative overflow-hidden rounded-3 card-image">
                                             <a asp-action="Detail" asp-route-id="@course.Id">
                                                 <img class="img-fluid rounded-3"
-                                                     src="@(string.IsNullOrEmpty(course.ImagePath) || !course.ImagePath.StartsWith("/") ? "/img/course/default.jpg" : course.ImagePath)"
+                                                     src="@(string.IsNullOrEmpty(course.ImagePath) || !course.ImagePath.StartsWith("/") ? "/img/default.jpg" : course.ImagePath)"
                                                      alt="@course.Title"
-                                                     onerror="this.onerror=null; this.src='/img/course/default.jpg';">
+                                                     onerror="this.onerror=null; this.src='/img/default.jpg';">
                                             </a>
                                             <div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-2">
                                                 @if (User.Identity.IsAuthenticated && !User.IsInRole("Instructor"))
@@ -170,7 +240,16 @@
                                 @if (ViewBag.CurrentPage > 1)
                                 {
                                     <li class="page-item prev">
-                                        <a class="page-link" href="@Url.Action("List", new { categoryId = ViewBag.SelectedCategory, page = ViewBag.CurrentPage - 1 })">
+                                        <a class="page-link" href="@Url.Action("List", new
+                                           {
+                                               categoryId = ViewBag.SelectedCategory,
+                                               page = ViewBag.CurrentPage - 1,
+                                               priceType = (string)ViewBag.SelectedPriceType,
+                                               level = (Level?)ViewBag.SelectedLevel,
+                                               search = (string)ViewBag.SearchQuery,
+                                               priceFrom = ViewBag.PriceFrom,
+                                               priceTo = ViewBag.PriceTo
+                                           })">
                                             <i class="fas fa-angle-left"></i>
                                         </a>
                                     </li>
@@ -193,7 +272,16 @@
                                     else
                                     {
                                         <li class="page-item">
-                                            <a class="page-link" href="@Url.Action("List", new { categoryId = ViewBag.SelectedCategory, page = i })">@i</a>
+                                            <a class="page-link" href="@Url.Action("List", new
+                                               {
+                                                   categoryId = ViewBag.SelectedCategory,
+                                                   page = i,
+                                                   priceType = (string)ViewBag.SelectedPriceType,
+                                                   level = (Level?)ViewBag.SelectedLevel,
+                                                   search = (string)ViewBag.SearchQuery,
+                                                   priceFrom = ViewBag.PriceFrom,
+                                                   priceTo = ViewBag.PriceTo
+                                               })">@i</a>
                                         </li>
                                     }
                                 }
@@ -201,7 +289,16 @@
                                 @if (ViewBag.CurrentPage < ViewBag.TotalPages)
                                 {
                                     <li class="page-item next">
-                                        <a class="page-link" href="@Url.Action("List", new { categoryId = ViewBag.SelectedCategory, page = ViewBag.CurrentPage + 1 })">
+                                        <a class="page-link" href="@Url.Action("List", new
+                                           {
+                                               categoryId = ViewBag.SelectedCategory,
+                                               page = ViewBag.CurrentPage + 1,
+                                               priceType = (string)ViewBag.SelectedPriceType,
+                                               level = (Level?)ViewBag.SelectedLevel,
+                                               search = (string)ViewBag.SearchQuery,
+                                               priceFrom = ViewBag.PriceFrom,
+                                               priceTo = ViewBag.PriceTo
+                                           })">
                                             <i class="fas fa-angle-right"></i>
                                         </a>
                                     </li>
@@ -242,10 +339,8 @@
 @section Scripts {
     <script>
         $(function () {
-            // ID курсов в Wishlist из ViewBag
             var wishlistIds = @Html.Raw(Json.Serialize(ViewBag.WishlistCourseIds ?? new List<int>()));
 
-            // Закрашиваем сердечки для курсов в Wishlist
             $('.add-to-wishlist-btn').each(function () {
                 var courseId = $(this).data('course-id');
                 if (wishlistIds.includes(courseId)) {
@@ -253,28 +348,68 @@
                 }
             });
 
-            // Фильтр категорий
-            $('.category-checkbox').on('change', function () {
-                $('.category-checkbox').not(this).prop('checked', false);
-                var selectedId = $(this).is(':checked') ? $(this).val() : null;
-                if (selectedId) {
-                    window.location.href = '/Course/List?categoryId=' + selectedId;
+            // Показ/скрытие полей диапазона
+            $('input[name="priceFilter"]').on('change', function () {
+                if ($(this).val() === 'range') {
+                    $('#priceRangeInputs').slideDown(200);
                 } else {
-                    window.location.href = '/Course/List';
+                    $('#priceRangeInputs').slideUp(200);
+                    // Сразу применяем фильтр для Free/Paid/All
+                    applyFilters();
                 }
             });
 
-            // Add/Remove Wishlist
+            // Кнопка Go для диапазона
+            $('#applyPriceRange').on('click', function () {
+                applyFilters();
+            });
+
+            // Enter в полях диапазона
+            $('#priceFrom, #priceTo').on('keypress', function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    applyFilters();
+                }
+            });
+
+            function applyFilters() {
+                var categoryId = $('.category-checkbox:checked').val() || '';
+                var priceType = $('input[name="priceFilter"]:checked').val() || '';
+                var levelValue = $('input[name="levelFilter"]:checked').val() || '';
+                var search = '@(ViewBag.SearchQuery ?? "")';
+                var priceFrom = $('#priceFrom').val();
+                var priceTo = $('#priceTo').val();
+
+                var url = '/Course/List?page=1';
+                if (categoryId) url += '&categoryId=' + categoryId;
+                if (priceType) url += '&priceType=' + priceType;
+                if (levelValue) url += '&level=' + levelValue;
+                if (search) url += '&search=' + encodeURIComponent(search);
+                if (priceType === 'range') {
+                    if (priceFrom) url += '&priceFrom=' + priceFrom;
+                    if (priceTo) url += '&priceTo=' + priceTo;
+                }
+                window.location.href = url;
+            }
+
+            $('.category-checkbox').on('change', function () {
+                $('.category-checkbox').not(this).prop('checked', false);
+                applyFilters();
+            });
+
+            $('.level-radio').on('change', function () {
+                applyFilters();
+            });
+
+            // Wishlist
             $(document).on('click', '.add-to-wishlist-btn', function (e) {
                 e.preventDefault();
                 var btn = $(this);
                 var courseId = btn.data('course-id');
                 var icon = btn.find('i');
 
-                // Если уже в Wishlist — убираем
                 if (icon.hasClass('isax-heart5')) {
                     icon.removeClass('isax-heart5').addClass('isax-heart').css('color', '');
-
                     $.post('/Student/RemoveFromWishlist', { courseId: courseId }, function (response) {
                         if (!response.success) {
                             icon.removeClass('isax-heart').addClass('isax-heart5').css('color', 'red');
@@ -285,9 +420,7 @@
                     return;
                 }
 
-                // Добавляем в Wishlist
                 icon.removeClass('isax-heart').addClass('isax-heart5').css('color', 'red');
-
                 $.post('/Student/AddToWishlist', { courseId: courseId }, function (response) {
                     if (!response.success) {
                         icon.removeClass('isax-heart5').addClass('isax-heart').css('color', '');
