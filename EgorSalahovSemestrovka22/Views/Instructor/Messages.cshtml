@@ -1,0 +1,148 @@
+﻿@{
+    ViewData["Title"] = "Messages";
+    var contacts = ViewBag.Contacts as IEnumerable<dynamic>;
+    var currentUserId = ViewBag.CurrentUserId as string;
+}
+
+<div class="main-wrapper">
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <h5>Contacts</h5>
+                    <ul class="list-group" id="contacts-list">
+                        @if (contacts != null)
+                        {
+                            @foreach (var contact in contacts)
+                            {
+                                <li class="list-group-item contact-item" data-userid="@contact.Id">
+                                    @contact.DisplayName
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+                <div class="col-lg-9">
+                    <div class="card">
+                        <div class="card-header" id="chat-header">Select a contact</div>
+                        <div class="card-body" style="height: 400px; overflow-y: auto;" id="messages-container">
+                            <div id="messages-list"></div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="message-input" placeholder="Type a message..." disabled>
+                                <button class="btn btn-primary" id="send-button" disabled>Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.0/signalr.min.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chatHub")
+        .build();
+
+        let selectedUserId = null;
+
+        connection.start().then(() => {
+        console.log("Connected to chat hub");
+        }).catch(err => console.error(err));
+
+        // Выбор контакта
+        document.querySelectorAll('.contact-item').forEach(item => {
+        item.addEventListener('click', function () {
+        selectedUserId = this.dataset.userid;
+        document.getElementById('chat-header').innerText = this.innerText;
+        document.getElementById('message-input').disabled = false;
+        document.getElementById('send-button').disabled = false;
+        loadMessages(selectedUserId);
+        });
+        });
+
+        // Загрузка истории сообщений (можно через API)
+        async function loadMessages(userId) {
+        // Получаем сообщения через обычный AJAX
+        const response = await fetch(`/Chat/GetMessages?contactId=${userId}`);
+        const messages = await response.json();
+        const container = document.getElementById('messages-list');
+        container.innerHTML = '';
+        messages.forEach(msg => {
+        const div = document.createElement('div');
+        div.classList.add('mb-2');
+        div.innerHTML = `<strong>${msg.senderName}:</strong> ${msg.content} <small class="text-muted">${new Date(msg.timestamp).toLocaleTimeString()}</small>`;
+        container.appendChild(div);
+        });
+        }
+
+        // Отправка сообщения
+        document.getElementById('send-button').addEventListener('click', () => {
+        const input = document.getElementById('message-input');
+        const content = input.value.trim();
+        if (content && selectedUserId) {
+        connection.invoke("SendMessage", selectedUserId, content)
+        .catch(err => console.error(err));
+        input.value = '';
+        }
+        });
+
+        // Получение сообщений от хаба
+        connection.on("ReceiveMessage", (message) => {
+        if (selectedUserId === message.senderId) {
+        const container = document.getElementById('messages-list');
+        const div = document.createElement('div');
+        div.classList.add('mb-2');
+        div.innerHTML = `<strong>${message.senderName}:</strong> ${message.content} <small class="text-muted">${new Date(message.timestamp).toLocaleTimeString()}</small>`;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+        }
+        });
+
+        connection.on("MessageSent", (message) => {
+        if (selectedUserId === message.receiverId) {
+        const container = document.getElementById('messages-list');
+        const div = document.createElement('div');
+        div.classList.add('mb-2');
+        div.innerHTML = `<strong>You:</strong> ${message.content} <small class="text-muted">${new Date(message.timestamp).toLocaleTimeString()}</small>`;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+        }
+        });
+
+        // Выбор контакта
+        document.querySelectorAll('.contact-item').forEach(item => {
+        item.addEventListener('click', function () {
+        // Убираем выделение со всех
+        document.querySelectorAll('.contact-item').forEach(el => el.classList.remove('active'));
+        // Выделяем текущий
+        this.classList.add('active');
+
+        selectedUserId = this.dataset.userid;
+        document.getElementById('chat-header').innerText = this.innerText;
+        document.getElementById('message-input').disabled = false;
+        document.getElementById('send-button').disabled = false;
+        loadMessages(selectedUserId);
+        });
+        });
+    </script>
+
+    <style>
+        .contact-item {
+        cursor: pointer;
+        }
+
+        .contact-item:hover {
+        background-color: #f8f9fa;
+        }
+
+        .contact-item.active {
+        background-color: #0d6efd !important;
+        color: white !important;
+        }
+    </style>
+}

@@ -1,4 +1,5 @@
 using EgorSalahovSemestrovka22.Data;
+using EgorSalahovSemestrovka22.Hubs;
 using EgorSalahovSemestrovka22.Middlewares;
 using EgorSalahovSemestrovka22.Models;
 using EgorSalahovSemestrovka22.Models.Entities;
@@ -42,6 +43,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
+builder.Services.AddSignalR();
 
 builder.Services.AddControllersWithViews();
 
@@ -65,6 +67,8 @@ app.UseNoCache();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHub<ChatHub>("/chatHub");
 
 app.MapStaticAssets();
 

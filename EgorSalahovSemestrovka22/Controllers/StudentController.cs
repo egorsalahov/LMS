@@ -245,5 +245,40 @@ namespace EgorSalahovSemestrovka22.Controllers
 
             return View(lesson);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Messages()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("SignIn", "Account");
+
+            // Получаем инструкторов, чьи курсы купил студент
+            var instructors = await _context.Enrollments
+                .Where(e => e.StudentId == user.Id)
+                .Select(e => e.Course.Instructor)
+                .Where(i => i != null)
+                .Distinct()
+                .ToListAsync();
+
+            // Преобразуем в список с Id из AspNetUsers и именами из Instructors
+            var contacts = new List<dynamic>();
+            foreach (var instructor in instructors)
+            {
+                var instructorUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == instructor.Email);
+                if (instructorUser != null)
+                {
+                    contacts.Add(new
+                    {
+                        Id = instructorUser.Id,
+                        DisplayName = $"{instructor.FirstName} {instructor.LastName}"
+                    });
+                }
+            }
+
+            ViewBag.Contacts = contacts;
+            ViewBag.CurrentUserId = user.Id;
+
+            return View();
+        }
     }
 }

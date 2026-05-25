@@ -377,5 +377,33 @@ namespace EgorSalahovSemestrovka22.Controllers
             TempData["SuccessMessage"] = "Курс успешно создан!";
             return RedirectToAction("Dashboard");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Messages()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("SignIn", "Account");
+
+            var instructor = await _context.Instructors.FirstOrDefaultAsync(i => i.Email == user.Email);
+            if (instructor == null)
+                return View(new List<Student>());
+
+            var students = await _context.Enrollments
+                .Where(e => e.Course.InstructorId == instructor.Id)
+                .Select(e => e.Student)
+                .Distinct()
+                .ToListAsync();
+
+            var contacts = students.Select(s => new
+            {
+                Id = s.Id,
+                DisplayName = $"{s.FirstName} {s.LastName}"
+            }).ToList();
+
+            ViewBag.Contacts = contacts;
+            ViewBag.CurrentUserId = user.Id;
+
+            return View();
+        }
     }
 }

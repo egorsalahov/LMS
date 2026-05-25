@@ -69,15 +69,22 @@ namespace EgorSalahovSemestrovka22.Controllers
                     protocol: HttpContext.Request.Scheme);
 
                 // Отправляем письмо
-                await _emailService.SendEmailAsync(
-                    student.Email,
-                    "Подтверждение регистрации на Dreams LMS",
-                    $@"
-                        <h2>Добро пожаловать, {student.FirstName}!</h2>
-                        <p>Для подтверждения Email перейдите по ссылке:</p>
-                        <p><a href='{confirmationLink}'>Подтвердить Email</a></p>
-                        <p>Если вы не регистрировались на сайте, проигнорируйте это письмо.</p>
-                    ");
+                try
+                {
+                    await _emailService.SendEmailAsync(
+                        student.Email,
+                        "Подтверждение регистрации на Dreams LMS",
+                                $@"
+                    <h2>Добро пожаловать, {student.FirstName}!</h2>
+                    <p>Для подтверждения Email перейдите по ссылке:</p>
+                    <p><a href='{confirmationLink}'>Подтвердить Email</a></p>
+                ");
+                }
+                catch (Exception)
+                {
+                    // Оба SMTP не сработали, но регистрация успешна
+                    System.Diagnostics.Debug.WriteLine("Email sending failed completely");
+                }
 
                 TempData["SuccessMessage"] = "На ваш Email отправлено письмо с подтверждением. Проверьте почту!";
 

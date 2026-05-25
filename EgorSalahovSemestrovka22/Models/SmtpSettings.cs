@@ -2,6 +2,12 @@
 {
     public class SmtpSettings
     {
+        public SmtpConfig Primary { get; set; }
+        public SmtpConfig Fallback { get; set; }
+    }
+
+    public class SmtpConfig
+    {
         public string Host { get; set; }
         public int Port { get; set; }
         public bool EnableSsl { get; set; }

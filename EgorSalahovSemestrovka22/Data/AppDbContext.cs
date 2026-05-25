@@ -1,4 +1,5 @@
 ﻿using EgorSalahovSemestrovka22.Models.Entities;
+using EgorSalahovSemestrovka22.Models.Entities.EgorSalahovSemestrovka22.Models.Entities;
 using EgorSalahovSemestrovka22.Models.Entities.Instructors;
 using EgorSalahovSemestrovka22.Models.Entities.Orders;
 using EgorSalahovSemestrovka22.Models.Enums;
@@ -23,6 +24,7 @@ namespace EgorSalahovSemestrovka22.Data
         public DbSet<Section> Sections { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -119,6 +121,19 @@ namespace EgorSalahovSemestrovka22.Data
                 City = "Moscow",
                 PaymentMethod = "Card",
                 State = "MSK"
+            });
+
+            modelBuilder.Entity<Message>(entity =>
+            {
+                entity.HasOne(m => m.Sender)
+                      .WithMany()
+                      .HasForeignKey(m => m.SenderId)
+                      .OnDelete(DeleteBehavior.Restrict); // Restrict вместо Cascade
+
+                entity.HasOne(m => m.Receiver)
+                      .WithMany()
+                      .HasForeignKey(m => m.ReceiverId)
+                      .OnDelete(DeleteBehavior.Restrict); // Restrict вместо Cascade
             });
         }
     }
