@@ -105,6 +105,68 @@ namespace EgorSalahovSemestrovka22.Controllers
             return View(courses);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ListAjax(int? categoryId, string? search, int page = 1, int pageSize = 10,
+    string? priceType = null, Level? level = null, decimal? priceFrom = null, decimal? priceTo = null)
+        {
+            var query = _context.Courses
+                .Include(c => c.Category)
+                .Include(c => c.Instructor)
+                .Include(c => c.Reviews)
+                .AsQueryable();
+
+            if (categoryId.HasValue && categoryId.Value > 0)
+                query = query.Where(c => c.CategoryId == categoryId.Value);
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(c => c.Title.Contains(search) || c.ShortDescription.Contains(search));
+
+            if (level.HasValue)
+                query = query.Where(c => c.LevelForStudent == level.Value);
+
+            if (priceType == "free")
+                query = query.Where(c => c.Price == 0);
+            else if (priceType == "paid")
+                query = query.Where(c => c.Price > 0);
+            else if (priceType == "range")
+            {
+                if (priceFrom.HasValue) query = query.Where(c => c.Price >= priceFrom.Value);
+                if (priceTo.HasValue) query = query.Where(c => c.Price <= priceTo.Value);
+            }
+
+            var totalCourses = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalCourses / (double)pageSize);
+
+            var courses = await query
+                .OrderBy(c => c.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => new
+                {
+                    c.Id,
+                    c.Title,
+                    c.ShortDescription,
+                    c.Price,
+                    c.OldPrice,
+                    ImagePath = string.IsNullOrEmpty(c.ImagePath) || !c.ImagePath.StartsWith("/") ? "/img/default.jpg" : c.ImagePath,
+                    CategoryName = c.Category.Name,
+                    InstructorName = c.Instructor.FirstName + " " + c.Instructor.LastName,
+                    LevelForStudent = c.LevelForStudent.ToString(),
+                    AvgRating = c.Reviews.Any() ? Math.Round(c.Reviews.Average(r => (double)r.Rating), 1) : 0,
+                    ReviewCount = c.Reviews.Count
+                })
+                .ToListAsync();
+
+            return Json(new
+            {
+                courses,
+                currentPage = page,
+                totalPages,
+                totalCourses,
+                pageSize
+            });
+        }
+
         // GET: /Course/Category – список всех категорий
         public async Task<IActionResult> Category()
         {

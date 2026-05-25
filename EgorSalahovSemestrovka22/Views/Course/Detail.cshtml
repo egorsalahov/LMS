@@ -64,18 +64,6 @@
                                 </div>
                                 <div class="d-sm-flex align-items-center justify-content-sm-between mt-3">
                                     <div class="d-flex align-items-center">
-                                        <div class="avatar avatar-lg">
-                                            @if (!string.IsNullOrEmpty(Model.Instructor?.AvatarPath))
-                                            {
-                                                <img class="rounded-circle" src="@Model.Instructor.AvatarPath" alt="img" />
-                                            }
-                                            else
-                                            {
-                                                <span class="d-flex align-items-center justify-content-center bg-secondary text-white rounded-circle" style="width:60px;height:60px;">
-                                                    @Model.Instructor?.FirstName?.FirstOrDefault()@Model.Instructor?.LastName?.FirstOrDefault()
-                                                </span>
-                                            }
-                                        </div>
                                         <div class="ms-2">
                                             <h5 class="fs-18 fw-semibold">
                                                 @(Model.Instructor?.FirstName ?? "Instructor") @(Model.Instructor?.LastName ?? "")
@@ -150,18 +138,6 @@
                             <h5 class="subs-title mb-4">About the instructor</h5>
                             <div class="d-flex align-items-center justify-content-between mt-4 gap-2 flex-wrap">
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar avatar-lg">
-                                        @if (!string.IsNullOrEmpty(Model.Instructor?.AvatarPath))
-                                        {
-                                            <img class="rounded-circle" src="@Model.Instructor.AvatarPath" alt="img" />
-                                        }
-                                        else
-                                        {
-                                            <span class="d-flex align-items-center justify-content-center bg-secondary text-white rounded-circle" style="width:60px;height:60px;">
-                                                @Model.Instructor?.FirstName?.FirstOrDefault()@Model.Instructor?.LastName?.FirstOrDefault()
-                                            </span>
-                                        }
-                                    </div>
                                     <div class="ms-2">
                                         <a href="#" class="name-link">@(Model.Instructor?.FirstName ?? "") @(Model.Instructor?.LastName ?? "")</a>
                                         <p class="mb-0 fs-14">@Model.Instructor?.Bio</p>
@@ -262,10 +238,6 @@
                                 <h5 class="subs-title">Course Features</h5>
                                 <ul>
                                     <li><p class="mb-0"><img class="me-2" src="~/img/icons/people2.svg" alt="img">Enrolled: @(Model.Enrollments?.Count ?? 0) students</p></li>
-                                    @if (totalDuration.TotalMinutes > 0)
-                                    {
-                                        <li><p class="mb-0"><img class="me-2" src="~/img/icons/timer-start3.svg" alt="img">Duration: @(totalDuration.Hours)hr @(totalDuration.Minutes)min</p></li>
-                                    }
                                     <li><p class="mb-0"><img class="me-2" src="~/img/icons/note.svg" alt="img">Chapters: @(Model.Sections?.Count ?? 0)</p></li>
                                     <li><p class="mb-0"><img class="me-2" src="~/img/icons/play3.svg" alt="img">Video: @totalLessons lectures</p></li>
                                     <li><p class="mb-0"><img class="me-2" src="~/img/icons/chart.svg" alt="img">Level: @Model.LevelForStudent</p></li>

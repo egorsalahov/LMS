@@ -52,6 +52,13 @@
                                     <span>$@Model.TotalAmount.ToString("0.00")</span>
                                 </div>
                             </div>
+                            @if (TempData["SuccessMessage"] != null)
+                            {
+                                <div class="alert alert-success mt-3">
+                                    @TempData["SuccessMessage"]
+                                </div>
+                                TempData.Remove("SuccessMessage");
+                            }
                             <a href="/Student/Courses" class="btn btn-primary btn-lg mt-4">Start Learning</a>
                         </div>
                     </div>

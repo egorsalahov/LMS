@@ -34,22 +34,6 @@
                 <div class="row align-items-center row-gap-3">
                     <div class="col-lg-6">
                         <div class="d-flex align-items-center">
-                            <span class="avatar avatar-xxl avatar-rounded me-3 border border-white border-2 position-relative">
-                                @if (!string.IsNullOrEmpty(Model.AvatarPath) && Model.AvatarPath.StartsWith("/"))
-                                {
-                                    <img src="@Model.AvatarPath" alt="" onerror="this.style.display='none'; this.parentElement.querySelector('.avatar-initials').style.display='flex';">
-                                    <span class="avatar-initials d-flex align-items-center justify-content-center bg-light text-primary" style="width:100%;height:100%;font-size:28px;font-weight:bold;display:none;border-radius:50%;">
-                                        @Model.FirstName?.FirstOrDefault()@Model.LastName?.FirstOrDefault()
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="d-flex align-items-center justify-content-center bg-light text-primary" style="width:100%;height:100%;font-size:28px;font-weight:bold;border-radius:50%;">
-                                        @Model.FirstName?.FirstOrDefault()@Model.LastName?.FirstOrDefault()
-                                    </span>
-                                }
-                                <span class="verify-tick"><i class="isax isax-verify5"></i></span>
-                            </span>
                             <div>
                                 <h5 class="mb-1 text-white d-inline-flex align-items-center">
                                     @Model.FirstName @Model.LastName
@@ -79,7 +63,11 @@
                     <!-- Success message -->
                     @if (TempData["SuccessMessage"] != null)
                     {
-                        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+                        <div class="alert alert-success alert-dismissible fade show">
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        TempData.Remove("SuccessMessage");
                     }
 
                     <!-- View mode -->

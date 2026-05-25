@@ -72,18 +72,6 @@
                                                 <div class="course-content">
                                                     <div class="d-flex justify-content-between mb-2">
                                                         <div class="d-flex align-items-center">
-                                                            <div class="avatar avatar-sm">
-                                                                @if (!string.IsNullOrEmpty(course.Instructor?.AvatarPath))
-                                                                {
-                                                                    <img src="@course.Instructor.AvatarPath" class="rounded-circle" alt="" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'d-flex align-items-center justify-content-center bg-secondary text-white rounded-circle\' style=\'width:100%;height:100%;font-size:10px;\'>@(course.Instructor?.FirstName?.FirstOrDefault())@(course.Instructor?.LastName?.FirstOrDefault())</span>';">
-                                                                }
-                                                                else
-                                                                {
-                                                                    <span class="d-flex align-items-center justify-content-center bg-secondary text-white rounded-circle" style="width:100%;height:100%;font-size:10px;">
-                                                                        @(course.Instructor?.FirstName?.FirstOrDefault())@(course.Instructor?.LastName?.FirstOrDefault())
-                                                                    </span>
-                                                                }
-                                                            </div>
                                                             <div class="ms-2">
                                                                 <a href="#" class="link-default fs-14">@(course.Instructor?.FirstName ?? "Instructor") @(course.Instructor?.LastName ?? "")</a>
                                                             </div>

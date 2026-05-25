@@ -67,19 +67,7 @@
                                         </div>
                                         <div class="d-flex flex-wrap align-items-center justify-content-between">
                                             <div class="d-flex align-items-center">
-                                                <div class="avatar avatar-sm rounded-circle">
-                                                    @if (!string.IsNullOrEmpty(course.Instructor?.AvatarPath))
-                                                    {
-                                                        <img class="img-fluid rounded-circle" src="@course.Instructor.AvatarPath" alt="">
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="d-flex align-items-center justify-content-center bg-secondary text-white rounded-circle" style="width:30px;height:30px;font-size:10px;">
-                                                            @(course.Instructor?.FirstName?.FirstOrDefault())@(course.Instructor?.LastName?.FirstOrDefault())
-                                                        </span>
-                                                    }
-                                                </div>
-                                                <p class="fs-14 ms-2"><a href="#">@(course.Instructor?.FirstName ?? "Instructor") @(course.Instructor?.LastName ?? "")</a></p>
+                                                <p class="fs-14 ms-2">@(course.Instructor?.FirstName ?? "Instructor") @(course.Instructor?.LastName ?? "")</p>
                                             </div>
                                             <span class="tag-btn">@course.Category?.Name</span>
                                         </div>
