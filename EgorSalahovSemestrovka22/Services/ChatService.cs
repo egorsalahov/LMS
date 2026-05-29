@@ -2,6 +2,7 @@
 using EgorSalahovSemestrovka22.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Sem.Web.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Sem.Web.Services
 {
@@ -10,19 +11,23 @@ namespace Sem.Web.Services
         private readonly IMessageRepository _messageRepo;
         private readonly IInstructorRepository _instructorRepo;
         private readonly IRepository<Student> _userRepo;
+        private readonly ILogger<ChatService> _logger;
 
         public ChatService(
             IMessageRepository messageRepo,
             IInstructorRepository instructorRepo,
-            IRepository<Student> userRepo)
+            IRepository<Student> userRepo,
+            ILogger<ChatService> logger)
         {
             _messageRepo = messageRepo;
             _instructorRepo = instructorRepo;
             _userRepo = userRepo;
+            _logger = logger;
         }
 
         public async Task<List<object>> GetMessagesAsync(string currentUserId, string contactId)
         {
+            _logger.LogInformation("Загрузка сообщений между {User} и {Contact}", currentUserId, contactId);
             var messages = await _messageRepo.GetConversationAsync(currentUserId, contactId);
 
             var result = new List<object>();

@@ -1,12 +1,10 @@
-﻿using EgorSalahovSemestrovka22.Data;
-using EgorSalahovSemestrovka22.Models.Entities;
+﻿using EgorSalahovSemestrovka22.Models.Entities;
 using EgorSalahovSemestrovka22.Models.Entities.Orders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Sem.Web.Services;
-using System.Diagnostics.Metrics;
 
 namespace EgorSalahovSemestrovka22.Controllers
 {
@@ -14,11 +12,13 @@ namespace EgorSalahovSemestrovka22.Controllers
     {
         private readonly OrderService _orderService;
         private readonly UserManager<Student> _userManager;
+        private readonly ILogger<OrderController> _logger;
 
-        public OrderController(OrderService orderService, UserManager<Student> userManager)
+        public OrderController(OrderService orderService, UserManager<Student> userManager, ILogger<OrderController> logger)
         {
             _orderService = orderService;
             _userManager = userManager;
+            _logger = logger;
         }
 
         private async Task<Student?> GetCurrentUserAsync()
@@ -47,6 +47,7 @@ namespace EgorSalahovSemestrovka22.Controllers
             if (user == null) return Json(new { success = false, message = "Not authorized" });
 
             var isInstructor = await _userManager.IsInRoleAsync(user, "Instructor");
+            _logger.LogInformation("Пользователь {Email} добавляет курс {CourseId} в корзину", user.Email, courseId);
             var (success, message, count) = await _orderService.AddToCartAsync(user.Id, courseId, isInstructor);
 
             return Json(new { success, message, cartCount = count });
@@ -68,7 +69,11 @@ namespace EgorSalahovSemestrovka22.Controllers
         public async Task<IActionResult> RemoveFromCart(int cartItemId)
         {
             var user = await GetCurrentUserAsync();
-            if (user != null) await _orderService.RemoveFromCartAsync(user.Id, cartItemId);
+            if (user != null)
+            {
+                _logger.LogInformation("Удаление элемента {ItemId} из корзины пользователя {Email}", cartItemId, user.Email);
+                await _orderService.RemoveFromCartAsync(user.Id, cartItemId);
+            }
             return RedirectToAction("Cart");
         }
 
@@ -76,7 +81,11 @@ namespace EgorSalahovSemestrovka22.Controllers
         public async Task<IActionResult> ClearCart()
         {
             var user = await GetCurrentUserAsync();
-            if (user != null) await _orderService.ClearCartAsync(user.Id);
+            if (user != null)
+            {
+                _logger.LogInformation("Очистка корзины пользователя {Email}", user.Email);
+                await _orderService.ClearCartAsync(user.Id);
+            }
             return RedirectToAction("Cart");
         }
 
@@ -111,6 +120,7 @@ namespace EgorSalahovSemestrovka22.Controllers
             var user = await GetCurrentUserAsync();
             if (user == null) return RedirectToAction("SignIn", "Account");
 
+            _logger.LogInformation("Оформление заказа пользователем {Email}", user.Email);
             var order = await _orderService.CheckoutAsync(user.Id, firstName, lastName,
                 addressLine1, addressLine2, country, state, city, paymentMethod);
 

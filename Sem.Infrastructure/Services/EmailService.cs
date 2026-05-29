@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
+using Microsoft.Extensions.Logging;
 
 namespace EgorSalahovSemestrovka22.Services
 {
@@ -9,35 +10,39 @@ namespace EgorSalahovSemestrovka22.Services
     {
         private readonly SmtpConfig _primary;
         private readonly SmtpConfig _fallback;
+        private readonly ILogger<EmailService> _logger;
 
-        public EmailService(IOptions<SmtpSettings> smtpSettings)
+        public EmailService(IOptions<SmtpSettings> smtpSettings, ILogger<EmailService> logger)
         {
             _primary = smtpSettings.Value.Primary;
             _fallback = smtpSettings.Value.Fallback;
+            _logger = logger;
         }
 
         public async Task SendEmailAsync(string toEmail, string subject, string body)
         {
-            // Пробуем основной SMTP
+            _logger.LogInformation("Отправка письма на {Email}, тема: {Subject}", toEmail, subject);
+
             try
             {
                 await SendViaSmtpAsync(_primary, toEmail, subject, body);
+                _logger.LogInformation("Письмо успешно отправлено через основной SMTP");
                 return;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Primary SMTP failed: {ex.Message}");
+                _logger.LogWarning(ex, "Основной SMTP не сработал, пробуем fallback");
             }
 
-            // Fallback — пробуем Gmail
             try
             {
                 await SendViaSmtpAsync(_fallback, toEmail, subject, body);
+                _logger.LogInformation("Письмо отправлено через fallback SMTP");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Fallback SMTP also failed: {ex.Message}");
-                throw new Exception("Both SMTP servers failed to send email.");
+                _logger.LogError(ex, "Оба SMTP сервера не сработали");
+                throw new Exception("Both SMTP servers failed to send email.", ex);
             }
         }
 
@@ -47,7 +52,7 @@ namespace EgorSalahovSemestrovka22.Services
             {
                 EnableSsl = config.EnableSsl,
                 Credentials = new NetworkCredential(config.UserName, config.Password),
-                Timeout = 5000 // 5 секунд
+                Timeout = 5000
             };
 
             var mailMessage = new MailMessage

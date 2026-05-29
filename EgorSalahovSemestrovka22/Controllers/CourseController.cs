@@ -1,10 +1,9 @@
-﻿using EgorSalahovSemestrovka22.Data;
-using EgorSalahovSemestrovka22.Models.Entities;
+﻿using EgorSalahovSemestrovka22.Models.Entities;
 using EgorSalahovSemestrovka22.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Sem.Web.Services;
 
 namespace EgorSalahovSemestrovka22.Controllers
@@ -13,11 +12,13 @@ namespace EgorSalahovSemestrovka22.Controllers
     {
         private readonly CourseService _courseService;
         private readonly UserManager<Student> _userManager;
+        private readonly ILogger<CourseController> _logger;
 
-        public CourseController(CourseService courseService, UserManager<Student> userManager)
+        public CourseController(CourseService courseService, UserManager<Student> userManager, ILogger<CourseController> logger)
         {
             _courseService = courseService;
             _userManager = userManager;
+            _logger = logger;
         }
 
         public async Task<IActionResult> List(int? categoryId, string? search, int page = 1, int pageSize = 10,
@@ -94,6 +95,7 @@ namespace EgorSalahovSemestrovka22.Controllers
         {
             var userId = _userManager.GetUserId(User);
             var isStudent = User.IsInRole("Student") && !User.IsInRole("Instructor");
+            _logger.LogInformation("Оценка курса {CourseId} пользователем {User}", courseId, userId);
             var (success, message, avg, count) = await _courseService.RateCourseAsync(userId, courseId, rating, isStudent);
 
             if (!success) return Json(new { success = false, message });

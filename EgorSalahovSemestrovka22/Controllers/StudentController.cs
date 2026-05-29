@@ -1,10 +1,9 @@
-﻿using EgorSalahovSemestrovka22.Data;
-using EgorSalahovSemestrovka22.Models.Entities;
+﻿using EgorSalahovSemestrovka22.Models.Entities;
 using EgorSalahovSemestrovka22.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Sem.Web.Services;
 
 namespace EgorSalahovSemestrovka22.Controllers
@@ -14,11 +13,13 @@ namespace EgorSalahovSemestrovka22.Controllers
     {
         private readonly UserManager<Student> _userManager;
         private readonly StudentService _studentService;
+        private readonly ILogger<StudentController> _logger;
 
-        public StudentController(UserManager<Student> userManager, StudentService studentService)
+        public StudentController(UserManager<Student> userManager, StudentService studentService, ILogger<StudentController> logger)
         {
             _userManager = userManager;
             _studentService = studentService;
+            _logger = logger;
         }
 
         private async Task<Student?> GetCurrentUserAsync()
@@ -47,6 +48,7 @@ namespace EgorSalahovSemestrovka22.Controllers
             var currentUser = await GetCurrentUserAsync();
             if (currentUser == null) return RedirectToAction("SignIn", "Account");
 
+            _logger.LogInformation("Редактирование профиля студента {Email}", currentUser.Email);
             await _studentService.EditProfileAsync(currentUser, model);
             TempData["SuccessMessage"] = "Профиль успешно обновлён!";
             return RedirectToAction("MyProfile");
@@ -82,6 +84,7 @@ namespace EgorSalahovSemestrovka22.Controllers
             if (await _studentService.IsInWishlistAsync(user.Id, courseId))
                 return Json(new { success = false, message = "Already in wishlist" });
 
+            _logger.LogInformation("Добавление в wishlist: студент={Email}, курс={CourseId}", user.Email, courseId);
             await _studentService.AddToWishlistAsync(user.Id, courseId);
             return Json(new { success = true, message = "Added to wishlist" });
         }
@@ -92,6 +95,7 @@ namespace EgorSalahovSemestrovka22.Controllers
             var user = await GetCurrentUserAsync();
             if (user == null) return RedirectToAction("SignIn", "Account");
 
+            _logger.LogInformation("Удаление из wishlist: студент={Email}, курс={CourseId}", user.Email, courseId);
             await _studentService.RemoveFromWishlistAsync(user.Id, courseId);
 
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")

@@ -1,12 +1,11 @@
-﻿using EgorSalahovSemestrovka22.Data;
-using EgorSalahovSemestrovka22.Models.Entities;
+﻿using EgorSalahovSemestrovka22.Models.Entities;
 using EgorSalahovSemestrovka22.Models.Entities.Instructors;
-using EgorSalahovSemestrovka22.Models.Enums;
 using EgorSalahovSemestrovka22.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;   
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using Sem.Web.Services;
 
 namespace EgorSalahovSemestrovka22.Controllers
@@ -16,11 +15,13 @@ namespace EgorSalahovSemestrovka22.Controllers
     {
         private readonly InstructorService _instructorService;
         private readonly UserManager<Student> _userManager;
+        private readonly ILogger<InstructorController> _logger;
 
-        public InstructorController(InstructorService instructorService, UserManager<Student> userManager)
+        public InstructorController(InstructorService instructorService, UserManager<Student> userManager, ILogger<InstructorController> logger)
         {
             _instructorService = instructorService;
             _userManager = userManager;
+            _logger = logger;
         }
 
         private async Task<Student?> GetCurrentUserAsync()
@@ -81,6 +82,7 @@ namespace EgorSalahovSemestrovka22.Controllers
                 return View("MyProfile", instructor);
             }
 
+            _logger.LogInformation("Обновление профиля инструктора {Email}", user.Email);
             var current = await _instructorService.GetProfileForEditAsync(user.Email)
                           ?? await _instructorService.CreateFromStudentAsync(user);
 
@@ -98,7 +100,6 @@ namespace EgorSalahovSemestrovka22.Controllers
             if (instructor == null) return View(new List<Student>());
 
             ViewBag.InstructorName = GetInstructorDisplayName(instructor, user);
-
             var students = await _instructorService.GetEnrolledStudentsAsync(instructor.Id);
             return View(students);
         }
@@ -122,6 +123,7 @@ namespace EgorSalahovSemestrovka22.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Попытка создать курс с некорректными данными");
                 var categories = await _instructorService.GetCategoriesForSelectListAsync();
                 ViewBag.Categories = new SelectList(categories, "Id", "Name");
                 ViewBag.ValidationErrors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
@@ -131,6 +133,7 @@ namespace EgorSalahovSemestrovka22.Controllers
             var user = await GetCurrentUserAsync();
             if (user == null) return RedirectToAction("SignIn", "Account");
 
+            _logger.LogInformation("Инструктор {Email} создаёт курс {Title}", user.Email, model.Title);
             var instructor = await _instructorService.GetOrCreateInstructorAsync(user);
             await _instructorService.CreateCourseAsync(model, instructor.Id);
 

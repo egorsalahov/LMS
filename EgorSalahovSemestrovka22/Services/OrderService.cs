@@ -3,6 +3,7 @@ using EgorSalahovSemestrovka22.Models.Entities;
 using EgorSalahovSemestrovka22.Models.Entities.Orders;
 using Microsoft.EntityFrameworkCore;
 using Sem.Web.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Sem.Web.Services
 {
@@ -12,17 +13,20 @@ namespace Sem.Web.Services
         private readonly IOrderRepository _orderRepo;
         private readonly IEnrollmentRepository _enrollmentRepo;
         private readonly IInstructorRepository _instructorRepo;
+        private readonly ILogger<OrderService> _logger;
 
         public OrderService(
             ICartRepository cartRepo,
             IOrderRepository orderRepo,
             IEnrollmentRepository enrollmentRepo,
-            IInstructorRepository instructorRepo)
+            IInstructorRepository instructorRepo,
+            ILogger<OrderService> logger)
         {
             _cartRepo = cartRepo;
             _orderRepo = orderRepo;
             _enrollmentRepo = enrollmentRepo;
             _instructorRepo = instructorRepo;
+            _logger = logger;
         }
 
         public async Task<List<CartItem>> GetCartItemsAsync(string userId)
@@ -41,6 +45,7 @@ namespace Sem.Web.Services
 
         public async Task<(bool success, string message, int cartCount)> AddToCartAsync(string userId, int courseId, bool isInstructor)
         {
+            _logger.LogInformation("Добавление в корзину: пользователь={User}, курс={Course}", userId, courseId);
             if (isInstructor)
                 return (false, "Instructors cannot purchase courses", 0);
 
@@ -59,6 +64,7 @@ namespace Sem.Web.Services
 
         public async Task RemoveFromCartAsync(string userId, int cartItemId)
         {
+            _logger.LogInformation("Удаление из корзины: элемент={CartItemId}", cartItemId);
             var item = await _cartRepo.GetByIdAndStudentAsync(cartItemId, userId);
             if (item != null)
             {
@@ -69,19 +75,20 @@ namespace Sem.Web.Services
 
         public async Task ClearCartAsync(string userId)
         {
+            _logger.LogInformation("Очистка корзины пользователя {User}", userId);
             var items = await _cartRepo.GetAllByStudentAsync(userId);
             _cartRepo.DeleteRange(items);
             await _cartRepo.SaveChangesAsync();
         }
 
         public async Task<Order> CheckoutAsync(string userId, string firstName, string lastName,
-     string addressLine1, string? addressLine2, string country, string state, string city,
-     string paymentMethod)
+            string addressLine1, string? addressLine2, string country, string state, string city,
+            string paymentMethod)
         {
+            _logger.LogInformation("Оформление заказа пользователем {User}", userId);
             var cartItems = await _cartRepo.GetAllByStudentAsync(userId);
             if (!cartItems.Any()) throw new InvalidOperationException("Cart is empty");
 
-            // Проверка на null для всех Course
             if (cartItems.Any(c => c.Course == null))
                 throw new InvalidOperationException("Cart contains items with missing course data");
 
@@ -105,7 +112,7 @@ namespace Sem.Web.Services
                 OrderItems = cartItems.Select(c => new OrderItem
                 {
                     CourseId = c.CourseId,
-                    PriceAtPurchase = c.Course.Price 
+                    PriceAtPurchase = c.Course.Price
                 }).ToList()
             };
 
@@ -133,6 +140,7 @@ namespace Sem.Web.Services
             _cartRepo.DeleteRange(cartItems);
             await _orderRepo.SaveChangesAsync();
 
+            _logger.LogInformation("Заказ {OrderId} успешно создан", order.Id);
             return order;
         }
 

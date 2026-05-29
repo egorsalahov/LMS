@@ -3,6 +3,7 @@ using EgorSalahovSemestrovka22.Models.Entities;
 using EgorSalahovSemestrovka22.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using Sem.Web.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Sem.Web.Services
 {
@@ -13,19 +14,22 @@ namespace Sem.Web.Services
         private readonly IReviewRepository _reviewRepo;
         private readonly IEnrollmentRepository _enrollmentRepo;
         private readonly IWishlistRepository _wishlistRepo;
+        private readonly ILogger<CourseService> _logger;
 
         public CourseService(
             ICourseRepository courseRepo,
             ICategoryRepository categoryRepo,
             IReviewRepository reviewRepo,
             IEnrollmentRepository enrollmentRepo,
-            IWishlistRepository wishlistRepo)
+            IWishlistRepository wishlistRepo,
+            ILogger<CourseService> logger)
         {
             _courseRepo = courseRepo;
             _categoryRepo = categoryRepo;
             _reviewRepo = reviewRepo;
             _enrollmentRepo = enrollmentRepo;
             _wishlistRepo = wishlistRepo;
+            _logger = logger;
         }
 
         public async Task<(List<Course> courses, int totalCount)> GetFilteredCoursesAsync(
@@ -33,13 +37,18 @@ namespace Sem.Web.Services
             string? priceType, decimal? priceFrom, decimal? priceTo,
             int page, int pageSize)
         {
+            _logger.LogInformation("Запрос списка курсов с фильтрами: категория={Cat}, поиск={Search}, страница={Page}",
+                categoryId, search, page);
             var courses = await _courseRepo.GetFilteredAsync(categoryId, search, level, priceType, priceFrom, priceTo, page, pageSize);
             var totalCount = await _courseRepo.GetFilteredCountAsync(categoryId, search, level, priceType, priceFrom, priceTo);
             return (courses, totalCount);
         }
 
         public async Task<Course?> GetCourseDetailAsync(int id)
-            => await _courseRepo.GetDetailByIdAsync(id);
+        {
+            _logger.LogInformation("Загрузка деталей курса {CourseId}", id);
+            return await _courseRepo.GetDetailByIdAsync(id);
+        }
 
         public async Task<List<Category>> GetAllCategoriesAsync()
             => await _categoryRepo.GetAllWithCoursesAsync();
@@ -55,6 +64,7 @@ namespace Sem.Web.Services
 
         public async Task<List<object>> SearchCoursesAsync(string query, int? categoryId)
         {
+            _logger.LogInformation("Поиск курсов: запрос={Query}, категория={Cat}", query, categoryId);
             var courses = await _courseRepo.SearchAsync(query, categoryId, 8);
 
             var result = courses.Select(c => new
@@ -78,6 +88,7 @@ namespace Sem.Web.Services
         public async Task<(bool success, string message, double avgRating, int count)> RateCourseAsync(
             string userId, int courseId, int rating, bool isStudent)
         {
+            _logger.LogInformation("Оценка курса {CourseId} пользователем {User}", courseId, userId);
             if (rating < 1 || rating > 5)
                 return (false, "Invalid rating", 0, 0);
 
@@ -104,15 +115,17 @@ namespace Sem.Web.Services
             var avg = await _reviewRepo.GetAverageRatingAsync(courseId);
             var count = await _reviewRepo.GetReviewCountAsync(courseId);
 
+            _logger.LogInformation("Новый рейтинг курса {CourseId}: {Avg} на основе {Count} отзывов", courseId, avg, count);
             return (true, "Rated", avg, count);
         }
 
-        // В CourseService.cs
         public async Task<object> GetFilteredCoursesAjaxAsync(
             int? categoryId, string? search, Level? level,
             string? priceType, decimal? priceFrom, decimal? priceTo,
             int page, int pageSize)
         {
+            _logger.LogInformation("AJAX запрос списка курсов: категория={Cat}, поиск={Search}, страница={Page}",
+                categoryId, search, page);
             var courses = await _courseRepo.GetFilteredAsync(
                 categoryId, search, level, priceType, priceFrom, priceTo, page, pageSize);
 
@@ -144,8 +157,6 @@ namespace Sem.Web.Services
                 pageSize
             };
         }
-
-
 
         public async Task<List<int>> GetWishlistCourseIdsAsync(string userId)
             => await _wishlistRepo.GetCourseIdsAsync(userId);

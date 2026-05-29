@@ -5,6 +5,7 @@ using EgorSalahovSemestrovka22.Models.Enums;
 using EgorSalahovSemestrovka22.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Sem.Web.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Sem.Web.Services
 {
@@ -14,17 +15,20 @@ namespace Sem.Web.Services
         private readonly IEnrollmentRepository _enrollmentRepo;
         private readonly ICategoryRepository _categoryRepo;
         private readonly ICourseRepository _courseRepo;
+        private readonly ILogger<InstructorService> _logger;
 
         public InstructorService(
             IInstructorRepository instructorRepo,
             IEnrollmentRepository enrollmentRepo,
             ICategoryRepository categoryRepo,
-            ICourseRepository courseRepo)
+            ICourseRepository courseRepo,
+            ILogger<InstructorService> logger)
         {
             _instructorRepo = instructorRepo;
             _enrollmentRepo = enrollmentRepo;
             _categoryRepo = categoryRepo;
             _courseRepo = courseRepo;
+            _logger = logger;
         }
 
         public async Task<Instructor?> GetByEmailWithCoursesAsync(string email)
@@ -32,6 +36,7 @@ namespace Sem.Web.Services
 
         public async Task<Instructor> CreateFromStudentAsync(Student user)
         {
+            _logger.LogInformation("Создание инструктора из студента {Email}", user.Email);
             var instructor = new Instructor
             {
                 FirstName = user.FirstName ?? "Instructor",
@@ -67,6 +72,7 @@ namespace Sem.Web.Services
 
         public async Task SaveProfileAsync(Instructor instructor, EditInstructorFullViewModel model)
         {
+            _logger.LogInformation("Сохранение профиля инструктора {Email}", instructor.Email);
             instructor.FirstName = model.FirstName;
             instructor.LastName = model.LastName;
             instructor.Gender = model.Gender;
@@ -96,6 +102,7 @@ namespace Sem.Web.Services
 
         public async Task<Course> CreateCourseAsync(CreateCourseViewModel model, int instructorId)
         {
+            _logger.LogInformation("Создание курса {Title} инструктором {InstructorId}", model.Title, instructorId);
             var course = new Course
             {
                 Title = model.Title,
@@ -115,7 +122,7 @@ namespace Sem.Web.Services
                 HasCommunityAccess = model.HasCommunityAccess,
                 HasDownloadableResources = model.HasDownloadableResources,
                 HasSubtitles = model.HasSubtitles,
-                Sections = new List<Section>() // ← Инициализация коллекции
+                Sections = new List<Section>()
             };
 
             if (model.ImageFile != null && model.ImageFile.Length > 0)
@@ -134,7 +141,7 @@ namespace Sem.Web.Services
                     {
                         Title = sectionVm.Title,
                         CourseId = course.Id,
-                        Lessons = new List<Lesson>() // ← Инициализация коллекции уроков
+                        Lessons = new List<Lesson>()
                     };
 
                     if (sectionVm.Lessons != null)
@@ -153,7 +160,7 @@ namespace Sem.Web.Services
                             if (lessonVm.VideoFile != null && lessonVm.VideoFile.Length > 0)
                                 lesson.VideoLink = await SaveFileAsync(lessonVm.VideoFile, "wwwroot/uploads/videos", "/uploads/videos");
 
-                            section.Lessons.Add(lesson); // ← Теперь не упадет
+                            section.Lessons.Add(lesson);
                         }
                     }
 
@@ -163,6 +170,7 @@ namespace Sem.Web.Services
                 await _courseRepo.SaveChangesAsync();
             }
 
+            _logger.LogInformation("Курс {CourseId} создан", course.Id);
             return course;
         }
 
@@ -174,6 +182,7 @@ namespace Sem.Web.Services
 
         public async Task<Instructor?> GetByEmailAsync(string email)
             => await _instructorRepo.GetByEmailAsync(email);
+
         public async Task<List<Category>> GetCategoriesForSelectListAsync()
             => await _categoryRepo.GetAllAsync();
 

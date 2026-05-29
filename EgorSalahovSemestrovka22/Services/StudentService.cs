@@ -4,6 +4,7 @@ using EgorSalahovSemestrovka22.Models.Entities.Orders;
 using EgorSalahovSemestrovka22.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Sem.Web.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Sem.Web.Services
 {
@@ -14,6 +15,7 @@ namespace Sem.Web.Services
         private readonly IWishlistRepository _wishlistRepo;
         private readonly IOrderRepository _orderRepo;
         private readonly ILessonRepository _lessonRepo;
+        private readonly ILogger<StudentService> _logger;
 
         public StudentService(
             IRepository<Student> userRepo,
@@ -21,13 +23,15 @@ namespace Sem.Web.Services
             IWishlistRepository wishlistRepo,
             IOrderRepository orderRepo,
             IReviewRepository reviewRepo,
-            ILessonRepository lessonRepo)
+            ILessonRepository lessonRepo,
+            ILogger<StudentService> logger)
         {
             _userRepo = userRepo;
             _enrollmentRepo = enrollmentRepo;
             _wishlistRepo = wishlistRepo;
             _orderRepo = orderRepo;
             _lessonRepo = lessonRepo;
+            _logger = logger;
         }
 
         public async Task<Student?> GetProfileAsync(string userId)
@@ -35,6 +39,7 @@ namespace Sem.Web.Services
 
         public async Task EditProfileAsync(Student user, EditProfileViewModel model)
         {
+            _logger.LogInformation("Обновление профиля студента {Email}", user.Email);
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
             user.Gender = model.Gender;
@@ -56,12 +61,14 @@ namespace Sem.Web.Services
 
         public async Task AddToWishlistAsync(string userId, int courseId)
         {
+            _logger.LogInformation("Добавление в wishlist: студент={User}, курс={Course}", userId, courseId);
             await _wishlistRepo.AddAsync(new Wishlist { StudentId = userId, CourseId = courseId });
             await _wishlistRepo.SaveChangesAsync();
         }
 
         public async Task RemoveFromWishlistAsync(string userId, int courseId)
         {
+            _logger.LogInformation("Удаление из wishlist: студент={User}, курс={Course}", userId, courseId);
             var item = await _wishlistRepo.FindByStudentAndCourseAsync(userId, courseId);
             if (item != null)
             {

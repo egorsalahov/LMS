@@ -2,6 +2,7 @@
 using EgorSalahovSemestrovka22.Models.ViewModels;
 using EgorSalahovSemestrovka22.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace Sem.Web.Services
 {
@@ -10,20 +11,23 @@ namespace Sem.Web.Services
         private readonly UserManager<Student> _userManager;
         private readonly SignInManager<Student> _signInManager;
         private readonly EmailService _emailService;
+        private readonly ILogger<AccountService> _logger;
 
         public AccountService(
             UserManager<Student> userManager,
             SignInManager<Student> signInManager,
-            EmailService emailService)
+            EmailService emailService,
+            ILogger<AccountService> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
+            _logger = logger;
         }
 
-        // Регистрация
         public async Task<(IdentityResult result, Student student)> RegisterAsync(RegisterViewModel model)
         {
+            _logger.LogInformation("Регистрация пользователя {Email}", model.Email);
             var student = new Student
             {
                 UserName = model.Email,
@@ -38,21 +42,28 @@ namespace Sem.Web.Services
             };
 
             var result = await _userManager.CreateAsync(student, model.Password);
+            if (result.Succeeded)
+                _logger.LogInformation("Пользователь {Email} зарегистрирован", model.Email);
+            else
+                _logger.LogWarning("Ошибка регистрации {Email}: {Errors}", model.Email, result.Errors);
             return (result, student);
         }
 
-        //роль студента
         public async Task AddStudentRoleAsync(Student student)
-            => await _userManager.AddToRoleAsync(student, "Student");
+        {
+            _logger.LogInformation("Добавление роли Student пользователю {Email}", student.Email);
+            await _userManager.AddToRoleAsync(student, "Student");
+        }
 
         public async Task<string> GenerateEmailConfirmationTokenAsync(Student student)
             => await _userManager.GenerateEmailConfirmationTokenAsync(student);
 
         public async Task<Student?> FindByIdAsync(string userId)
-    => await _userManager.FindByIdAsync(userId);
+            => await _userManager.FindByIdAsync(userId);
 
         public async Task SendConfirmationEmailAsync(Student student, string confirmationLink)
         {
+            _logger.LogInformation("Отправка подтверждения email для {Email}", student.Email);
             await _emailService.SendEmailAsync(
                 student.Email,
                 "Подтверждение регистрации на Dreams LMS",
@@ -61,41 +72,51 @@ namespace Sem.Web.Services
                    <p><a href='{confirmationLink}'>Подтвердить Email</a></p>");
         }
 
-        // Подтверждение Email
         public async Task<IdentityResult> ConfirmEmailAsync(string userId, string token)
-            => await _userManager.ConfirmEmailAsync(await _userManager.FindByIdAsync(userId), token);
+        {
+            _logger.LogInformation("Подтверждение email для пользователя {UserId}", userId);
+            return await _userManager.ConfirmEmailAsync(await _userManager.FindByIdAsync(userId), token);
+        }
 
-        // Вход
         public async Task<Student?> FindByEmailAsync(string email)
             => await _userManager.FindByEmailAsync(email);
 
         public async Task<SignInResult> PasswordSignInAsync(string userName, string password, bool rememberMe)
-            => await _signInManager.PasswordSignInAsync(userName, password, rememberMe, lockoutOnFailure: false);
+        {
+            _logger.LogInformation("Попытка входа пользователя {UserName}", userName);
+            return await _signInManager.PasswordSignInAsync(userName, password, rememberMe, false);
+        }
 
         public async Task<bool> IsInRoleAsync(Student user, string role)
             => await _userManager.IsInRoleAsync(user, role);
 
-        // Выход
         public async Task LogoutAsync()
-            => await _signInManager.SignOutAsync();
+        {
+            _logger.LogInformation("Выход пользователя");
+            await _signInManager.SignOutAsync();
+        }
 
-        // Сброс пароля
         public async Task<string> GeneratePasswordResetTokenAsync(Student user)
             => await _userManager.GeneratePasswordResetTokenAsync(user);
 
         public async Task<IdentityResult> ResetPasswordAsync(Student user, string token, string newPassword)
-            => await _userManager.ResetPasswordAsync(user, token, newPassword);
+        {
+            _logger.LogInformation("Сброс пароля для пользователя {Email}", user.Email);
+            return await _userManager.ResetPasswordAsync(user, token, newPassword);
+        }
 
-        // Стать инструктором
         public async Task ChangeRoleToInstructorAsync(Student user)
         {
+            _logger.LogInformation("Смена роли на Instructor для {Email}", user.Email);
             var roles = await _userManager.GetRolesAsync(user);
             await _userManager.RemoveFromRolesAsync(user, roles);
             await _userManager.AddToRoleAsync(user, "Instructor");
             await _signInManager.RefreshSignInAsync(user);
         }
+
         public async Task SendPasswordResetEmailAsync(Student user, string resetLink)
         {
+            _logger.LogInformation("Отправка ссылки сброса пароля для {Email}", user.Email);
             await _emailService.SendEmailAsync(
                 user.Email,
                 "Сброс пароля на Dreams LMS",
