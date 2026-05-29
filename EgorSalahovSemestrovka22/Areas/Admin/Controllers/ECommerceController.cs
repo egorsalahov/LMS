@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Sem.Web.Areas.Admin.Services;
 
 namespace EgorSalahovSemestrovka22.Areas.Admin.Controllers
 {
@@ -9,60 +10,28 @@ namespace EgorSalahovSemestrovka22.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class ECommerceController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly AdminService _adminService;
 
-        public ECommerceController(AppDbContext context)
+        public ECommerceController(AdminService adminService)
         {
-            _context = context;
+            _adminService = adminService;
         }
 
         public async Task<IActionResult> Products()
         {
-            var courses = await _context.Courses
-                .Include(c => c.Category)
-                .Include(c => c.Instructor)
-                .OrderBy(c => c.Id)
-                .ToListAsync();
-
+            var courses = await _adminService.GetAllCoursesAsync();
             return View(courses);
         }
 
-        // GET: /Admin/ECommerce/Customers
         public async Task<IActionResult> Customers()
         {
-            var instructors = await _context.Instructors
-                .Include(i => i.Courses)
-                .OrderBy(i => i.FirstName)
-                .Select(i => new
-                {
-                    i.Id,
-                    FullName = i.FirstName + " " + i.LastName,
-                    i.Email,
-                    CoursesCount = i.Courses.Count,
-                    TotalEarnings = i.TotalEarnings,
-                    i.RegistrationDate
-                })
-                .ToListAsync();
-
-            return View(instructors);
+            var customers = await _adminService.GetCustomersAsync();
+            return View(customers);
         }
 
-        // GET: /Admin/ECommerce/Orders
         public async Task<IActionResult> Orders()
         {
-            var orders = await _context.Orders
-                .Include(o => o.Student)
-                .OrderByDescending(o => o.OrderDate)
-                .Select(o => new
-                {
-                    o.Id,
-                    o.TotalAmount,
-                    CustomerName = o.Student != null ? o.Student.FirstName + " " + o.Student.LastName : "Unknown",
-                    o.OrderDate,
-                    o.OrderStatus
-                })
-                .ToListAsync();
-
+            var orders = await _adminService.GetAllOrdersAsync();
             return View(orders);
         }
     }

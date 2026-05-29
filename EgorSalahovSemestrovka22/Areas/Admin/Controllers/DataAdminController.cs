@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Sem.Web.Areas.Admin.Services;
 
 namespace EgorSalahovSemestrovka22.Areas.Admin.Controllers
 {
@@ -9,33 +10,22 @@ namespace EgorSalahovSemestrovka22.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class DataAdminController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly AdminService _adminService;
 
-        public DataAdminController(AppDbContext context)
+        public DataAdminController(AdminService adminService)
         {
-            _context = context;
+            _adminService = adminService;
         }
 
         public async Task<IActionResult> InstructorsData()
         {
-            var instructors = await _context.Instructors
-                .Include(i => i.Courses)
-                .Include(i => i.Educations)
-                .Include(i => i.Experiences)
-                .OrderBy(i => i.Id)
-                .ToListAsync();
-
+            var instructors = await _adminService.GetAllInstructorsAsync();
             return View(instructors);
         }
 
         public async Task<IActionResult> StudentsData()
         {
-            var students = await _context.Users
-                .Include(s => s.Enrollments)
-                .Include(s => s.Orders)
-                .OrderBy(s => s.Id)
-                .ToListAsync();
-
+            var students = await _adminService.GetAllStudentsAsync();
             return View(students);
         }
     }

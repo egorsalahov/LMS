@@ -5,10 +5,12 @@
 	<div class="row align-items-center row-gap-3">
 		<div class="col-md-6">
 			<div class="d-flex align-items-center">
-				<div>
-					<h5 class="mb-1 text-white d-inline-flex align-items-center">Eugene Andre<a href="instructor-profile.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a></h5>
-					<p class="text-light">Instructor</p>
-				</div>
+				<h5 class="mb-1 text-white d-inline-flex align-items-center">
+					@(ViewBag.InstructorName ?? "Instructor")
+					<a asp-controller="Instructor" asp-action="MyProfile" class="link-light fs-16 ms-2">
+						<i class="isax isax-edit-2"></i>
+					</a>
+				</h5>
 			</div>
 		</div>
 		<div class="col-md-6">

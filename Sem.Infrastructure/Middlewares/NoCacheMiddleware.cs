@@ -1,4 +1,7 @@
-﻿namespace EgorSalahovSemestrovka22.Middlewares
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+
+namespace EgorSalahovSemestrovka22.Middlewares
 {
     public class NoCacheMiddleware
     {

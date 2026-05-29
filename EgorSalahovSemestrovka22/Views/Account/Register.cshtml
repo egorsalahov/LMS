@@ -52,10 +52,6 @@
                 <div class="login-wrapper">
                     <div class="loginbox">
                         <div class="w-100">
-                            <div class="d-flex align-items-center justify-content-between login-header">
-                                <img src="~/img/logo.svg" class="img-fluid" alt="Logo">
-                                <a href="index.html" class="link-1">Back to Home</a>
-                            </div>
                             <h1 class="fs-32 fw-bold topic">Sign up</h1>
                             <form asp-controller="Account" asp-action="Register" method="post" class="mb-3 pb-3">
                                 <div asp-validation-summary="All" class="text-danger mb-3"></div>
@@ -109,15 +105,6 @@
                                     <button class="btn btn-secondary btn-lg" type="submit">Sign Up <i class="isax isax-arrow-right-3 ms-1"></i></button>
                                 </div>
                             </form>
-
-                            <div class="d-flex align-items-center justify-content-center or fs-14 mb-3">
-                                Or
-                            </div>
-
-                            <div class="d-flex align-items-center justify-content-center mb-3">
-                                <a href="javascript:void(0);" class="btn btn-light me-2"><img src="~/img/icons/google.svg" alt="img" class="me-2">Google</a>
-                                <a href="javascript:void(0);" class="btn btn-light"><img src="~/img/icons/facebook.svg" alt="img" class="me-2">Facebook</a>
-                            </div>
 
                             <div class="fs-14 fw-normal d-flex align-items-center justify-content-center">
                                 Already you have an account?<a asp-controller="Account" asp-action="SignIn" class="link-2 ms-1"> Login</a>

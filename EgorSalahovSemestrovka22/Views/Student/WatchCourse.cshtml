@@ -94,15 +94,16 @@
                     <div class="col-lg-8">
                         <div class="course-watch-content">
                             <div class="position-relative video-btn mb-4">
-                                @if (!string.IsNullOrEmpty(course.ImagePath) && course.ImagePath.StartsWith("/"))
+                                @if (!string.IsNullOrEmpty(course.ImagePath))
                                 {
-                                    <img src="@course.ImagePath" class="img-fluid rounded" alt="@course.Title">
+                                    <img src="@course.ImagePath" class="img-fluid rounded" alt="@course.Title"
+                                         onerror="this.onerror=null;this.src='/img/default.jpg';">
                                 }
                                 else
                                 {
-                                    <img src="/img/default.jpg" class="img-fluid rounded" alt="Course preview">
+                                    <img src="~/img/default.jpg" class="img-fluid rounded" alt="Course preview"
+                                         asp-append-version="true">
                                 }
-                                <!-- Можно добавить заглушку видео, если нужно -->
                             </div>
 
                             <ul class="nav-tabs mb-4 nav-justified border-0 nav-style-1 d-sm-flex d-block" role="tablist">

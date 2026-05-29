@@ -61,9 +61,6 @@
                             foreach (var user in ViewBag.NewUsers)
                             {
                                 <div class="d-flex align-items-center gap-3">
-                                    <img src="@(string.IsNullOrEmpty(user.AvatarPath) ? "/img/default.jpg" : user.AvatarPath)"
-                                         width="45" height="45" class="rounded-circle" alt=""
-                                         onerror="this.onerror=null;this.src='/img/default.jpg';">
                                     <div class="flex-grow-1">
                                         <h6 class="mb-0">@user.FirstName @user.LastName</h6>
                                         <p class="mb-0">@user.UserName</p>

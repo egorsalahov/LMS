@@ -23,6 +23,7 @@
 <!-- /Breadcrumb -->
 
 <form asp-action="AddNewCourse" method="post" enctype="multipart/form-data" id="courseWizardForm">
+    @Html.AntiForgeryToken()
 
     <!-- Course add -->
     <div class="content">
@@ -101,12 +102,6 @@
                                             <span asp-validation-for="LevelForStudent" class="text-danger"></span>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="input-block">
-                                            <label class="form-label">Max Number of Students</label>
-                                            <input type="number" class="form-control student-count" min="1" step="1" />
-                                        </div>
-                                    </div>
                                     <div class="col-md-12">
                                         <div class="input-block">
                                             <label class="form-label">Short Description<span class="text-danger ms-1">*</span></label>
@@ -121,45 +116,45 @@
                                             <span asp-validation-for="FullDescription" class="text-danger"></span>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="input-block">
-                                        <label class="form-label">Course Features</label>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-check">
-                                                    <input asp-for="HasLifetimeAccess" class="form-check-input" type="checkbox" />
-                                                    <label asp-for="HasLifetimeAccess" class="form-check-label">Lifetime Access</label>
+                                    <div class="col-md-12">
+                                        <div class="input-block">
+                                            <label class="form-label">Course Features</label>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-check">
+                                                        <input asp-for="HasLifetimeAccess" class="form-check-input" type="checkbox" checked />
+                                                        <label asp-for="HasLifetimeAccess" class="form-check-label">Lifetime Access</label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-check">
-                                                    <input asp-for="HasMobileAccess" class="form-check-input" type="checkbox" />
-                                                    <label asp-for="HasMobileAccess" class="form-check-label">Mobile Access</label>
+                                                <div class="col-md-4">
+                                                    <div class="form-check">
+                                                        <input asp-for="HasMobileAccess" class="form-check-input" type="checkbox" checked />
+                                                        <label asp-for="HasMobileAccess" class="form-check-label">Mobile Access</label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-check">
-                                                    <input asp-for="HasAssignments" class="form-check-input" type="checkbox" />
-                                                    <label asp-for="HasAssignments" class="form-check-label">Assignments</label>
+                                                <div class="col-md-4">
+                                                    <div class="form-check">
+                                                        <input asp-for="HasAssignments" class="form-check-input" type="checkbox" />
+                                                        <label asp-for="HasAssignments" class="form-check-label">Assignments</label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-check">
-                                                    <input asp-for="HasCommunityAccess" class="form-check-input" type="checkbox" />
-                                                    <label asp-for="HasCommunityAccess" class="form-check-label">Community Access</label>
+                                                <div class="col-md-4">
+                                                    <div class="form-check">
+                                                        <input asp-for="HasCommunityAccess" class="form-check-input" type="checkbox" />
+                                                        <label asp-for="HasCommunityAccess" class="form-check-label">Community Access</label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-check">
-                                                    <input asp-for="HasDownloadableResources" class="form-check-input" type="checkbox" />
-                                                    <label asp-for="HasDownloadableResources" class="form-check-label">Downloadable Resources</label>
+                                                <div class="col-md-4">
+                                                    <div class="form-check">
+                                                        <input asp-for="HasDownloadableResources" class="form-check-input" type="checkbox" />
+                                                        <label asp-for="HasDownloadableResources" class="form-check-label">Downloadable Resources</label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-check">
-                                                    <input asp-for="HasSubtitles" class="form-check-input" type="checkbox" />
-                                                    <label asp-for="HasSubtitles" class="form-check-label">Subtitles</label>
+                                                <div class="col-md-4">
+                                                    <div class="form-check">
+                                                        <input asp-for="HasSubtitles" class="form-check-input" type="checkbox" />
+                                                        <label asp-for="HasSubtitles" class="form-check-label">Subtitles</label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -174,15 +169,13 @@
 
                             <!-- STEP 2: Course Media -->
                             <fieldset class="form-inner wizard-form-card">
-                                <div class="title">
-                                    <h5>Course Media</h5>
-                                </div>
+                                <div class="title"><h5>Course Media</h5></div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="input-block">
                                             <div class="row align-items-center">
                                                 <div class="col-md-12">
-                                                    <label class="form-label">Course Thumbnail<span class="text-danger ms-1">*</span></label>
+                                                    <label class="form-label">Course Thumbnail</label>
                                                 </div>
                                                 <div class="col-md-10">
                                                     <input type="text" class="form-control" placeholder="No File Selected" id="file-name-display" readonly>
@@ -192,7 +185,7 @@
                                                     <input type="file" asp-for="ImageFile" id="file-upload" accept="image/*" style="display:none;">
                                                 </div>
                                             </div>
-                                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                                            <span id="image-error" class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -222,9 +215,7 @@
                             <fieldset class="form-inner wizard-form-card">
                                 <div class="title">
                                     <div class="row align-items-center row-gap-2">
-                                        <div class="col-md-6">
-                                            <h5 class="mb-0">Curriculum</h5>
-                                        </div>
+                                        <div class="col-md-6"><h5 class="mb-0">Curriculum</h5></div>
                                         <div class="col-md-6 text-md-end">
                                             <button type="button" class="btn add-edit-btn d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#add-topic">
                                                 <i class="isax isax-add-circle5 me-1"></i> Add New Topic
@@ -233,9 +224,7 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <div class="accordions-items-seperate" id="curriculum-accordion">
-                                        <!-- Здесь будут динамически добавляться секции -->
-                                    </div>
+                                    <div class="accordions-items-seperate" id="curriculum-accordion"></div>
                                 </div>
                                 <div class="add-form-btn widget-next-btn submit-btn">
                                     <div class="btn-left">
@@ -252,20 +241,18 @@
                                 <div>
                                     <div class="d-flex align-items-center mb-3">
                                         <div class="form-check form-check-md d-flex align-items-center">
-                                            <input asp-for="IsFree" class="form-check-input" type="checkbox" id="flexCheckChecked1" />
-                                            <label class="form-check-label ms-2" for="flexCheckChecked1">
-                                                Check if this is a free course
-                                            </label>
+                                            <input asp-for="IsFree" class="form-check-input" type="checkbox" id="isFreeCheck" />
+                                            <label class="form-check-label ms-2" for="isFreeCheck">Check if this is a free course</label>
                                         </div>
                                     </div>
-                                    <div class="input-block mb-2">
-                                        <label class="form-label">Course Price ($)</label>
-                                        <input asp-for="Price" class="form-control" type="number" step="0.01" />
+                                    <div class="input-block mb-2" id="priceBlock">
+                                        <label class="form-label">Course Price ($)<span class="text-danger ms-1">*</span></label>
+                                        <input asp-for="Price" class="form-control" type="number" step="0.01" min="0" />
                                         <span asp-validation-for="Price" class="text-danger"></span>
                                     </div>
-                                    <div class="input-block">
+                                    <div class="input-block" id="oldPriceBlock">
                                         <label class="form-label">Discount Price ($)</label>
-                                        <input asp-for="OldPrice" class="form-control mb-1" type="number" step="0.01" />
+                                        <input asp-for="OldPrice" class="form-control mb-1" type="number" step="0.01" min="0" />
                                         <span asp-validation-for="OldPrice" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -274,7 +261,7 @@
                                         <a href="javascript:void(0);" class="btn btn-light main-btn prev_btns"><i class="isax isax-arrow-left-2 me-1"></i>Prev</a>
                                     </div>
                                     <div class="btn-left">
-                                        <button type="submit" class="btn btn-secondary main-btn">Submit Course</button>
+                                        <button type="submit" class="btn btn-secondary main-btn" id="submitCourseBtn">Submit Course</button>
                                     </div>
                                 </div>
                             </fieldset>
@@ -284,13 +271,12 @@
             </div>
         </div>
     </div>
-    <!-- /Course watch -->
     <div id="hidden-sections-container"></div>
 </form>
 
-<!-- Модальные окна остаются без изменений (add-topic, add-lesson, add-faq, success) -->
-<!-- Add topic -->
-<div class="modal fade" id="add-topic">
+<!-- ========== МОДАЛЬНЫЕ ОКНА ========== -->
+<!-- Add Topic Modal -->
+<div class="modal fade" id="add-topic" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -301,20 +287,20 @@
             </div>
             <div class="modal-body">
                 <div class="input-block">
-                    <label class="form-label">Add Name<span class="text-danger ms-1">*</span></label>
+                    <label class="form-label">Section Title<span class="text-danger ms-1">*</span></label>
                     <input type="text" class="form-control" id="topic-name-input">
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn me-2 btn-light" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-secondary" id="btn-add-topic">Add New</button>
+                <button type="button" class="btn btn-secondary" id="btn-add-topic">Add Section</button>
             </div>
         </div>
     </div>
 </div>
-<!-- /Add topic -->
-<!-- Add lesson -->
-<div class="modal fade" id="add-lesson">
+
+<!-- Add Lesson Modal -->
+<div class="modal fade" id="add-lesson" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -325,44 +311,22 @@
             </div>
             <div class="modal-body">
                 <div class="input-block mb-4">
-                    <label class="form-label">Add Lesson<span class="text-danger ms-1">*</span></label>
+                    <label class="form-label">Lesson Title<span class="text-danger ms-1">*</span></label>
                     <input type="text" class="form-control" id="lesson-name-input">
                 </div>
                 <div class="input-block mb-4">
-                    <label class="form-label">Upload Video<span class="text-danger ms-1">*</span></label>
+                    <label class="form-label">Upload Video</label>
                     <input type="file" class="form-control" id="lesson-video-input" accept="video/*">
                     <span class="text-danger fs-12" id="video-error"></span>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn me-2 btn-light" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-secondary" id="btn-add-lesson">Add New</button>
+                <button type="button" class="btn btn-secondary" id="btn-add-lesson">Add Lesson</button>
             </div>
         </div>
     </div>
 </div>
-<!-- /Add lesson -->
-
-<!-- success -->
-<div class="modal fade modal-default" id="success">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body p-4">
-                <div class="text-center">
-                    <div class="text-success h1 mb-2">
-                        <i class="isax isax-tick-circle5"></i>
-                    </div>
-                    <h5 class="mb-2">Congratulations! Course Submitted</h5>
-                    <p class="mb-3">Your course has been submitted for review.</p>
-                    <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
-                        <a asp-controller="Instructor" asp-action="Dashboard" class="btn btn-secondary"><i class="isax isax-arrow-left-2 me-1"></i>Back to Dashboard</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /success -->
 
 <!-- Validation Errors Modal -->
 <div class="modal fade" id="validationErrorsModal" tabindex="-1" aria-hidden="true">
@@ -382,24 +346,13 @@
         </div>
     </div>
 </div>
-<!-- /Validation Errors Modal -->
-@if (ViewBag.ValidationErrors != null)
-{
-    <script>
-        $(function () {
-            var errors = @Html.Raw(Json.Serialize(ViewBag.ValidationErrors));
-            errors.forEach(function (err) {
-                $('#validationErrorsList').append('<li>' + err + '</li>');
-            });
-            $('#validationErrorsModal').modal('show');
-        });
-    </script>
-}
 
+<!-- ========== СКРИПТЫ ========== -->
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
     <script>
         $(function () {
+        // ========== SUMMERNOTE ==========
         $('.summernote').summernote({
         height: 200,
         toolbar: [
@@ -410,45 +363,89 @@
         ['insert', ['link']]
         ]
         });
+
+        // ========== WIZARD NAVIGATION ==========
+        $('.next_btns').click(function () {
+        $(this).closest('fieldset').hide().next('fieldset').show();
+        updateProgressBar();
         });
 
-        // Валидация изображения
+        $('.prev_btns').click(function () {
+        $(this).closest('fieldset').hide().prev('fieldset').show();
+        updateProgressBar();
+        });
+
+        function updateProgressBar() {
+        var currentStep = $('fieldset:visible').index('fieldset');
+        $('#progressbar2 li').removeClass('progress-active');
+        $('#progressbar2 li:lt(' + currentStep + ')').addClass('progress-active');
+        }
+
+        // ========== PRICE TOGGLE ==========
+        $('#isFreeCheck').on('change', function () {
+        if ($(this).is(':checked')) {
+        $('#priceBlock, #oldPriceBlock').slideUp(200);
+        $('[name="Price"]').val(0);
+        $('[name="OldPrice"]').val('');
+        } else {
+        $('#priceBlock, #oldPriceBlock').slideDown(200);
+        if (!$('[name="Price"]').val() || $('[name="Price"]').val() == '0') {
+        $('[name="Price"]').val('');
+        }
+        }
+        });
+
+        // ========== IMAGE UPLOAD PREVIEW ==========
         $('#file-upload').on('change', function () {
         var file = this.files[0];
-        var $span = $(this).closest('.input-block').find('span[asp-validation-for="ImageFile"]');
-        $span.text('');
-        if (!file) { $('#file-name-display').val('No File Selected'); return; }
+        $('#image-error').text('');
+        if (!file) {
+        $('#file-name-display').val('No File Selected');
+        return;
+        }
         var allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         if ($.inArray(file.type, allowedTypes) === -1) {
-        $span.text('Only JPEG, PNG, GIF, WebP are allowed.');
-        $(this).val(''); $('#file-name-display').val('No File Selected'); return;
+        $('#image-error').text('Only JPEG, PNG, GIF, WebP are allowed.');
+        $(this).val('');
+        $('#file-name-display').val('No File Selected');
+        return;
         }
-        var maxSize = 2 * 1024 * 1024;
-        if (file.size > maxSize) {
-        $span.text('File size must be up to 2 MB.');
-        $(this).val(''); $('#file-name-display').val('No File Selected'); return;
+        if (file.size > 2 * 1024 * 1024) {
+        $('#image-error').text('File size must be up to 2 MB.');
+        $(this).val('');
+        $('#file-name-display').val('No File Selected');
+        return;
         }
         $('#file-name-display').val(file.name);
+
+        // Preview image
+        var reader = new FileReader();
+        reader.onload = function (e) {
+        $('#upload-img-section').html('<img src="' + e.target.result + '" style="max-width:100%;max-height:200px;border-radius:8px;">');
+        };
+        reader.readAsDataURL(file);
         });
 
-        // Логика Curriculum
+        // ========== CURRICULUM LOGIC ==========
         let sectionIndex = 0;
         let currentSectionIndex = -1;
 
         $(document).on('click', '.add-lesson-btn', function () {
         currentSectionIndex = $(this).data('section-index');
+        $('#lesson-name-input').val('');
+        $('#lesson-video-input').val('');
+        $('#video-error').text('');
         $('#add-lesson').modal('show');
         });
 
-        // Добавление топика (секции)
         $('#btn-add-topic').click(function () {
         const title = $('#topic-name-input').val().trim();
-        if (!title) { alert('Enter topic name'); return; }
+        if (!title) { alert('Enter section title'); return; }
 
         const sectionHtml = `
         <div class="accordion-item" data-section-index="${sectionIndex}">
         <h2 class="accordion-header">
-        <a href="javascript:void(0);" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#section-${sectionIndex}">
+        <a href="javascript:void(0);" class="accordion-button" data-bs-toggle="collapse" data-bs-target="#section-${sectionIndex}">
         <span class="d-flex align-items-center mb-0"><i class="isax isax-menu-15 me-2"></i>${title}</span>
         </a>
         </h2>
@@ -459,35 +456,37 @@
         <i class="isax isax-add-circle5 me-1"></i> Add Lesson
         </button>
         <button type="button" class="btn btn-sm btn-outline-danger remove-section-btn mt-2 ms-1">
-        <i class="isax isax-trash"></i> Delete Topic
+        <i class="isax isax-trash"></i> Delete Section
         </button>
         </div>
         </div>
         </div>`;
 
         $('#curriculum-accordion').append(sectionHtml);
-        $('#hidden-sections-container').append(`<input type="hidden" name="Sections[${sectionIndex}].Title" value="${title}" />`);
+        $('#hidden-sections-container').append(
+        `<input type="hidden" name="Sections[${sectionIndex}].Title" value="${title}" />`
+        );
         $('#topic-name-input').val('');
         $('#add-topic').modal('hide');
         sectionIndex++;
         });
 
-        // Добавление урока
         $('#btn-add-lesson').click(function () {
         const title = $('#lesson-name-input').val().trim();
         const videoFile = $('#lesson-video-input')[0].files[0];
 
-        if (!title) { alert('Enter lesson name'); return; }
+        if (!title) { alert('Enter lesson title'); return; }
         if (currentSectionIndex < 0) { alert('Select a topic first'); return; }
 
         if (videoFile) {
         var allowedVideoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
         if ($.inArray(videoFile.type, allowedVideoTypes) === -1) {
-        $('#video-error').text('Only MP4, WebM, OGG are allowed.'); return;
+        $('#video-error').text('Only MP4, WebM, OGG are allowed.');
+        return;
         }
-        var maxVideoSize = 100 * 1024 * 1024;
-        if (videoFile.size > maxVideoSize) {
-        $('#video-error').text('File size must be up to 100 MB.'); return;
+        if (videoFile.size > 200 * 1024 * 1024) {
+        $('#video-error').text('File size must be up to 200 MB.');
+        return;
         }
         }
         $('#video-error').text('');
@@ -506,12 +505,16 @@
         <small class="text-muted">${fileName}</small>
         </div>
         </div>
-        <button type="button" class="btn btn-sm btn-outline-danger remove-lesson-btn"><i class="isax isax-trash"></i></button>
+        <button type="button" class="btn btn-sm btn-outline-danger remove-lesson-btn">
+        <i class="isax isax-trash"></i>
+        </button>
         </div>`;
 
         lessonsContainer.append(lessonHtml);
 
-        $('#hidden-sections-container').append(`<input type="hidden" name="Sections[${currentSectionIndex}].Lessons[${lessonIndex}].Title" value="${title}" />`);
+        $('#hidden-sections-container').append(
+        `<input type="hidden" name="Sections[${currentSectionIndex}].Lessons[${lessonIndex}].Title" value="${title}" />`
+        );
 
         if (videoFile) {
         var fileInput = $('#lesson-video-input').clone()
@@ -530,29 +533,55 @@
         const idx = $(this).closest('.accordion-item').data('section-index');
         $(this).closest('.accordion-item').remove();
         $(`input[name^="Sections[${idx}]"]`).remove();
+        reindexSections();
         });
 
         $(document).on('click', '.remove-lesson-btn', function () {
         const sectionEl = $(this).closest('.accordion-item');
         const sectionIdx = sectionEl.data('section-index');
         $(this).closest('.lesson-item').remove();
-        refreshLessonHiddenFields(sectionIdx, sectionEl.find('.lessons-container'));
+        reindexLessons(sectionIdx, sectionEl.find('.lessons-container'));
         });
 
-        function refreshLessonHiddenFields(sectionIdx, container) {
-        $(`input[name^="Sections[${sectionIdx}].Lessons"]`).remove();
-        container.children('.lesson-item').each(function (i) {
-        const title = $(this).find('p.fw-medium').text().trim();
-        $('#hidden-sections-container').append(`<input type="hidden" name="Sections[${sectionIdx}].Lessons[${i}].Title" value="${title}" />`);
+        function reindexSections() {
+        $('#curriculum-accordion .accordion-item').each(function (i) {
+        $(this).attr('data-section-index', i);
+        $(this).find('.add-lesson-btn').attr('data-section-index', i);
         });
         }
 
-        // Валидация при Submit
+        function reindexLessons(sectionIdx, container) {
+        $(`input[name^="Sections[${sectionIdx}].Lessons"]`).remove();
+        container.children('.lesson-item').each(function (i) {
+        const title = $(this).find('p.fw-medium').text().trim();
+        $('#hidden-sections-container').append(
+        `<input type="hidden" name="Sections[${sectionIdx}].Lessons[${i}].Title" value="${title}" />`
+        );
+        });
+        }
+
+        // ========== SERVER-SIDE ERRORS (если вернулись после POST) ==========
+        @if (ViewBag.ValidationErrors != null)
+        {
+            <text>
+                var serverErrors = @Html.Raw(Json.Serialize(ViewBag.ValidationErrors));
+                serverErrors.forEach(function (err) {
+                $('#validationErrorsList').append('<li>' + err + '</li>');
+                });
+                $('#validationErrorsModal').modal('show');
+                // Показать первый шаг с ошибкой
+                $('fieldset:first').show().siblings('fieldset').hide();
+            </text>
+        }
+
+        // ========== CLIENT-SIDE VALIDATION BEFORE SUBMIT ==========
         $('#courseWizardForm').on('submit', function (e) {
         var errors = [];
-        $('.text-danger').text('');
         $('#validationErrorsList').empty();
+        $('.text-danger').text('');
+        $('#image-error').text('');
 
+        // STEP 1
         var title = $('[name="Title"]').val().trim();
         if (!title) errors.push('Course Title is required.');
 
@@ -566,15 +595,17 @@
         if (!shortDesc) errors.push('Short Description is required.');
 
         var fullDesc = $('[name="FullDescription"]').val().trim();
-        if (!fullDesc || fullDesc === '<p><br></p>' || fullDesc === '') errors.push('Course Description is required.');
+        if (!fullDesc || fullDesc === '<p><br></p>' || fullDesc === '') {
+        errors.push('Course Description is required.');
+        }
 
-        var imageError = $('span[asp-validation-for="ImageFile"]').text().trim();
-        if (imageError) errors.push(imageError);
-
-        var isFree = $('#flexCheckChecked1').is(':checked');
+        // STEP 4
+        var isFree = $('#isFreeCheck').is(':checked');
         if (!isFree) {
         var price = parseFloat($('[name="Price"]').val());
-        if (isNaN(price) || price < 0) errors.push('Course Price must be a valid non-negative number.');
+        if (isNaN(price) || price < 0) {
+        errors.push('Course Price must be a valid non-negative number.');
+        }
         }
 
         if (errors.length > 0) {
@@ -583,6 +614,22 @@
         $('#validationErrorsList').append('<li>' + err + '</li>');
         });
         $('#validationErrorsModal').modal('show');
+        return false;
+        }
+
+        // Если всё ок — показываем loading на кнопке
+        $('#submitCourseBtn').prop('disabled', true)
+        .html('<span class="spinner-border spinner-border-sm me-1"></span>Submitting...');
+        });
+
+        // ========== ИНИЦИАЛИЗАЦИЯ ==========
+        // Показываем первый шаг
+        $('fieldset:not(:first)').hide();
+        updateProgressBar();
+
+        // Если IsFree отмечен при загрузке — скрываем цену
+        if ($('#isFreeCheck').is(':checked')) {
+        $('#priceBlock, #oldPriceBlock').hide();
         }
         });
     </script>

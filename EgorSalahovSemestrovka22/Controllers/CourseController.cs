@@ -5,305 +5,99 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Sem.Web.Services;
 
 namespace EgorSalahovSemestrovka22.Controllers
 {
     public class CourseController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly CourseService _courseService;
         private readonly UserManager<Student> _userManager;
 
-        public CourseController(AppDbContext context, UserManager<Student> userManager)
+        public CourseController(CourseService courseService, UserManager<Student> userManager)
         {
-            _context = context;
+            _courseService = courseService;
             _userManager = userManager;
         }
 
         public async Task<IActionResult> List(int? categoryId, string? search, int page = 1, int pageSize = 10,
-    string? priceType = null, Level? level = null, decimal? priceFrom = null, decimal? priceTo = null)
+            string? priceType = null, Level? level = null, decimal? priceFrom = null, decimal? priceTo = null)
         {
-            var query = _context.Courses
-                .Include(c => c.Category)
-                .Include(c => c.Instructor)
-                .Include(c => c.Reviews)
-                .AsQueryable();
+            var (courses, totalCount) = await _courseService.GetFilteredCoursesAsync(
+                categoryId, search, level, priceType, priceFrom, priceTo, page, pageSize);
 
-            if (categoryId.HasValue && categoryId.Value > 0)
-            {
-                query = query.Where(c => c.CategoryId == categoryId.Value);
-                ViewBag.SelectedCategory = categoryId.Value;
-            }
-
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                query = query.Where(c => c.Title.Contains(search) || c.ShortDescription.Contains(search));
-                ViewBag.SearchQuery = search;
-            }
-
-            if (level.HasValue)
-            {
-                query = query.Where(c => c.LevelForStudent == level.Value);
-                ViewBag.SelectedLevel = level.Value;
-            }
-
-            if (priceType == "free")
-            {
-                query = query.Where(c => c.Price == 0);
-                ViewBag.SelectedPriceType = "free";
-            }
-            else if (priceType == "paid")
-            {
-                query = query.Where(c => c.Price > 0);
-                ViewBag.SelectedPriceType = "paid";
-            }
-            else if (priceType == "range")
-            {
-                if (priceFrom.HasValue)
-                {
-                    query = query.Where(c => c.Price >= priceFrom.Value);
-                    ViewBag.PriceFrom = priceFrom.Value;
-                }
-                if (priceTo.HasValue)
-                {
-                    query = query.Where(c => c.Price <= priceTo.Value);
-                    ViewBag.PriceTo = priceTo.Value;
-                }
-                ViewBag.SelectedPriceType = "range";
-            }
-
-            var totalCourses = await query.CountAsync();
-            var totalPages = (int)Math.Ceiling(totalCourses / (double)pageSize);
-
-            var courses = await query
-                .OrderBy(c => c.Id)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            var categories = await _context.Categories
-                .Select(cat => new { cat.Id, cat.Name, Count = cat.Courses.Count })
-                .ToListAsync();
-
-            ViewBag.Categories = categories;
+            ViewBag.Categories = await _courseService.GetCategoryListAsync();
+            ViewBag.SelectedCategory = categoryId;
+            ViewBag.SelectedLevel = level;
+            ViewBag.SelectedPriceType = priceType;
+            ViewBag.PriceFrom = priceFrom;
+            ViewBag.PriceTo = priceTo;
+            ViewBag.SearchQuery = search;
             ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = totalPages;
-            ViewBag.TotalCourses = totalCourses;
+            ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            ViewBag.TotalCourses = totalCount;
             ViewBag.PageSize = pageSize;
 
             if (User.Identity.IsAuthenticated)
-            {
-                var user = await _userManager.GetUserAsync(User);
-                if (user != null)
-                {
-                    ViewBag.WishlistCourseIds = await _context.Wishlists
-                        .Where(w => w.StudentId == user.Id)
-                        .Select(w => w.CourseId)
-                        .ToListAsync();
-                }
-            }
+                ViewBag.WishlistCourseIds = await _courseService.GetWishlistCourseIdsAsync(_userManager.GetUserId(User));
 
             return View(courses);
         }
 
         [HttpGet]
         public async Task<IActionResult> ListAjax(int? categoryId, string? search, int page = 1, int pageSize = 10,
-    string? priceType = null, Level? level = null, decimal? priceFrom = null, decimal? priceTo = null)
+            string? priceType = null, Level? level = null, decimal? priceFrom = null, decimal? priceTo = null)
         {
-            var query = _context.Courses
-                .Include(c => c.Category)
-                .Include(c => c.Instructor)
-                .Include(c => c.Reviews)
-                .AsQueryable();
-
-            if (categoryId.HasValue && categoryId.Value > 0)
-                query = query.Where(c => c.CategoryId == categoryId.Value);
-
-            if (!string.IsNullOrWhiteSpace(search))
-                query = query.Where(c => c.Title.Contains(search) || c.ShortDescription.Contains(search));
-
-            if (level.HasValue)
-                query = query.Where(c => c.LevelForStudent == level.Value);
-
-            if (priceType == "free")
-                query = query.Where(c => c.Price == 0);
-            else if (priceType == "paid")
-                query = query.Where(c => c.Price > 0);
-            else if (priceType == "range")
-            {
-                if (priceFrom.HasValue) query = query.Where(c => c.Price >= priceFrom.Value);
-                if (priceTo.HasValue) query = query.Where(c => c.Price <= priceTo.Value);
-            }
-
-            var totalCourses = await query.CountAsync();
-            var totalPages = (int)Math.Ceiling(totalCourses / (double)pageSize);
-
-            var courses = await query
-                .OrderBy(c => c.Id)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .Select(c => new
-                {
-                    c.Id,
-                    c.Title,
-                    c.ShortDescription,
-                    c.Price,
-                    c.OldPrice,
-                    ImagePath = string.IsNullOrEmpty(c.ImagePath) || !c.ImagePath.StartsWith("/") ? "/img/default.jpg" : c.ImagePath,
-                    CategoryName = c.Category.Name,
-                    InstructorName = c.Instructor.FirstName + " " + c.Instructor.LastName,
-                    LevelForStudent = c.LevelForStudent.ToString(),
-                    AvgRating = c.Reviews.Any() ? Math.Round(c.Reviews.Average(r => (double)r.Rating), 1) : 0,
-                    ReviewCount = c.Reviews.Count
-                })
-                .ToListAsync();
-
-            return Json(new
-            {
-                courses,
-                currentPage = page,
-                totalPages,
-                totalCourses,
-                pageSize
-            });
+            var result = await _courseService.GetFilteredCoursesAjaxAsync(
+                categoryId, search, level, priceType, priceFrom, priceTo, page, pageSize);
+            return Json(result);
         }
 
-        // GET: /Course/Category – список всех категорий
         public async Task<IActionResult> Category()
         {
-            var categories = await _context.Categories
-                .Include(c => c.Courses)
-                .OrderBy(c => c.Name)
-                .ToListAsync();
-
+            var categories = await _courseService.GetAllCategoriesAsync();
             return View(categories);
         }
 
-        // GET: /Course/CategoryCourses/5 – курсы конкретной категории
         public async Task<IActionResult> CategoryCourses(int id)
         {
-            var category = await _context.Categories
-                .Include(c => c.Courses)
-                    .ThenInclude(c => c.Instructor)
-                .Include(c => c.Courses)
-                    .ThenInclude(c => c.Reviews)
-                .Include(c => c.Courses)
-                    .ThenInclude(c => c.Enrollments)
-                .FirstOrDefaultAsync(c => c.Id == id);
-
-            if (category == null)
-                return NotFound();
-
+            var category = await _courseService.GetCategoryWithCoursesAsync(id);
+            if (category == null) return NotFound();
             return View(category);
         }
 
         public async Task<IActionResult> Detail(int id)
         {
-            var course = await _context.Courses
-                .Include(c => c.Category)
-                .Include(c => c.Instructor)
-                .Include(c => c.Sections)
-                    .ThenInclude(s => s.Lessons)
-                .Include(c => c.Reviews)
-                .Include(c => c.Enrollments)
-                .FirstOrDefaultAsync(c => c.Id == id);
-
+            var course = await _courseService.GetCourseDetailAsync(id);
             if (course == null) return NotFound();
 
-            ViewBag.InstructorCourseCount = await _context.Courses
-                .CountAsync(c => c.InstructorId == course.InstructorId);
+            ViewBag.InstructorCourseCount = await _courseService.GetInstructorCourseCountAsync(course.InstructorId);
 
             if (User.Identity.IsAuthenticated && User.IsInRole("Student"))
-            {
-                var user = await _userManager.GetUserAsync(User);
-                var existingReview = course.Reviews.FirstOrDefault(r => r.StudentId == user.Id);
-                ViewBag.UserRating = existingReview?.Rating ?? 0;
-            }
+                ViewBag.UserRating = course.Reviews.FirstOrDefault(r => r.StudentId == _userManager.GetUserId(User))?.Rating ?? 0;
 
             return View(course);
         }
 
-        // GET: /Course/Search?query=react
-        [HttpGet]
         [HttpGet]
         public async Task<IActionResult> Search(string query, int? categoryId)
         {
             if (string.IsNullOrWhiteSpace(query) || query.Length < 2)
                 return Json(new List<object>());
 
-            var queryable = _context.Courses
-                .Include(c => c.Instructor)
-                .Where(c => c.Title.Contains(query) || c.ShortDescription.Contains(query))
-                .AsQueryable();
-
-            // Фильтр по категории
-            if (categoryId.HasValue && categoryId.Value > 0)
-            {
-                queryable = queryable.Where(c => c.CategoryId == categoryId.Value);
-            }
-
-            var courses = await queryable
-                .OrderBy(c => c.Title)
-                .Take(8)
-                .Select(c => new
-                {
-                    c.Id,
-                    c.Title,
-                    Instructor = c.Instructor.FirstName + " " + c.Instructor.LastName,
-                    c.Price,
-                    ImagePath = string.IsNullOrEmpty(c.ImagePath) || !c.ImagePath.StartsWith("/") ? "/img/default.jpg" : c.ImagePath
-                })
-                .ToListAsync();
-
-            return Json(courses);
+            var results = await _courseService.SearchCoursesAsync(query, categoryId);
+            return Json(results);
         }
 
-        [HttpPost]
-        [Authorize]
+        [HttpPost, Authorize]
         public async Task<IActionResult> RateCourse(int courseId, int rating)
         {
-            if (rating < 1 || rating > 5)
-                return Json(new { success = false, message = "Invalid rating" });
+            var userId = _userManager.GetUserId(User);
+            var isStudent = User.IsInRole("Student") && !User.IsInRole("Instructor");
+            var (success, message, avg, count) = await _courseService.RateCourseAsync(userId, courseId, rating, isStudent);
 
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Json(new { success = false, message = "Not authorized" });
-
-            if (!User.IsInRole("Student") || User.IsInRole("Instructor"))
-                return Json(new { success = false, message = "Only enrolled students can rate" });
-
-            var enrollment = await _context.Enrollments
-                .AnyAsync(e => e.StudentId == user.Id && e.CourseId == courseId);
-            if (!enrollment)
-                return Json(new { success = false, message = "You must purchase the course first" });
-
-            var review = await _context.Reviews
-                .FirstOrDefaultAsync(r => r.StudentId == user.Id && r.CourseId == courseId);
-
-            if (review == null)
-            {
-                review = new Review
-                {
-                    StudentId = user.Id,
-                    CourseId = courseId,
-                    Rating = rating,
-                    CreatedAt = DateTime.Now
-                };
-                _context.Reviews.Add(review);
-            }
-            else
-            {
-                review.Rating = rating;
-                review.CreatedAt = DateTime.Now;
-            }
-
-            await _context.SaveChangesAsync();
-
-            var avg = await _context.Reviews
-                .Where(r => r.CourseId == courseId)
-                .AverageAsync(r => (double?)r.Rating) ?? 0;
-            var count = await _context.Reviews.CountAsync(r => r.CourseId == courseId);
-
-            return Json(new { success = true, average = avg.ToString("0.0"), count = count });
+            if (!success) return Json(new { success = false, message });
+            return Json(new { success = true, average = avg.ToString("0.0"), count });
         }
     }
 }

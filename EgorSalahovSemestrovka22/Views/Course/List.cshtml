@@ -135,7 +135,46 @@
             let currentPage = 1;
             let totalPages = 1;
 
-            // Загрузка курсов через AJAX
+            // ========== WISHLIST (делегирование событий) ==========
+            $(document).on('click', '.add-to-wishlist-btn', function (e) {
+                e.preventDefault();
+                var btn = $(this);
+                var courseId = btn.data('course-id');
+
+                @if (User.Identity.IsAuthenticated)
+                    {
+                        <text>
+                                    if (btn.prop('disabled')) return;
+                        btn.prop('disabled', true);
+                        btn.html('<i class="isax isax-heart5 text-danger"></i>');
+
+                        $.post('/Student/AddToWishlist', { courseId: courseId }, function (response) {
+                            if (response.success) {
+                                setTimeout(function () {
+                                    btn.html('<i class="isax isax-heart"></i>');
+                                    btn.prop('disabled', false);
+                                }, 2000);
+                            } else {
+                                alert(response.message);
+                                btn.html('<i class="isax isax-heart"></i>');
+                                btn.prop('disabled', false);
+                            }
+                        }).fail(function () {
+                            alert('Error adding to wishlist');
+                            btn.html('<i class="isax isax-heart"></i>');
+                            btn.prop('disabled', false);
+                        });
+                    </text>
+                }
+                    else
+                    {
+                        <text>
+                            window.location.href = '/Account/SignIn';
+                    </text>
+                }
+                    });
+
+            // ========== ЗАГРУЗКА КУРСОВ ==========
             function loadCourses(page) {
                 var params = getFilterParams();
                 params.page = page;
@@ -148,13 +187,11 @@
                     currentPage = response.currentPage;
                     totalPages = response.totalPages;
 
-                    // Обновляем URL без перезагрузки
                     var url = buildUrl(params);
                     history.pushState(params, '', url);
                 });
             }
 
-            // Сбор параметров фильтров
             function getFilterParams() {
                 var params = {};
                 var categoryId = $('.category-checkbox:checked').val();
@@ -172,7 +209,6 @@
                 return params;
             }
 
-            // Построение URL для history.pushState
             function buildUrl(params) {
                 var url = '/Course/List?page=' + (params.page || 1);
                 for (var key in params) {
@@ -183,7 +219,6 @@
                 return url;
             }
 
-            // Рендер карточек курсов
             function renderCourses(courses) {
                 var html = '<div class="row course-list-wrap">';
                 if (courses.length === 0) {
@@ -199,7 +234,7 @@
                                                         <img class="img-fluid rounded-3" src="${course.imagePath}" alt="${course.title}" onerror="this.onerror=null;this.src='/img/default.jpg';">
                                                     </a>
                                                     <div class="position-absolute start-0 top-0 d-flex align-items-start w-100 z-index-2 p-2">
-                                                        <a href="javascript:;" class="like add-to-wishlist-btn" data-course-id="${course.id}">
+                                                        <a href="javascript:void(0);" class="like add-to-wishlist-btn" data-course-id="${course.id}">
                                                             <i class="isax isax-heart"></i>
                                                         </a>
                                                     </div>
@@ -214,7 +249,7 @@
                                                     <h4 class="mt-3 mb-2"><a href="/Course/Detail/${course.id}">${course.title}</a></h4>
                                                     <div class="d-flex align-items-center">
                                                         <p class="d-flex align-items-center mb-0">
-                                                            <i class="fa-solid fa-star text-warning me-2"></i> ${course.avgRating.toFixed(1)} (${course.reviewCount} Reviews)
+                                                            <i class="fa-solid fa-star text-warning me-2"></i> ${parseFloat(course.avgRating).toFixed(1)} (${course.reviewCount} Reviews)
                                                         </p>
                                                         <span class="dot"></span>
                                                         <p>${course.levelForStudent}</p>
@@ -234,7 +269,6 @@
                 $('#showingText').text(`Showing ${courses.length > 0 ? ((currentPage - 1) * 10 + 1) + '-' + ((currentPage - 1) * 10 + courses.length) : '0'} results`);
             }
 
-            // Рендер пагинации
             function renderPagination(page, total, totalCourses, pageSize) {
                 $('#pageInfo').text(`Page ${page} of ${total}`);
 
@@ -262,7 +296,7 @@
                 $('#paginationLinks').html(html);
             }
 
-            // Обработчики событий
+            // ========== ОБРАБОТЧИКИ ФИЛЬТРОВ ==========
             $(document).on('click', '#paginationLinks a[data-page]', function () {
                 var page = parseInt($(this).data('page'));
                 loadCourses(page);
@@ -301,7 +335,6 @@
                 applyFilters();
             });
 
-            // Кнопки "назад/вперёд" браузера
             window.onpopstate = function (event) {
                 if (event.state) {
                     loadCourses(event.state.page || 1);

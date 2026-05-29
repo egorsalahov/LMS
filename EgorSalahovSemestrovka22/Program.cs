@@ -7,6 +7,12 @@ using EgorSalahovSemestrovka22.Services;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Sem.Web.Areas.Admin.Repositories;
+using Sem.Web.Areas.Admin.Repositories.Interfaces;
+using Sem.Web.Areas.Admin.Services;
+using Sem.Web.Repositories;
+using Sem.Web.Repositories.Interfaces;
+using Sem.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +20,35 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
+//репозитории
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
+builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
+builder.Services.AddScoped<IWishlistRepository, WishlistRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<ILessonRepository, LessonRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+
+//сервисы
 builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<ChatService>();
+builder.Services.AddScoped<CourseService>();
+builder.Services.AddScoped<HomeService>();
+builder.Services.AddScoped<InstructorService>();
+builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<StudentService>();
+builder.Services.AddScoped<AdminService>();
+
+
+
+// Сервисы
+builder.Services.AddScoped<AdminService>();
 
 builder.Services.Configure<FormOptions>(options =>
 {

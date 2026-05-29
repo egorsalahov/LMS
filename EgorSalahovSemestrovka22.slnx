@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="EgorSalahovSemestrovka22/EgorSalahovSemestrovka22.csproj" />
+  <Project Path="EgorSalahovSemestrovka22/Sem.Web.csproj" />
+  <Project Path="Sem.Core/Sem.Core.csproj" Id="f1ed7b76-ef58-4232-a50e-a99fe3917dcd" />
+  <Project Path="Sem.Infrastructure/Sem.Infrastructure.csproj" Id="4727b601-5eed-49a5-8de2-9dcdc48a5bf8" />
 </Solution>

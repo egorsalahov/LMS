@@ -176,31 +176,48 @@
                                         </h2>
                                     }
                                 </div>
-                                <div class="d-flex justify-content-between gap-3 wishlist-btns">
-                                    @if (User.Identity.IsAuthenticated && !User.IsInRole("Instructor"))
+
+                                @if (!User.IsInRole("Admin") && !User.IsInRole("Instructor"))
+                                {
+                                    <div class="d-flex justify-content-between gap-3 wishlist-btns">
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <button type="button" class="btn d-flex btn-wish add-to-wishlist-btn" data-course-id="@Model.Id">
+                                                <i class="isax isax-heart me-1 fs-18"></i>Add to Wishlist
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="Account" asp-action="SignIn" class="btn d-flex btn-wish">
+                                                <i class="isax isax-heart me-1 fs-18"></i>Sign In to Add
+                                            </a>
+                                        }
+                                    </div>
+
+                                    @if (User.Identity.IsAuthenticated)
                                     {
-                                        <button type="button" class="btn d-flex btn-wish add-to-wishlist-btn" data-course-id="@Model.Id">
-                                            <i class="isax isax-heart me-1 fs-18"></i>Add to Wishlist
+                                        <button type="button" class="btn btn-primary w-100 mt-3 btn-enroll add-to-cart-btn" data-course-id="@Model.Id">
+                                            <i class="isax isax-shopping-cart5 me-2"></i>Add to Cart
                                         </button>
                                     }
-                                    else if (!User.Identity.IsAuthenticated)
+                                    else
                                     {
-                                        <a asp-controller="Account" asp-action="SignIn" class="btn d-flex btn-wish">
-                                            <i class="isax isax-heart me-1 fs-18"></i>Sign In to Add
+                                        <a asp-controller="Account" asp-action="SignIn" class="btn btn-primary w-100 mt-3 btn-enroll">
+                                            Sign In to Enroll
                                         </a>
                                     }
-                                </div>
-                                @if (User.Identity.IsAuthenticated && !User.IsInRole("Instructor"))
-                                {
-                                    <button type="button" class="btn btn-primary w-100 mt-3 btn-enroll add-to-cart-btn" data-course-id="@Model.Id">
-                                        <i class="isax isax-shopping-cart5 me-2"></i>Add to Cart
-                                    </button>
                                 }
-                                else if (!User.Identity.IsAuthenticated)
+                                else if (User.IsInRole("Admin"))
                                 {
-                                    <a asp-controller="Account" asp-action="SignIn" class="btn btn-primary w-100 mt-3 btn-enroll">
-                                        Sign In to Enroll
-                                    </a>
+                                    <div class="alert alert-info mt-3">
+                                        <i class="isax isax-info-circle me-2"></i>Admin cannot purchase courses
+                                    </div>
+                                }
+                                else if (User.IsInRole("Instructor"))
+                                {
+                                    <div class="alert alert-info mt-3">
+                                        <i class="isax isax-info-circle me-2"></i>Instructor cannot purchase courses
+                                    </div>
                                 }
                             </div>
                         </div>
