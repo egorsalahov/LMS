@@ -179,17 +179,17 @@ namespace Sem.Web.Areas.Admin.Repositories
         public async Task<List<object>> GetAllOrdersAsync()
         {
             var orders = await _context.Orders
-                .Include(o => o.Student)
                 .OrderByDescending(o => o.OrderDate)
                 .Select(o => new
                 {
                     o.Id,
                     o.TotalAmount,
-                    CustomerName = o.Student != null ? o.Student.FirstName + " " + o.Student.LastName : "Unknown",
+                    CustomerName = o.FirstName + " " + o.LastName,
                     o.OrderDate,
                     o.OrderStatus
                 })
                 .ToListAsync();
+
             return orders.Cast<object>().ToList();
         }
     }

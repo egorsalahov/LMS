@@ -4,6 +4,7 @@ using EgorSalahovSemestrovka22.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EgorSalahovSemestrovka22.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260529161822_FixStudent")]
+    partial class FixStudent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -660,7 +663,6 @@ namespace EgorSalahovSemestrovka22.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StudentId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Tax")
@@ -674,6 +676,24 @@ namespace EgorSalahovSemestrovka22.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("Orders");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AddressLine1 = "Lenina st. 1",
+                            City = "Moscow",
+                            Country = "Russia",
+                            FirstName = "Ivan",
+                            LastName = "Tester",
+                            OrderDate = new DateTime(2026, 6, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OrderStatus = "Completed",
+                            PaymentMethod = "Card",
+                            State = "MSK",
+                            StudentId = "021914cc-ba3c-4bf5-aa53-6fc9bb467f1a",
+                            Tax = 10.00m,
+                            TotalAmount = 150.00m
+                        });
                 });
 
             modelBuilder.Entity("EgorSalahovSemestrovka22.Models.Entities.Orders.OrderItem", b =>
@@ -1110,9 +1130,7 @@ namespace EgorSalahovSemestrovka22.Migrations
                 {
                     b.HasOne("EgorSalahovSemestrovka22.Models.Entities.Student", "Student")
                         .WithMany("Orders")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StudentId");
 
                     b.Navigation("Student");
                 });

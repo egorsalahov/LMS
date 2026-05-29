@@ -3,24 +3,36 @@ using EgorSalahovSemestrovka22.Hubs;
 using EgorSalahovSemestrovka22.Middlewares;
 using EgorSalahovSemestrovka22.Models;
 using EgorSalahovSemestrovka22.Models.Entities;
+using EgorSalahovSemestrovka22.Models.Entities.Orders;
 using EgorSalahovSemestrovka22.Services;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Sem.Infrastructure.Middlewares;
 using Sem.Web.Areas.Admin.Repositories;
 using Sem.Web.Areas.Admin.Repositories.Interfaces;
 using Sem.Web.Areas.Admin.Services;
 using Sem.Web.Repositories;
 using Sem.Web.Repositories.Interfaces;
 using Sem.Web.Services;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
-//репозитории
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -34,7 +46,6 @@ builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 
-//сервисы
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<ChatService>();
@@ -45,17 +56,18 @@ builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<StudentService>();
 builder.Services.AddScoped<AdminService>();
 
-
-
-// Сервисы
-builder.Services.AddScoped<AdminService>();
-
 builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = 200 * 1024 * 1024; // 200 MB видео лимит
+    options.MultipartBodyLengthLimit = 200 * 1024 * 1024;
+    options.ValueLengthLimit = int.MaxValue;
+    options.MultipartHeadersLengthLimit = int.MaxValue;
 });
 
-//Identity
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 200 * 1024 * 1024;
+});
+
 builder.Services.AddIdentity<Student, IdentityRole>(options =>
 {
     options.Password.RequiredLength = 6;
@@ -68,7 +80,7 @@ builder.Services.AddIdentity<Student, IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
-//Cookie
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
@@ -77,11 +89,40 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
+
 builder.Services.AddSignalR();
 
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+var startupLogger = app.Services.GetRequiredService<ILogger<Program>>();
+startupLogger.LogInformation("Окружение: {Environment}", app.Environment.EnvironmentName);
+startupLogger.LogInformation("Строка подключения: {Connection}", app.Configuration.GetConnectionString("DefaultConnection"));
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    try
+    {
+        // Проверяем, есть ли уже таблицы
+        var tablesExist = dbContext.Database.GetAppliedMigrations().Any();
+
+        if (!tablesExist)
+        {
+            startupLogger.LogInformation("Применение миграций...");
+            await dbContext.Database.MigrateAsync();
+        }
+        else
+        {
+            startupLogger.LogInformation("Миграции уже применены");
+        }
+    }
+    catch (Exception ex)
+    {
+        startupLogger.LogWarning(ex, "Миграции не применены, возможно база уже существует");
+    }
+}
 
 if (!app.Environment.IsDevelopment())
 {
@@ -89,14 +130,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-// Обработка 404 и других кодов ошибок
 app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
 
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseRouting();
 
-//свой middleware
+app.UseErrorLogging();
 app.UseNoCache();
 
 app.UseAuthentication();
@@ -116,22 +156,24 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 
-// Сид пользователей (студентов)
-// Сид пользователей
 using (var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Student>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var seedLogger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
-    // 1. Сид ролей
+    seedLogger.LogInformation("Начало сидирования данных...");
+
     string[] roles = { "Admin", "Instructor", "Student" };
     foreach (var role in roles)
     {
         if (!await roleManager.RoleExistsAsync(role))
+        {
             await roleManager.CreateAsync(new IdentityRole(role));
+            seedLogger.LogInformation("Роль {Role} создана", role);
+        }
     }
-
-    // 2. Сид админа (всегда)
     var adminEmail = "admin@example.com";
     var adminUser = await userManager.FindByEmailAsync(adminEmail);
     if (adminUser == null)
@@ -154,20 +196,21 @@ using (var scope = app.Services.CreateScope())
         if (adminResult.Succeeded)
         {
             await userManager.AddToRoleAsync(adminUser, "Admin");
+            seedLogger.LogInformation("Админ создан: {Email}", adminEmail);
         }
     }
     else
     {
-        // Если админ уже есть, но без роли — выдаём
         if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
         {
             await userManager.AddToRoleAsync(adminUser, "Admin");
         }
     }
 
-    // 3. Сид студентов (если таблица была пуста)
-    if (userManager.Users.Count() <= 1) // Только админ существует
+
+    if (userManager.Users.Count() <= 1)
     {
+        seedLogger.LogInformation("Создание тестовых студентов...");
         var students = new List<(Student, string)>
         {
             (new Student { FirstName = "Ivan", LastName = "Tester", UserName = "ivan_test", Email = "ivan@test.com", PhoneNumber = "+1234567890", Gender = "Male", DateOfBirth = new DateTime(2000, 1, 1), RegistrationDate = new DateTime(2026, 1, 1), Bio = "Learning C#", AvatarPath = "student-1.png" }, "Password123"),
@@ -195,10 +238,10 @@ using (var scope = app.Services.CreateScope())
                 await userManager.AddToRoleAsync(student, "Student");
             }
         }
+        seedLogger.LogInformation("Студенты созданы");
     }
     else
     {
-        // 4. Выдать роль Student существующим, у кого её нет
         var allUsers = userManager.Users.ToList();
         foreach (var user in allUsers)
         {
@@ -210,6 +253,47 @@ using (var scope = app.Services.CreateScope())
             }
         }
     }
+
+    if (!dbContext.Orders.Any())
+    {
+        var ivan = await userManager.FindByEmailAsync("ivan@test.com");
+        if (ivan != null)
+        {
+            var course = await dbContext.Courses.FirstOrDefaultAsync();
+            if (course != null)
+            {
+                var order = new Order
+                {
+                    StudentId = ivan.Id,
+                    TotalAmount = 150.00m,
+                    Tax = 10.00m,
+                    OrderDate = new DateTime(2026, 06, 06),
+                    OrderStatus = "Completed",
+                    FirstName = ivan.FirstName,
+                    LastName = ivan.LastName,
+                    AddressLine1 = "Lenina st. 1",
+                    Country = "Russia",
+                    City = "Moscow",
+                    PaymentMethod = "Card",
+                    State = "MSK",
+                    OrderItems = new List<OrderItem>
+                    {
+                        new OrderItem
+                        {
+                            CourseId = course.Id,
+                            PriceAtPurchase = course.Price
+                        }
+                    }
+                };
+
+                dbContext.Orders.Add(order);
+                await dbContext.SaveChangesAsync();
+                seedLogger.LogInformation("Тестовый заказ создан");
+            }
+        }
+    }
+
+    seedLogger.LogInformation("Сидирование завершено");
 }
 
 app.Run();

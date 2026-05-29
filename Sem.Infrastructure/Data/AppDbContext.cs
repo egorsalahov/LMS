@@ -105,23 +105,6 @@ namespace EgorSalahovSemestrovka22.Data
             }
 
            
-            // Сид Заказа
-            modelBuilder.Entity<Order>().HasData(new Order
-            {
-                Id = 1,
-                StudentId = "021914cc-ba3c-4bf5-aa53-6fc9bb467f1a",
-                TotalAmount = 150.00m,
-                Tax = 10.00m,
-                OrderDate = new DateTime(2026, 06, 06),
-                OrderStatus = "Completed",
-                FirstName = "Ivan",
-                LastName = "Tester",
-                AddressLine1 = "Lenina st. 1",
-                Country = "Russia",
-                City = "Moscow",
-                PaymentMethod = "Card",
-                State = "MSK"
-            });
 
             modelBuilder.Entity<Message>(entity =>
             {
