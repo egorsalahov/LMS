@@ -1,0 +1,22 @@
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  image: mcr.microsoft.com/dotnet/sdk:10.0-preview
+  script:
+    - dotnet publish -c Release -o publish
+  artifacts:
+    paths:
+      - publish/
+
+deploy:
+  stage: deploy
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE .
+    - docker push $CI_REGISTRY_IMAGE
