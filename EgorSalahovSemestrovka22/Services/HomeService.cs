@@ -1,8 +1,9 @@
 ﻿using EgorSalahovSemestrovka22.Data;
 using EgorSalahovSemestrovka22.Models.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Sem.Web.Repositories.Interfaces;
 using Microsoft.Extensions.Logging;
+using Sem.Web.Repositories.Interfaces;
 
 namespace Sem.Web.Services
 {
@@ -11,18 +12,21 @@ namespace Sem.Web.Services
         private readonly ICategoryRepository _categoryRepo;
         private readonly ICourseRepository _courseRepo;
         private readonly IInstructorRepository _instructorRepo;
+        private readonly UserManager<Student> _userManager;
         private readonly ILogger<HomeService> _logger;
 
         public HomeService(
             ICategoryRepository categoryRepo,
             ICourseRepository courseRepo,
             IInstructorRepository instructorRepo,
-            ILogger<HomeService> logger)
+            ILogger<HomeService> logger,
+            UserManager<Student> userManager)
         {
             _categoryRepo = categoryRepo;
             _courseRepo = courseRepo;
             _instructorRepo = instructorRepo;
             _logger = logger;
+            _userManager = userManager;
         }
 
         public async Task<List<Category>> GetCategoriesWithCoursesAsync()
@@ -35,7 +39,7 @@ namespace Sem.Web.Services
             => await _instructorRepo.GetTotalCountAsync();
 
         public async Task<int> GetStudentCountAsync()
-            => await _courseRepo.CountAsync();
+            => await _userManager.Users.CountAsync();
 
         public async Task<int> GetCourseCountAsync()
             => await _courseRepo.CountAsync();

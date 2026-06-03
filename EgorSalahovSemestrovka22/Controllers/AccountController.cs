@@ -34,7 +34,9 @@ namespace EgorSalahovSemestrovka22.Controllers
             }
 
             _logger.LogInformation("Попытка регистрации: {Email}", model.Email);
+
             var (result, student) = await _accountService.RegisterAsync(model);
+
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)
@@ -44,6 +46,7 @@ namespace EgorSalahovSemestrovka22.Controllers
             }
 
             await _accountService.AddStudentRoleAsync(student);
+
             var token = await _accountService.GenerateEmailConfirmationTokenAsync(student);
             var confirmationLink = Url.Action("ConfirmEmail", "Account",
                 new { userId = student.Id, token }, Request.Scheme);
@@ -72,9 +75,11 @@ namespace EgorSalahovSemestrovka22.Controllers
             }
 
             var user = await _accountService.FindByIdAsync(userId);
+
             if (user == null) return NotFound();
 
             var result = await _accountService.ConfirmEmailAsync(userId, token);
+
             if (result.Succeeded)
             {
                 _logger.LogInformation("Email подтверждён: {Email}", user.Email);
@@ -157,7 +162,6 @@ namespace EgorSalahovSemestrovka22.Controllers
             return RedirectToAction("Dashboard", "Instructor");
         }
 
-        // ========== FORGOT PASSWORD ==========
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ForgotPassword() => View();
@@ -182,7 +186,6 @@ namespace EgorSalahovSemestrovka22.Controllers
             return RedirectToAction("SignIn");
         }
 
-        // ========== RESET PASSWORD ==========
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPassword(string email, string token)

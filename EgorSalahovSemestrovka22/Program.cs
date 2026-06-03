@@ -105,7 +105,6 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     try
     {
-        // Проверяем, есть ли уже таблицы
         var tablesExist = dbContext.Database.GetAppliedMigrations().Any();
 
         if (!tablesExist)
@@ -137,6 +136,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseErrorLogging();
+
 app.UseNoCache();
 
 app.UseAuthentication();

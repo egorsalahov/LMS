@@ -48,6 +48,7 @@ namespace EgorSalahovSemestrovka22.Controllers
             }
 
             var (students, courses, earnings) = _instructorService.CalculateDashboard(instructor.Courses.ToList());
+
             ViewBag.TotalStudents = students;
             ViewBag.TotalCourses = courses;
             ViewBag.TotalEarnings = earnings;

@@ -38,6 +38,8 @@ namespace EgorSalahovSemestrovka22.Controllers
             ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
             ViewBag.TotalCourses = totalCount;
             ViewBag.PageSize = pageSize;
+            ViewBag.PriceFrom = priceFrom;
+            ViewBag.PriceTo = priceTo;
 
             if (User.Identity.IsAuthenticated)
                 ViewBag.WishlistCourseIds = await _courseService.GetWishlistCourseIdsAsync(_userManager.GetUserId(User));
@@ -94,7 +96,7 @@ namespace EgorSalahovSemestrovka22.Controllers
         public async Task<IActionResult> RateCourse(int courseId, int rating)
         {
             var userId = _userManager.GetUserId(User);
-            var isStudent = User.IsInRole("Student") && !User.IsInRole("Instructor");
+            var isStudent = User.IsInRole("Student") && !User.IsInRole("Instructor") && !User.IsInRole("");
             _logger.LogInformation("Оценка курса {CourseId} пользователем {User}", courseId, userId);
             var (success, message, avg, count) = await _courseService.RateCourseAsync(userId, courseId, rating, isStudent);
 

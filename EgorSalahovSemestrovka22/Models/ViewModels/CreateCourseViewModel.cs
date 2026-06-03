@@ -39,7 +39,7 @@ namespace EgorSalahovSemestrovka22.Models.ViewModels
         [Range(0, double.MaxValue, ErrorMessage = "Скидка не может быть отрицательной")]
         public decimal? OldPrice { get; set; }
 
-        // Features
+
         [Display(Name = "Lifetime Access")]
         public bool HasLifetimeAccess { get; set; } = true;
 

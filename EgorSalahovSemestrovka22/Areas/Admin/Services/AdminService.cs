@@ -24,7 +24,7 @@ namespace Sem.Web.Areas.Admin.Services
             var studentRegs = await _adminRepo.GetStudentRegistrationsByMonthAsync();
             var instructorRegs = await _adminRepo.GetInstructorRegistrationsByMonthAsync();
 
-            // Преобразуем dynamic в словари для удобства
+
             var studentDict = studentRegs
                 .Select(s => new
                 {
@@ -43,7 +43,7 @@ namespace Sem.Web.Areas.Admin.Services
                 })
                 .ToList();
 
-            // Собираем все уникальные даты
+
             var allDates = studentDict
                 .Select(s => new DateTime(s.Year, s.Month, 1))
                 .Union(instructorDict.Select(i => new DateTime(i.Year, i.Month, 1)))
@@ -51,7 +51,6 @@ namespace Sem.Web.Areas.Admin.Services
                 .OrderBy(d => d)
                 .ToList();
 
-            // Формируем данные для графика
             var allMonths = new List<object>();
             foreach (var date in allDates)
             {
@@ -115,7 +114,7 @@ namespace Sem.Web.Areas.Admin.Services
             => await _adminRepo.GetAllOrdersAsync();
     }
 
-    // Простые DTO для передачи данных
+
     public class AdminDashboardData
     {
         public int TotalUsers { get; set; }

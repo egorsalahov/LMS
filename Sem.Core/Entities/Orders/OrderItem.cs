@@ -10,6 +10,6 @@
         public int CourseId { get; set; }
         public Course Course { get; set; }
 
-        public decimal PriceAtPurchase { get; set; } // Цена в момент оплаты
+        public decimal PriceAtPurchase { get; set; } 
     }
 }

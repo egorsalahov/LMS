@@ -30,7 +30,6 @@ namespace EgorSalahovSemestrovka22.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Настройка точности для денег (decimal)
             foreach (var property in modelBuilder.Model.GetEntityTypes()
                 .SelectMany(t => t.GetProperties())
                 .Where(p => p.ClrType == typeof(decimal) || p.ClrType == typeof(decimal?)))
@@ -38,13 +37,12 @@ namespace EgorSalahovSemestrovka22.Data
                 property.SetColumnType("decimal(18,2)");
             }
 
-            //Сид Категорий
+            //мок-данные (gpt)
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, Name = "Frontend Development", ImagePath = "cat-1.png", CourseCount = 5 },
                 new Category { Id = 2, Name = "Backend Development", ImagePath = "cat-2.png", CourseCount = 5 }
             );
 
-            //Сид Преподавателей
             modelBuilder.Entity<Instructor>().HasData(
                 new Instructor
                 {
@@ -78,7 +76,6 @@ namespace EgorSalahovSemestrovka22.Data
                 }
             );
 
-            //Сид 10 Курсов (по 5 в каждой категории)
             for (int i = 1; i <= 10; i++)
             {
                 modelBuilder.Entity<Course>().HasData(new Course
@@ -105,18 +102,17 @@ namespace EgorSalahovSemestrovka22.Data
             }
 
            
-
             modelBuilder.Entity<Message>(entity =>
             {
                 entity.HasOne(m => m.Sender)
                       .WithMany()
                       .HasForeignKey(m => m.SenderId)
-                      .OnDelete(DeleteBehavior.Restrict); // Restrict вместо Cascade
+                      .OnDelete(DeleteBehavior.Restrict); 
 
                 entity.HasOne(m => m.Receiver)
                       .WithMany()
                       .HasForeignKey(m => m.ReceiverId)
-                      .OnDelete(DeleteBehavior.Restrict); // Restrict вместо Cascade
+                      .OnDelete(DeleteBehavior.Restrict); 
             });
         }
     }

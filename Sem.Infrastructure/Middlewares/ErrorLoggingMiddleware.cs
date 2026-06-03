@@ -24,7 +24,7 @@ namespace Sem.Infrastructure.Middlewares
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Необработанное исключение при запросе {Path}", context.Request.Path);
-                throw; //после логирования исключение пробрасывается дальше для обычной обработки
+                throw; 
             }
         }
     }

@@ -24,6 +24,7 @@ namespace EgorSalahovSemestrovka22.Controllers
             ViewBag.InstructorCount = await _homeService.GetInstructorCountAsync();
             ViewBag.StudentCount = await _homeService.GetStudentCountAsync();
             ViewBag.CourseCount = await _homeService.GetCourseCountAsync();
+
             return View();
         }
 

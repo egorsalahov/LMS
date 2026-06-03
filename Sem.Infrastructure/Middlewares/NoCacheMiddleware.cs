@@ -22,7 +22,6 @@ namespace EgorSalahovSemestrovka22.Middlewares
         }
     }
 
-    //extension method
     public static class NoCacheMiddlewareExtensions
     {
         public static IApplicationBuilder UseNoCache(this IApplicationBuilder builder)

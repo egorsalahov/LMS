@@ -38,14 +38,12 @@ namespace EgorSalahovSemestrovka22.Hubs
             _context.Messages.Add(message);
             await _context.SaveChangesAsync();
 
-            // Получаем имя отправителя
             var user = await _context.Users.FindAsync(senderId);
             var instructor = await _context.Instructors.FirstOrDefaultAsync(i => i.Email == user.Email);
             var senderName = instructor != null
                 ? $"{instructor.FirstName} {instructor.LastName}".Trim()
                 : user?.FirstName ?? "Unknown";
 
-            // Отправляем сообщение получателю
             await Clients.User(receiverId).SendAsync("ReceiveMessage", new
             {
                 message.Id,
@@ -56,7 +54,6 @@ namespace EgorSalahovSemestrovka22.Hubs
                 SenderName = senderName
             });
 
-            // Отправляем подтверждение отправителю
             await Clients.Caller.SendAsync("MessageSent", new
             {
                 message.Id,
@@ -75,17 +72,14 @@ namespace EgorSalahovSemestrovka22.Hubs
                                           .FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null) return false;
 
-            // Получаем целевого пользователя один раз
             var targetUser = await _context.Users.FindAsync(targetUserId);
             if (targetUser == null) return false;
 
-            // Проверяем, является ли пользователь студентом, который купил курс у этого инструктора
             bool isStudentOfInstructor = await _context.Enrollments
                 .AnyAsync(e => e.StudentId == userId &&
                                e.Course.Instructor != null &&
                                e.Course.Instructor.Email == targetUser.Email);
 
-            // Проверяем, является ли пользователь инструктором, у которого учится этот студент
             var instructor = await _context.Instructors.FirstOrDefaultAsync(i => i.Email == user.Email);
             if (instructor != null)
             {

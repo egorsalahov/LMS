@@ -11,6 +11,6 @@
         public Course Course { get; set; }
 
         public DateTime EnrollmentDate { get; set; } = DateTime.Now;
-        public int ProgressPercentage { get; set; } = 0; // Для отображения в Dashboard студента
+        public int ProgressPercentage { get; set; } = 0;
     }
 }

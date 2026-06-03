@@ -42,7 +42,9 @@
                                             {
                                                 <div>
                                                     <label class="custom_check">
-                                                        <input type="checkbox" name="categoryFilter" value="@cat.Id" class="category-checkbox" />
+                                                        <input type="checkbox" name="categoryFilter" value="@cat.Id"
+                                                               class="category-checkbox"
+                                                        @(cat.Id == (int?)ViewBag.SelectedCategory ? "checked" : "") />
                                                         <span class="checkmark"></span> @cat.Name (@cat.Count)
                                                     </label>
                                                 </div>
@@ -59,15 +61,42 @@
                                 </h2>
                                 <div id="collapsePrice" class="accordion-collapse collapse show" data-bs-parent="#filterAccordion">
                                     <div class="accordion-body">
-                                        <div><label class="custom_check"><input type="radio" name="priceFilter" value="" class="price-radio" checked /> <span class="checkmark"></span> All</label></div>
-                                        <div><label class="custom_check"><input type="radio" name="priceFilter" value="free" class="price-radio" /> <span class="checkmark"></span> Free</label></div>
-                                        <div><label class="custom_check"><input type="radio" name="priceFilter" value="paid" class="price-radio" /> <span class="checkmark"></span> Paid</label></div>
-                                        <div><label class="custom_check"><input type="radio" name="priceFilter" value="range" class="price-radio" id="priceRangeRadio" /> <span class="checkmark"></span> Range</label></div>
+                                        <div>
+                                            <label class="custom_check">
+                                                <input type="radio" name="priceFilter" value="" class="price-radio"
+                                                @(string.IsNullOrEmpty((string)ViewBag.SelectedPriceType) ? "checked" : "") />
+                                                <span class="checkmark"></span> All
+                                            </label>
+                                        </div>
+
+                                        <div>
+                                            <label class="custom_check">
+                                                <input type="radio" name="priceFilter" value="free" class="price-radio"
+                                                @(ViewBag.SelectedPriceType?.ToString() == "free" ? "checked" : "") />
+                                                <span class="checkmark"></span> Free
+                                            </label>
+                                        </div>
+
+                                        <div>
+                                            <label class="custom_check">
+                                                <input type="radio" name="priceFilter" value="paid" class="price-radio"
+                                                @(ViewBag.SelectedPriceType?.ToString() == "paid" ? "checked" : "") />
+                                                <span class="checkmark"></span> Paid
+                                            </label>
+                                        </div>
+
+                                        <div>
+                                            <label class="custom_check">
+                                                <input type="radio" name="priceFilter" value="range" class="price-radio" id="priceRangeRadio"
+                                                @(ViewBag.SelectedPriceType?.ToString() == "range" ? "checked" : "") />
+                                                <span class="checkmark"></span> Range
+                                            </label>
+                                        </div>
                                         <div class="mt-2 ms-3" id="priceRangeInputs" style="display:none;">
                                             <div class="d-flex gap-2 align-items-center">
-                                                <input type="number" id="priceFrom" class="form-control form-control-sm" placeholder="From" min="0" step="0.01" style="width:80px;">
+                                                <input type="number" id="priceFrom" value="@ViewBag.PriceFrom" class="form-control form-control-sm" placeholder="From" min="0" step="0.01" style="width:80px;">
                                                 <span>-</span>
-                                                <input type="number" id="priceTo" class="form-control form-control-sm" placeholder="To" min="0" step="0.01" style="width:80px;">
+                                                <input type="number" id="priceTo" value="@ViewBag.PriceTo" class="form-control form-control-sm" placeholder="To" min="0" step="0.01" style="width:80px;">
                                                 <button type="button" class="btn btn-sm btn-primary" id="applyPriceRange">Go</button>
                                             </div>
                                         </div>
@@ -81,12 +110,20 @@
                                 </h2>
                                 <div id="collapseLevel" class="accordion-collapse collapse show" data-bs-parent="#filterAccordion">
                                     <div class="accordion-body">
-                                        <div><label class="custom_check"><input type="radio" name="levelFilter" value="" class="level-radio" checked /> <span class="checkmark"></span> All</label></div>
+                                        <div>
+                                            <label class="custom_check">
+                                                <input type="radio" name="levelFilter" value="" class="level-radio"
+                                                @(ViewBag.SelectedLevel == null ? "checked" : "") />
+                                                <span class="checkmark"></span> All
+                                            </label>
+                                        </div>
+
                                         @foreach (var lvl in Enum.GetValues(typeof(Level)).Cast<Level>())
                                         {
                                             <div>
                                                 <label class="custom_check">
-                                                    <input type="radio" name="levelFilter" value="@((int)lvl)" class="level-radio" />
+                                                    <input type="radio" name="levelFilter" value="@((int)lvl)" class="level-radio"
+                                                    @(ViewBag.SelectedLevel != null && (int)ViewBag.SelectedLevel == (int)lvl ? "checked" : "") />
                                                     <span class="checkmark"></span> @lvl
                                                 </label>
                                             </div>
@@ -174,19 +211,20 @@
                 }
                     });
 
-            // ========== ЗАГРУЗКА КУРСОВ ==========
             function loadCourses(page) {
                 var params = getFilterParams();
                 params.page = page;
 
                 $('#coursesContainer').html('<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>');
 
+                //ajax-запрос
                 $.get('/Course/ListAjax', params, function (response) {
                     renderCourses(response.courses);
                     renderPagination(response.currentPage, response.totalPages, response.totalCourses, response.pageSize);
                     currentPage = response.currentPage;
                     totalPages = response.totalPages;
 
+                    //сохранение в url
                     var url = buildUrl(params);
                     history.pushState(params, '', url);
                 });
@@ -296,10 +334,9 @@
                 $('#paginationLinks').html(html);
             }
 
-            // ========== ОБРАБОТЧИКИ ФИЛЬТРОВ ==========
             $(document).on('click', '#paginationLinks a[data-page]', function () {
                 var page = parseInt($(this).data('page'));
-                loadCourses(page);
+                loadCourses(page); //ajax с новой страницей
             });
 
             function applyFilters() {
@@ -337,7 +374,7 @@
 
             window.onpopstate = function (event) {
                 if (event.state) {
-                    loadCourses(event.state.page || 1);
+                    loadCourses(event.state.page || 1); //загрузка страницы из истории браузера
                 }
             };
 

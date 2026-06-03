@@ -1,6 +1,5 @@
 ﻿namespace EgorSalahovSemestrovka22.Models.Entities
 {
-    //Chapter в Course
     public class Section
     {
         public int Id { get; set; }

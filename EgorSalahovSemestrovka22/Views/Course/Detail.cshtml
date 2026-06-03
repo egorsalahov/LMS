@@ -285,11 +285,10 @@
 
 @section Scripts{
     <script>
-        // Обновление счётчика корзины при загрузке страницы
+
         $(function () {
             updateCartCount();
 
-            // Кнопка Add to Cart
             $(document).on('click', '.add-to-cart-btn', function () {
                 var btn = $(this);
                 var courseId = btn.data('course-id');
@@ -323,7 +322,6 @@
             });
         }
 
-        // Кнопка Add to Wishlist
         $(document).on('click', '.add-to-wishlist-btn', function () {
             var btn = $(this);
             var courseId = btn.data('course-id');
@@ -346,7 +344,7 @@
             });
         });
 
-        // Рейтинг курса
+
         $(document).on('click', '#rating-stars .fa-star', function () {
             var rating = $(this).data('rating');
             var courseId = $('#rating-stars').data('course-id');
